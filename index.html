@@ -79,7 +79,7 @@
                         <button onclick="changeQty(1)" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center font-bold">+</button>
                     </div>
                 </div>
-                <button onclick="addToCart()" class="w-full bg-black text-white py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 transition-all">
+                <button id="addBtn" onclick="addToCart()" class="w-full bg-black text-white py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 transition-all">
                     AÑADIR AL CARRITO
                 </button>
                 <button onclick="closeProduct()" class="w-full text-gray-400 text-xs font-bold py-2 uppercase tracking-widest">Cerrar</button>
@@ -144,24 +144,27 @@
             const sCont = document.getElementById('modalSizes');
             sCont.innerHTML = '';
             
-            // All possible sizes
             const allSizes = ['34', '35', '36', '37', '38', '39', '40', '41', '42'];
             
             allSizes.forEach(s => {
                 const stock = stockMap[s] || 0;
+                // Subtract what is already in cart for this size
+                const inCart = cart.filter(i => i.name === name && i.size === s).reduce((acc, i) => acc + i.qty, 0);
+                const actualStock = stock - inCart;
+
                 const btn = document.createElement('button');
-                btn.className = `size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold flex items-center justify-center transition-all ${stock === 0 ? 'out-of-stock' : ''}`;
+                btn.className = `size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold flex items-center justify-center transition-all ${actualStock <= 0 ? 'out-of-stock' : ''}`;
                 btn.innerText = s;
                 
-                if(stock > 0) {
+                if(actualStock > 0) {
                     btn.onclick = () => {
                         document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
                         btn.classList.add('selected');
                         selectedSize = s;
-                        availableStock = stock;
+                        availableStock = actualStock;
                         currentQty = 1;
                         document.getElementById('itemQty').innerText = currentQty;
-                        document.getElementById('stockNote').innerText = `Stock disponible: ${stock} pares`;
+                        document.getElementById('stockNote').innerText = `Stock disponible: ${actualStock} pares`;
                     };
                 }
                 sCont.appendChild(btn);
@@ -175,7 +178,7 @@
             if(!selectedSize) return alert('Primero selecciona una talla');
             const newQty = currentQty + v;
             if(newQty > availableStock) {
-                alert(`Solo tenemos ${availableStock} pares disponibles en esta talla`);
+                alert(`Solo puedes agregar ${availableStock} pares más de esta talla`);
                 return;
             }
             currentQty = Math.max(1, newQty);
@@ -184,6 +187,16 @@
 
         function addToCart() {
             if(!selectedSize) return alert('Selecciona una talla');
+            
+            // Re-check inventory vs cart
+            const inCart = cart.filter(i => i.name === currentProduct.name && i.size === selectedSize).reduce((acc, i) => acc + i.qty, 0);
+            const totalStock = currentProduct.stockMap[selectedSize];
+            
+            if (inCart + currentQty > totalStock) {
+                alert(`No puedes agregar más. Total en inventario: ${totalStock}. Ya tienes ${inCart} en el carrito.`);
+                return;
+            }
+
             cart.push({ ...currentProduct, size: selectedSize, qty: currentQty });
             updateCartUI();
             closeProduct();
