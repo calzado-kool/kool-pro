@@ -14,6 +14,23 @@
         .kool-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
         .modal-active { overflow: hidden; }
         .size-btn.active { background-color: #ea580c; color: white; border-color: #ea580c; }
+        
+        /* Estilos para la pasarela */
+        .carousel-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox */
+        }
+        .carousel-track::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .carousel-item {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .carousel-item { flex: 0 0 40%; }
+        }
     </style>
 </head>
 <body class="text-slate-900">
@@ -38,58 +55,99 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-8">
+    <main class="max-w-6xl mx-auto pb-8">
         
-        <!-- Welcome Section -->
-        <section class="mb-10">
-            <div class="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-300">
-                <div class="relative z-10 max-w-md">
-                    <span class="bg-orange-500/20 text-orange-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block border border-orange-500/30">Nueva Colección 2026</span>
-                    <h2 class="text-4xl font-extrabold mb-4 leading-tight">Calidad que camina contigo.</h2>
-                    <p class="text-slate-400 text-sm mb-6">Explora nuestra línea premium diseñada para durar y destacar en cada paso.</p>
+        <!-- Pasarela de Productos (Slider Superior) -->
+        <section class="mt-6 mb-10 overflow-hidden">
+            <div class="px-4 mb-4 flex items-center justify-between">
+                <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Modelos Destacados</h2>
+                <div class="flex gap-2">
+                    <button onclick="scrollCarousel(-1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-orange-600 transition-colors shadow-sm">
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </button>
+                    <button onclick="scrollCarousel(1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-orange-600 transition-colors shadow-sm">
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
                 </div>
-                <div class="absolute top-0 right-0 w-64 h-64 kool-gradient opacity-20 blur-[80px]"></div>
+            </div>
+            
+            <div id="carousel" class="carousel-track px-4 gap-4">
+                <!-- Item 1: Tractor Power -->
+                <div class="carousel-item bg-slate-900 rounded-[2.5rem] p-6 text-white relative overflow-hidden flex flex-col justify-end min-h-[350px] cursor-pointer" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
+                    <img src="img/boots_yellow.jpg" class="absolute inset-0 w-full h-full object-cover opacity-60" onerror="this.src='https://placehold.co/600x600/111/ea580c?text=Tractor+Power'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                    <div class="relative z-10">
+                        <span class="bg-orange-600 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Best Seller</span>
+                        <h3 class="text-3xl font-black mb-1">TRACTOR POWER</h3>
+                        <p class="text-slate-300 text-xs font-bold mb-4">Edición Limitada Urbana</p>
+                        <p class="text-2xl font-black text-orange-400">$160.000</p>
+                    </div>
+                </div>
+
+                <!-- Item 2: Producto Prueba -->
+                <div class="carousel-item bg-slate-800 rounded-[2.5rem] p-6 text-white relative overflow-hidden flex flex-col justify-end min-h-[350px] cursor-pointer" onclick="openProduct('PRODUCTO PRUEBA', 1000, '', {'35': 10})">
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-9xl opacity-20">👟</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                    <div class="relative z-10">
+                        <span class="bg-blue-600 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Test Unit</span>
+                        <h3 class="text-3xl font-black mb-1">UNIT PRUEBA</h3>
+                        <p class="text-slate-300 text-xs font-bold mb-4">Verificación de Sistema</p>
+                        <p class="text-2xl font-black text-blue-400">$1.000</p>
+                    </div>
+                </div>
+
+                <!-- Item 3: Próximamente -->
+                <div class="carousel-item bg-slate-100 rounded-[2.5rem] p-6 text-slate-400 relative overflow-hidden border-2 border-dashed border-slate-200 flex flex-col items-center justify-center min-h-[350px]">
+                    <i class="fa-solid fa-plus-circle text-4xl mb-4"></i>
+                    <p class="font-black text-sm uppercase tracking-widest">Próximos Modelos</p>
+                </div>
             </div>
         </section>
 
-        <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Product Grid (Todos los Productos) -->
+        <section class="px-4">
+            <div class="mb-6">
+                <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Catálogo Completo</h2>
+                <div class="h-1 w-10 kool-gradient rounded-full"></div>
+            </div>
             
-            <!-- PRODUCTO PRUEBA -->
-            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4 cursor-pointer" onclick="openProduct('PRODUCTO PRUEBA', 1000, 'https://placehold.co/600x600/f3f4f6/ea580c?text=PRUEBA', {'35': 10})">
-                <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative group">
-                    <div class="absolute inset-0 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform">👟</div>
-                    <div class="absolute top-3 left-3">
-                        <span class="bg-blue-600 text-white text-[9px] font-bold px-2 py-1 rounded-lg uppercase shadow-lg">Modo Prueba</span>
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                <!-- PRODUCTO PRUEBA -->
+                <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-3 md:p-4 cursor-pointer" onclick="openProduct('PRODUCTO PRUEBA', 1000, '', {'35': 10})">
+                    <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative group">
+                        <div class="absolute inset-0 flex items-center justify-center text-4xl md:text-6xl group-hover:scale-110 transition-transform">👟</div>
+                        <div class="absolute top-2 left-2 md:top-3 md:left-3">
+                            <span class="bg-blue-600 text-white text-[7px] md:text-[9px] font-bold px-2 py-1 rounded-lg uppercase shadow-lg">Prueba</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xs md:text-lg mb-1 truncate">Producto Prueba</h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm md:text-2xl font-extrabold text-slate-900">$1.000</span>
+                        <button class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-orange-600 transition-colors">
+                            <i class="fa-solid fa-plus text-[10px] md:text-base"></i>
+                        </button>
                     </div>
                 </div>
-                <h3 class="font-bold text-lg mb-1">Producto de Prueba</h3>
-                <div class="flex items-center justify-between">
-                    <span class="text-2xl font-extrabold text-slate-900">$1.000</span>
-                    <button class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-orange-600 transition-colors">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
 
-            <!-- TRACTOR POWER -->
-            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4 cursor-pointer" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
-                <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative">
-                    <img src="img/boots_yellow.jpg" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x600/f3f4f6/ea580c?text=Tractor+Power'">
-                    <div class="absolute top-3 left-3">
-                        <span class="bg-green-600 text-white text-[9px] font-bold px-2 py-1 rounded-lg uppercase shadow-lg">En Stock</span>
+                <!-- TRACTOR POWER -->
+                <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-3 md:p-4 cursor-pointer" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
+                    <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative">
+                        <img src="img/boots_yellow.jpg" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x600/f3f4f6/ea580c?text=Tractor+Power'">
+                        <div class="absolute top-2 left-2 md:top-3 md:left-3">
+                            <span class="bg-green-600 text-white text-[7px] md:text-[9px] font-bold px-2 py-1 rounded-lg uppercase shadow-lg">Stock</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xs md:text-lg mb-1 truncate">Tractor Power</h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm md:text-2xl font-extrabold text-slate-900">$160.000</span>
+                        <button class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-orange-600 transition-colors">
+                            <i class="fa-solid fa-plus text-[10px] md:text-base"></i>
+                        </button>
                     </div>
                 </div>
-                <h3 class="font-bold text-lg mb-1">Tractor Power Yellow</h3>
-                <div class="flex items-center justify-between">
-                    <span class="text-2xl font-extrabold text-slate-900">$160.000</span>
-                    <button class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-orange-600 transition-colors">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
             </div>
-
-        </div>
+        </section>
     </main>
 
     <!-- Product Modal -->
@@ -97,7 +155,7 @@
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeProduct()"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] p-8 shadow-2xl transition-transform duration-300 translate-y-full" id="modal-content">
             <div class="w-12 h-1 bg-slate-200 rounded-full mx-auto mb-8"></div>
-            <div class="flex flex-col md:flex-row gap-8">
+            <div class="flex flex-col md:flex-row gap-8 max-h-[80vh] overflow-y-auto">
                 <div class="w-full md:w-1/2 aspect-square rounded-[2rem] bg-slate-100 overflow-hidden flex items-center justify-center text-8xl" id="modal-img-container">
                     <img id="modal-img" src="" class="w-full h-full object-cover">
                 </div>
@@ -107,7 +165,7 @@
                     
                     <div class="mb-6">
                         <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Seleccionar Talla</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tallas Disponibles</p>
                             <span id="stock-display" class="text-[10px] font-bold text-orange-600 uppercase"></span>
                         </div>
                         <div id="modal-sizes" class="flex flex-wrap gap-2">
@@ -128,11 +186,9 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-4">
-                        <button onclick="addToCart()" class="flex-1 kool-gradient text-white font-bold py-4 rounded-2xl shadow-xl shadow-orange-200 active:scale-95 transition-transform">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
+                    <button onclick="addToCart()" class="w-full kool-gradient text-white font-bold py-4 rounded-2xl shadow-xl shadow-orange-200 active:scale-95 transition-transform">
+                        AGREGAR AL CARRITO
+                    </button>
                 </div>
             </div>
         </div>
@@ -141,25 +197,25 @@
     <!-- Cart Sidebar -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 z-[150] w-full max-w-sm bg-white shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-            <h2 class="text-xl font-extrabold">TU PEDIDO</h2>
+            <h2 class="text-xl font-extrabold uppercase tracking-tight">Tu Carrito</h2>
             <button onclick="toggleCart()" class="text-slate-400 hover:text-slate-900"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
         <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
             <!-- Cart items inject here -->
         </div>
         <div class="p-6 border-t border-slate-100 bg-slate-50">
-            <div class="space-y-4 mb-6">
-                <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none">
-                <input type="text" id="cId" placeholder="Cédula / NIT" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none">
-                <input type="text" id="cPhone" placeholder="Celular" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none">
-                <input type="text" id="cAddr" placeholder="Dirección de entrega" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none">
+            <div class="space-y-3 mb-6">
+                <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none transition-colors">
+                <input type="text" id="cId" placeholder="Cédula / NIT" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none transition-colors">
+                <input type="text" id="cPhone" placeholder="Celular" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none transition-colors">
+                <input type="text" id="cAddr" placeholder="Dirección de entrega" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-orange-500 outline-none transition-colors">
             </div>
             <div class="flex items-center justify-between mb-4">
-                <span class="text-slate-400 font-bold uppercase text-[10px]">Total a pagar</span>
-                <span id="cart-total" class="text-2xl font-black">$ 0</span>
+                <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Total Estimado</span>
+                <span id="cart-total" class="text-2xl font-black text-slate-900">$ 0</span>
             </div>
             <button onclick="checkout()" class="w-full kool-gradient text-white font-bold py-4 rounded-2xl shadow-xl shadow-orange-200 active:scale-95 transition-transform flex items-center justify-center gap-3">
-                <i class="fa-solid fa-shield-check"></i> AUTORIZAR PAGO BOLD
+                <i class="fa-solid fa-shield-check"></i> CONFIRMAR PEDIDO Y PAGAR
             </button>
         </div>
     </div>
@@ -170,6 +226,12 @@
         let selectedSize = null;
         let currentQty = 1;
         let availableStock = 0;
+
+        function scrollCarousel(direction) {
+            const track = document.getElementById('carousel');
+            const itemWidth = track.querySelector('.carousel-item').offsetWidth + 16;
+            track.scrollBy({ left: direction * itemWidth, behavior: 'smooth' });
+        }
 
         function openProduct(name, price, img, stockMap) {
             currentProduct = { name, price, img, stockMap };
@@ -211,7 +273,7 @@
                         availableStock = stock;
                         currentQty = 1;
                         document.getElementById('modal-qty').innerText = currentQty;
-                        document.getElementById('stock-display').innerText = `Disponibles: ${stock}`;
+                        document.getElementById('stock-display').innerText = `En Stock: ${stock}`;
                     };
                 }
                 sCont.appendChild(btn);
@@ -246,7 +308,6 @@
         function addToCart() {
             if (!selectedSize) return alert('Por favor selecciona una talla');
             
-            // Check if item already exists in cart with same size
             const existing = cart.find(i => i.name === currentProduct.name && i.size === selectedSize);
             if(existing) {
                 if((existing.qty + currentQty) > availableStock) {
@@ -280,13 +341,13 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-4 bg-slate-50 p-4 rounded-2xl relative';
                 div.innerHTML = `
-                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center border border-slate-100 overflow-hidden">
+                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center border border-slate-100 overflow-hidden shadow-sm">
                         ${item.img ? `<img src="${item.img}" class="w-full h-full object-cover">` : '<span class="text-xl">👟</span>'}
                     </div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm uppercase">${item.name}</h4>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Talla ${item.size} | Cant: ${item.qty}</p>
-                        <p class="text-orange-600 font-extrabold text-sm">$${itemTotal.toLocaleString('es-CO')}</p>
+                    <div class="flex-1 text-xs">
+                        <h4 class="font-bold uppercase text-slate-800">${item.name}</h4>
+                        <p class="text-slate-400 font-bold uppercase tracking-widest mt-0.5">Talla ${item.size} | Cant: ${item.qty}</p>
+                        <p class="text-orange-600 font-black mt-1">$${itemTotal.toLocaleString('es-CO')}</p>
                     </div>
                     <button onclick="removeItem(${index})" class="text-slate-300 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
                 `;
@@ -324,7 +385,7 @@
 
             // Generar Pago Bold (Dinámico)
             const btn = document.querySelector('#cart-sidebar button[onclick="checkout()"]');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO LINK...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO PAGO BOLD...';
             btn.disabled = true;
 
             try {
@@ -349,12 +410,12 @@
                     window.location.href = data.url;
                 } else {
                     alert('Error en Bold. Por favor intenta de nuevo.');
-                    btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> AUTORIZAR PAGO BOLD';
+                    btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> CONFIRMAR PEDIDO Y PAGAR';
                     btn.disabled = false;
                 }
             } catch (e) {
                 alert('Error de conexión con Bold');
-                btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> AUTORIZAR PAGO BOLD';
+                btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> CONFIRMAR PEDIDO Y PAGAR';
                 btn.disabled = false;
             }
         }
