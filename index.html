@@ -370,7 +370,8 @@
 
         
         
-        function checkout() {
+        
+        async function checkout() {
             const name = document.getElementById('cName').value;
             const id = document.getElementById('cId').value;
             const phone = document.getElementById('cPhone').value;
@@ -382,17 +383,44 @@
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let itemsText = cart.map(i => ).join('
 ');
-            
             const waText = ;
-            
-            // Abrir WhatsApp
-            window.open(, '_blank');
-            
-            // Link de Bold
-            // Si es la prueba de 1.000, avisamos. Si es el producto real, enviamos al link configurado.
-            if(total === 1000) {
-                alert('SISTEMA: El link de Bold configurado es de 45.000. Procediendo con el link oficial de la tienda.');
+
+            // Botón en estado de carga
+            const btn = document.querySelector('.btn-neon');
+            const originalText = btn.innerText;
+            btn.innerText = 'GENERANDO PAGO...';
+            btn.disabled = true;
+
+            try {
+                // Notificar WhatsApp
+                window.open(, '_blank');
+
+                // Llamar al Puente Dinámico (Vercel)
+                // Usaremos una URL temporal o la definitiva si ya se conoce
+                const response = await fetch('https://bold-bridge-kool.vercel.app/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: total,
+                        label: 'Compra Calzado Kool',
+                        description: itemsText.substring(0, 200),
+                        order_id: 'KOOL-' + Date.now()
+                    })
+                });
+
+                const data = await response.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('Error al generar link dinámico. Usando link de respaldo...');
+                    window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+                }
+            } catch (e) {
+                console.error(e);
+                window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
             }
+        }
+
             
             window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
         }
