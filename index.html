@@ -12,152 +12,196 @@
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
         .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; }
         .btn-buy { background: linear-gradient(90deg, #ff8c00, #ff4500); color: white; width: 100%; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; margin-top: 8px; }
-        #modal { transition: transform 0.3s ease-out; }
         .size-btn.selected { border-color: #ea580c; background-color: #fff7ed; color: #ea580c; }
-        .size-btn.out-of-stock { opacity: 0.3; pointer-events: none; text-decoration: line-through; }
+        #zoomModal img { max-width: 100%; max-height: 90vh; border-radius: 12px; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
 
     <!-- Navbar -->
     <nav class="bg-white px-4 py-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
         <h1 class="text-xl font-black italic tracking-tighter uppercase">Calzado <span class="text-orange-600">Kool</span></h1>
-        <div class="flex gap-4">
-            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-            <div class="relative">
-                <i class="fa-solid fa-cart-shopping text-gray-800"></i>
-                <span class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">1</span>
+        <div class="flex gap-4 items-center">
+            <div class="relative cursor-pointer" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping text-gray-800 text-xl"></i>
+                <span id="cartCount" class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
             </div>
         </div>
     </nav>
 
-    <!-- Promo Banner -->
-    <div class="px-4 mt-4">
-        <div class="bg-black rounded-2xl p-6 text-white flex justify-between items-center overflow-hidden relative">
-            <div>
-                <p class="text-xs font-bold uppercase opacity-80">Edición Especial</p>
-                <h2 class="text-2xl font-black uppercase leading-tight">Botas <br>Premium</h2>
-            </div>
-            <i class="fa-solid fa-gem text-5xl opacity-20 absolute -right-2"></i>
-        </div>
-    </div>
-
     <!-- Product Grid -->
     <div class="product-grid">
-        <!-- PRODUCTO REAL: BOTAS AMARILLAS -->
-        <div class="card" onclick="openModal('Bota Classic Amarilla', 160000, 'img/boots_yellow.jpg', ['34', '35', '37', '38', '39', '41', '42'])">
+        <div class="card">
             <div class="relative">
-                <img src="img/boots_yellow.jpg" class="h-48 w-full object-cover">
+                <img src="img/boots_yellow.jpg" class="h-48 w-full object-cover cursor-zoom-in" onclick="zoomImage('img/boots_yellow.jpg')">
                 <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-lg text-[10px] font-black text-gray-900 shadow-sm">NUEVO</div>
             </div>
             <div class="p-3">
-                <p class="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Outdoor Series</p>
-                <h4 class="text-sm font-bold text-gray-800 truncate">Bota Classic Amarilla</h4>
+                <p class="text-[10px] font-bold text-orange-600 uppercase">Outdoor Series</p>
+                <h4 class="text-sm font-bold text-gray-800">Tractor Power</h4>
                 <p class="text-lg font-black text-gray-900 mt-1">$160.000</p>
-                <button class="btn-buy mt-2">Lo quiero</button>
+                <button onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', ['34', '35', '37', '38', '39', '41', '42'])" class="btn-buy mt-2">Agregar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Checkout -->
-    <div id="modalOverlay" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
-        <div id="modal" class="bg-white w-full rounded-t-3xl p-6 transform translate-y-full transition-transform max-h-[90vh] overflow-y-auto">
+    <!-- Zoom Image Modal -->
+    <div id="zoomModal" class="fixed inset-0 bg-black/90 z-[200] hidden flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+        <img id="zoomImg" src="" alt="Zoom">
+        <button class="absolute top-6 right-6 text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Product Options Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
+        <div class="bg-white w-full rounded-t-3xl p-6 transform transition-transform translate-y-0">
             <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
-            
             <div class="flex gap-4 mb-6">
-                <img id="mImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100 shadow-sm">
+                <img id="modalImg" class="w-24 h-24 rounded-xl object-cover bg-gray-50">
                 <div>
-                    <h2 id="mTitle" class="text-xl font-extrabold text-gray-900 leading-tight"></h2>
-                    <p id="mPrice" class="text-orange-600 font-black text-lg"></p>
-                    <p class="text-[10px] text-green-600 font-bold mt-1 uppercase"><i class="fa-solid fa-check"></i> Disponible para envío inmediato</p>
+                    <h2 id="modalTitle" class="text-xl font-extrabold text-gray-900"></h2>
+                    <p id="modalPrice" class="text-orange-600 font-black text-lg"></p>
                 </div>
             </div>
-
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Selecciona tu Talla</label>
-                    <div id="mSizes" class="flex gap-2 flex-wrap"></div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3">Selecciona Talla</label>
+                    <div id="modalSizes" class="flex gap-2 flex-wrap"></div>
                 </div>
-
-                <div class="bg-gray-50 rounded-2xl p-4 space-y-3">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Datos de Entrega</p>
-                    <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="cId" placeholder="Cédula / NIT" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                        <input type="text" id="cPhone" placeholder="Celular" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl">
+                    <span class="text-sm font-bold text-gray-500">Cantidad</span>
+                    <div class="flex items-center gap-4">
+                        <button onclick="changeQty(-1)" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center font-bold">-</button>
+                        <span id="itemQty" class="font-black text-lg">1</span>
+                        <button onclick="changeQty(1)" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center font-bold">+</button>
                     </div>
-                    <input type="text" id="cAddr" placeholder="Dirección, Ciudad y Barrio" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
                 </div>
-                
-                <button onclick="sendOrder()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-orange-200 mt-4 active:scale-95 transition-all">
-                    PAGAR $160.000
+                <button onclick="addToCart()" class="w-full bg-black text-white py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 transition-all">
+                    AÑADIR AL CARRITO
                 </button>
-                <button onclick="closeModal()" class="w-full text-gray-400 text-[10px] font-black py-2 uppercase tracking-widest">Seguir viendo</button>
+                <button onclick="closeProduct()" class="w-full text-gray-400 text-xs font-bold py-2 uppercase tracking-widest">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar/Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black/60 z-[150] hidden flex items-end">
+        <div class="bg-white w-full h-[85vh] rounded-t-3xl p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black italic uppercase">Tu <span class="text-orange-600">Carrito</span></h2>
+                <button onclick="toggleCart()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="cartItems" class="space-y-4 mb-8"></div>
+            
+            <div class="border-t pt-6 space-y-4">
+                <div class="bg-gray-50 rounded-2xl p-4 space-y-3">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Datos de Envío</p>
+                    <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white rounded-xl px-4 py-3 text-sm outline-none border border-gray-100">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="cId" placeholder="Cédula" class="bg-white rounded-xl px-4 py-3 text-sm outline-none border border-gray-100">
+                        <input type="text" id="cPhone" placeholder="Celular" class="bg-white rounded-xl px-4 py-3 text-sm outline-none border border-gray-100">
+                    </div>
+                    <input type="text" id="cAddr" placeholder="Dirección completa" class="w-full bg-white rounded-xl px-4 py-3 text-sm outline-none border border-gray-100">
+                </div>
+                <div class="flex justify-between items-center px-2">
+                    <span class="text-gray-500 font-bold">Total a pagar:</span>
+                    <span id="cartTotal" class="text-2xl font-black text-orange-600"></span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-orange-600 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-orange-200 active:scale-95 transition-all">
+                    CONFIRMAR Y PAGAR
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        let product = null;
-        let size = null;
+        let cart = [];
+        let currentProduct = null;
+        let selectedSize = null;
+        let currentQty = 1;
 
-        function openModal(name, price, img, sizes) {
-            product = { name, price, img };
-            document.getElementById('mTitle').innerText = name;
-            document.getElementById('mPrice').innerText = '$' + price.toLocaleString('es-CO');
-            document.getElementById('mImg').src = img;
+        function zoomImage(src) {
+            document.getElementById('zoomImg').src = src;
+            document.getElementById('zoomModal').classList.remove('hidden');
+        }
+
+        function openProduct(name, price, img, sizes) {
+            currentProduct = { name, price, img };
+            selectedSize = null;
+            currentQty = 1;
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalPrice').innerText = '$' + price.toLocaleString('es-CO');
+            document.getElementById('modalImg').src = img;
+            document.getElementById('itemQty').innerText = currentQty;
             
-            const sCont = document.getElementById('mSizes');
+            const sCont = document.getElementById('modalSizes');
             sCont.innerHTML = '';
             sizes.forEach(s => {
                 const btn = document.createElement('button');
-                btn.className = 'size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center';
+                btn.className = 'size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold flex items-center justify-center transition-all';
                 btn.innerText = s;
                 btn.onclick = () => {
-                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600'));
-                    btn.classList.add('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600');
-                    size = s;
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedSize = s;
                 };
                 sCont.appendChild(btn);
             });
-
-            document.getElementById('modalOverlay').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('modal').style.transform = 'translateY(0)';
-            }, 10);
+            document.getElementById('productModal').classList.remove('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('modal').style.transform = 'translateY(100%)';
-            setTimeout(() => {
-                document.getElementById('modalOverlay').classList.add('hidden');
-            }, 300);
+        function closeProduct() { document.getElementById('productModal').classList.add('hidden'); }
+        function changeQty(v) { 
+            currentQty = Math.max(1, currentQty + v);
+            document.getElementById('itemQty').innerText = currentQty;
         }
 
-        function sendOrder() {
+        function addToCart() {
+            if(!selectedSize) return alert('Selecciona una talla');
+            cart.push({ ...currentProduct, size: selectedSize, qty: currentQty });
+            updateCartUI();
+            closeProduct();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const cont = document.getElementById('cartItems');
+            cont.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                cont.innerHTML += `
+                    <div class="flex gap-4 bg-gray-50 p-3 rounded-2xl items-center">
+                        <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm">${item.name}</h4>
+                            <p class="text-xs text-gray-400">Talla: ${item.size} | Cant: ${item.qty}</p>
+                            <p class="text-orange-600 font-black">$${(item.price * item.qty).toLocaleString('es-CO')}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`;
+            });
+            document.getElementById('cartTotal').innerText = '$' + total.toLocaleString('es-CO');
+        }
+
+        function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+        function toggleCart() { document.getElementById('cartModal').classList.toggle('hidden'); }
+
+        function checkout() {
             const name = document.getElementById('cName').value;
             const id = document.getElementById('cId').value;
             const phone = document.getElementById('cPhone').value;
             const addr = document.getElementById('cAddr').value;
 
-            if(!size) return alert('Por favor elige una talla');
-            if(!name || !id || !phone || !addr) return alert('Por favor completa todos los datos');
+            if(cart.length === 0) return alert('El carrito está vacío');
+            if(!name || !id || !phone || !addr) return alert('Completa tus datos de envío');
 
-            const text = `🚀 *NUEVO PEDIDO WEB*
-👟 *Bota Classic Amarilla*
-📏 Talla: ${size}
-👤 Cliente: ${name}
-🆔 CC: ${id}
-📱 Cel: ${phone}
-📍 Dirección: ${addr}
----
-✅ *Procediendo al pago seguro...*`;
+            let itemsText = cart.map(i => `- ${i.qty}x ${i.name} (Talla ${i.size})`).join('\n');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
 
-            const wa = `https://wa.me/573057778133?text=${encodeURIComponent(text)}`;
-            const bold = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
-
-            window.open(wa, '_blank');
-            window.location.href = bold;
+            const text = `🚀 *NUEVO PEDIDO WEB*\n${itemsText}\n\n💰 *Total: $${total.toLocaleString('es-CO')}*\n\n👤 Cliente: ${name}\n🆔 CC: ${id}\n📱 Cel: ${phone}\n📍 Dirección: ${addr}`;
+            
+            window.open(`https://wa.me/573057778133?text=${encodeURIComponent(text)}`, '_blank');
+            window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
         }
     </script>
 </body>
