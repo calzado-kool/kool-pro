@@ -373,6 +373,8 @@
         
         
         async 
+        
+        async 
         async function checkout() {
             const name = document.getElementById('cName').value;
             const id = document.getElementById('cId').value;
@@ -384,6 +386,116 @@
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let itemsText = cart.map(i => `- ${i.qty}x ${i.name} (Talla ${i.size})`).join('
+');
+            const waText = `🚀 *NUEVO PEDIDO WEB (KOOL PRO)*
+${itemsText}
+
+💰 *Total: $${total.toLocaleString('es-CO')}*
+
+👤 Cliente: ${name}
+🆔 CC: ${id}
+📱 Cel: ${phone}
+📍 Dirección: ${addr}`;
+
+            const btn = document.querySelector('.btn-neon');
+            const originalText = btn.innerText;
+            btn.innerText = 'GENERANDO PAGO...';
+            btn.disabled = true;
+
+            try {
+                // 1. Notificar WhatsApp
+                window.open(`https://wa.me/573057778133?text=${encodeURIComponent(waText)}`, '_blank');
+
+                // 2. Crear Link Dinámico en Bold
+                const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': '94Si4w-f6HhR6hSQNf4W_g',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount_type: 'CLOSE',
+                        amount: {
+                            currency: 'COP',
+                            total_amount: total,
+                            tip_amount: 0
+                        },
+                        label: 'Compra Calzado Kool',
+                        description: itemsText.substring(0, 100),
+                        reference: 'KOOL-' + Date.now(),
+                        redirect_url: window.location.href
+                    })
+                });
+
+                const data = await response.json();
+                if (data.payload && data.payload.url) {
+                    window.location.href = data.payload.url;
+                } else {
+                    console.error('Bold API Error:', data);
+                    alert('Error en Bold. Redirigiendo a respaldo...');
+                    window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+                }
+            } catch (e) {
+                console.error('Connection Error:', e);
+                window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+            }
+        }
+x ${i.name} (Talla ${i.size})`).join('
+');
+            const waText = `🚀 *NUEVO PEDIDO WEB (KOOL PRO)*
+${itemsText}
+
+💰 *Total: $${total.toLocaleString('es-CO')}*
+
+👤 Cliente: ${name}
+🆔 CC: ${id}
+📱 Cel: ${phone}
+📍 Dirección: ${addr}`;
+
+            const btn = document.querySelector('.btn-neon');
+            const originalText = btn.innerText;
+            btn.innerText = 'GENERANDO PAGO...';
+            btn.disabled = true;
+
+            try {
+                // 1. Notificar WhatsApp
+                window.open(`https://wa.me/573057778133?text=${encodeURIComponent(waText)}`, '_blank');
+
+                // 2. Crear Link Dinámico en Bold
+                const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': '94Si4w-f6HhR6hSQNf4W_g',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount_type: 'CLOSE',
+                        amount: {
+                            currency: 'COP',
+                            total_amount: total,
+                            tip_amount: 0
+                        },
+                        label: 'Compra Calzado Kool',
+                        description: itemsText.substring(0, 100),
+                        reference: 'KOOL-' + Date.now(),
+                        redirect_url: window.location.href
+                    })
+                });
+
+                const data = await response.json();
+                if (data.payload && data.payload.url) {
+                    window.location.href = data.payload.url;
+                } else {
+                    console.error('Bold API Error:', data);
+                    alert('Error en Bold. Redirigiendo a respaldo...');
+                    window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+                }
+            } catch (e) {
+                console.error('Connection Error:', e);
+                window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+            }
+        }
+x ${i.name} (Talla ${i.size})`).join('
 ');
             const waText = `🚀 *NUEVO PEDIDO WEB (KOOL PRO)*
 ${itemsText}
