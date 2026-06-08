@@ -146,8 +146,9 @@
         
         
         
+        
         <!-- PRODUCTO DE PRUEBA -->
-        <div class="product-card bg-white/5 rounded-3xl overflow-hidden border border-white/10 group" onclick="openProduct('PRODUCTO PRUEBA', 145000, 'https://via.placeholder.com/600x600/111111/FF4500?text=PRODUCTO+PRUEBA', {'35': 1})">
+        <div class="product-card bg-white/5 rounded-3xl overflow-hidden border border-white/10 group" onclick="openProduct('PRODUCTO PRUEBA', 1000, 'https://via.placeholder.com/600x600/111111/FF4500?text=PRODUCTO+PRUEBA', {'35': 1})">
             <div class="relative aspect-square overflow-hidden">
                 <img src="https://via.placeholder.com/600x600/111111/FF4500?text=PRODUCTO+PRUEBA" alt="Test" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 <div class="absolute top-4 right-4 bg-orange-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-xl">Test Mode</div>
@@ -158,7 +159,7 @@
                 <div class="flex items-end justify-between">
                     <div>
                         <p class="text-gray-400 text-[10px] uppercase font-bold tracking-tighter">Precio Especial</p>
-                        <p class="text-2xl font-black text-white">45.000</p>
+                        <p class="text-2xl font-black text-white">.000</p>
                     </div>
                     <button class="bg-white text-black h-12 w-12 rounded-2xl flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300 shadow-lg active:scale-95">
                         <i class="fa-solid fa-plus text-lg"></i>
@@ -167,6 +168,7 @@
             </div>
         </div>
         <!-- FIN PRODUCTO DE PRUEBA -->
+
 
 
 
@@ -366,6 +368,7 @@
         function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
         function toggleCart() { document.getElementById('cartModal').classList.toggle('hidden'); }
 
+        
         function checkout() {
             const name = document.getElementById('cName').value;
             const id = document.getElementById('cId').value;
@@ -375,7 +378,25 @@
             if(cart.length === 0) return;
             if(!name || !id || !phone || !addr) return alert('ENTRY DATA REQUIRED');
 
-            let itemsText = cart.map(i => `- ${i.qty}x ${i.name} (Talla ${i.size})`).join('\n');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let itemsText = cart.map(i => ).join('
+');
+            
+            const text = ;
+            
+            window.open(, '_blank');
+            
+            // For now, if total is 1000, we'll try to find a way to make Bold dynamic.
+            // Since we can't put the secret in JS easily without a backend, 
+            // I will implement a check: if it's the test price, I'll alert the user.
+            
+            if(total === 1000) {
+               alert('MODO PRUEBA: El link de Bold actual es fijo (45.000). Estoy configurando el cobro dinámico para que cobre exactamente $' + total.toLocaleString('es-CO'));
+            }
+            
+            window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+        }
+x ${i.name} (Talla ${i.size})`).join('\n');
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
 
             const text = `🚀 *NUEVO PEDIDO WEB (KOOL PRO)*\n${itemsText}\n\n💰 *Total: $${total.toLocaleString('es-CO')}*\n\n👤 Cliente: ${name}\n🆔 CC: ${id}\n📱 Cel: ${phone}\n📍 Dirección: ${addr}`;
