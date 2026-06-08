@@ -13,6 +13,7 @@
         .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; }
         .btn-buy { background: linear-gradient(90deg, #ff8c00, #ff4500); color: white; width: 100%; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; margin-top: 8px; }
         .size-btn.selected { border-color: #ea580c; background-color: #fff7ed; color: #ea580c; }
+        .size-btn.out-of-stock { opacity: 0.3; pointer-events: none; background: #f3f4f6; text-decoration: line-through; }
         #zoomModal img { max-width: 100%; max-height: 90vh; border-radius: 12px; }
     </style>
 </head>
@@ -40,7 +41,7 @@
                 <p class="text-[10px] font-bold text-orange-600 uppercase">Outdoor Series</p>
                 <h4 class="text-sm font-bold text-gray-800">Tractor Power</h4>
                 <p class="text-lg font-black text-gray-900 mt-1">$160.000</p>
-                <button onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', ['34', '35', '37', '38', '39', '41', '42'])" class="btn-buy mt-2">Agregar</button>
+                <button onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})" class="btn-buy mt-2">Agregar</button>
             </div>
         </div>
     </div>
@@ -68,7 +69,10 @@
                     <div id="modalSizes" class="flex gap-2 flex-wrap"></div>
                 </div>
                 <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl">
-                    <span class="text-sm font-bold text-gray-500">Cantidad</span>
+                    <div>
+                        <span class="text-sm font-bold text-gray-500">Cantidad</span>
+                        <p id="stockNote" class="text-[9px] text-orange-600 font-bold uppercase mt-0.5"></p>
+                    </div>
                     <div class="flex items-center gap-4">
                         <button onclick="changeQty(-1)" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center font-bold">-</button>
                         <span id="itemQty" class="font-black text-lg">1</span>
@@ -118,40 +122,63 @@
         let currentProduct = null;
         let selectedSize = null;
         let currentQty = 1;
+        let availableStock = 0;
 
         function zoomImage(src) {
             document.getElementById('zoomImg').src = src;
             document.getElementById('zoomModal').classList.remove('hidden');
         }
 
-        function openProduct(name, price, img, sizes) {
-            currentProduct = { name, price, img };
+        function openProduct(name, price, img, stockMap) {
+            currentProduct = { name, price, img, stockMap };
             selectedSize = null;
             currentQty = 1;
+            availableStock = 0;
+            
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = '$' + price.toLocaleString('es-CO');
             document.getElementById('modalImg').src = img;
             document.getElementById('itemQty').innerText = currentQty;
+            document.getElementById('stockNote').innerText = '';
             
             const sCont = document.getElementById('modalSizes');
             sCont.innerHTML = '';
-            sizes.forEach(s => {
+            
+            // All possible sizes
+            const allSizes = ['34', '35', '36', '37', '38', '39', '40', '41', '42'];
+            
+            allSizes.forEach(s => {
+                const stock = stockMap[s] || 0;
                 const btn = document.createElement('button');
-                btn.className = 'size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold flex items-center justify-center transition-all';
+                btn.className = `size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold flex items-center justify-center transition-all ${stock === 0 ? 'out-of-stock' : ''}`;
                 btn.innerText = s;
-                btn.onclick = () => {
-                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    selectedSize = s;
-                };
+                
+                if(stock > 0) {
+                    btn.onclick = () => {
+                        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        selectedSize = s;
+                        availableStock = stock;
+                        currentQty = 1;
+                        document.getElementById('itemQty').innerText = currentQty;
+                        document.getElementById('stockNote').innerText = `Stock disponible: ${stock} pares`;
+                    };
+                }
                 sCont.appendChild(btn);
             });
             document.getElementById('productModal').classList.remove('hidden');
         }
 
         function closeProduct() { document.getElementById('productModal').classList.add('hidden'); }
+        
         function changeQty(v) { 
-            currentQty = Math.max(1, currentQty + v);
+            if(!selectedSize) return alert('Primero selecciona una talla');
+            const newQty = currentQty + v;
+            if(newQty > availableStock) {
+                alert(`Solo tenemos ${availableStock} pares disponibles en esta talla`);
+                return;
+            }
+            currentQty = Math.max(1, newQty);
             document.getElementById('itemQty').innerText = currentQty;
         }
 
