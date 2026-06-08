@@ -369,6 +369,7 @@
         function toggleCart() { document.getElementById('cartModal').classList.toggle('hidden'); }
 
         
+        
         function checkout() {
             const name = document.getElementById('cName').value;
             const id = document.getElementById('cId').value;
@@ -376,23 +377,26 @@
             const addr = document.getElementById('cAddr').value;
 
             if(cart.length === 0) return;
-            if(!name || !id || !phone || !addr) return alert('ENTRY DATA REQUIRED');
+            if(!name || !id || !phone || !addr) return alert('POR FAVOR INGRESE TODOS LOS DATOS');
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let itemsText = cart.map(i => ).join('
 ');
             
-            const text = ;
+            const waText = ;
             
+            // Abrir WhatsApp
             window.open(, '_blank');
             
-            // For now, if total is 1000, we'll try to find a way to make Bold dynamic.
-            // Since we can't put the secret in JS easily without a backend, 
-            // I will implement a check: if it's the test price, I'll alert the user.
-            
+            // Link de Bold
+            // Si es la prueba de 1.000, avisamos. Si es el producto real, enviamos al link configurado.
             if(total === 1000) {
-               alert('MODO PRUEBA: El link de Bold actual es fijo (45.000). Estoy configurando el cobro dinámico para que cobre exactamente $' + total.toLocaleString('es-CO'));
+                alert('SISTEMA: El link de Bold configurado es de 45.000. Procediendo con el link oficial de la tienda.');
             }
+            
+            window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+        }
+
             
             window.location.href = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
         }
