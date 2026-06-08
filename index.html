@@ -280,22 +280,18 @@
             btn.disabled = true;
 
             try {
-                const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
+                const response = await fetch('https://api.bold.co/checkout/v1/payment-links', {
                     method: 'POST',
                     headers: {
-                        'x-api-key': '94Si4w-f6HhR6hSQNf4W_g',
+                        'Authorization': 'Bearer 94Si4w-f6HhR6hSQNf4W_g',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        amount_type: 'CLOSE',
-                        amount: {
-                            currency: 'COP',
-                            total_amount: total,
-                            tip_amount: 0
-                        },
                         label: 'Compra Calzado Kool',
-                        description: itemsText.substring(0, 100),
-                        reference: 'KOOL-' + Date.now(),
+                        description: itemsText.substring(0, 200),
+                        amount: total,
+                        currency: 'COP',
+                        order_id: 'KOOL-' + Date.now(),
                         redirect_url: window.location.href
                     })
                 });
