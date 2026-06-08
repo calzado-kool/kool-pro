@@ -56,7 +56,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             
             <!-- PRODUCTO PRUEBA -->
-            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4" onclick="openProduct('PRODUCTO PRUEBA', 1000, 'https://placehold.co/600x600/f3f4f6/ea580c?text=PRUEBA', {'35': 10})">
+            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4 cursor-pointer" onclick="openProduct('PRODUCTO PRUEBA', 1000, 'https://placehold.co/600x600/f3f4f6/ea580c?text=PRUEBA', {'35': 10})">
                 <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative group">
                     <div class="absolute inset-0 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform">👟</div>
                     <div class="absolute top-3 left-3">
@@ -73,7 +73,7 @@
             </div>
 
             <!-- TRACTOR POWER -->
-            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
+            <div class="product-card bg-white rounded-[2rem] border border-slate-200 p-4 cursor-pointer" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
                 <div class="aspect-square rounded-[1.5rem] bg-slate-100 mb-4 overflow-hidden relative">
                     <img src="img/boots_yellow.jpg" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x600/f3f4f6/ea580c?text=Tractor+Power'">
                     <div class="absolute top-3 left-3">
@@ -103,12 +103,28 @@
                 </div>
                 <div class="w-full md:w-1/2">
                     <h2 id="modal-title" class="text-3xl font-extrabold mb-2 uppercase"></h2>
-                    <p id="modal-price" class="text-3xl font-bold text-orange-600 mb-6"></p>
+                    <p id="modal-price" class="text-3xl font-bold text-orange-600 mb-4"></p>
                     
                     <div class="mb-6">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Seleccionar Talla</p>
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Seleccionar Talla</p>
+                            <span id="stock-display" class="text-[10px] font-bold text-orange-600 uppercase"></span>
+                        </div>
                         <div id="modal-sizes" class="flex flex-wrap gap-2">
                             <!-- Sizes inject here -->
+                        </div>
+                    </div>
+
+                    <div class="mb-8 p-4 bg-slate-50 rounded-2xl flex items-center justify-between">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Cantidad</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="changeQty(-1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 active:scale-95 transition-all">
+                                <i class="fa-solid fa-minus text-xs"></i>
+                            </button>
+                            <span id="modal-qty" class="text-lg font-black w-4 text-center">1</span>
+                            <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100 active:scale-95 transition-all">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -152,20 +168,27 @@
         let cart = [];
         let currentProduct = null;
         let selectedSize = null;
+        let currentQty = 1;
+        let availableStock = 0;
 
         function openProduct(name, price, img, stockMap) {
             currentProduct = { name, price, img, stockMap };
             selectedSize = null;
+            currentQty = 1;
+            availableStock = 0;
             
             document.getElementById('modal-title').innerText = name;
             document.getElementById('modal-price').innerText = '$' + price.toLocaleString('es-CO');
+            document.getElementById('modal-qty').innerText = currentQty;
+            document.getElementById('stock-display').innerText = '';
             
             const imgEl = document.getElementById('modal-img');
             const imgCont = document.getElementById('modal-img-container');
             if (img) {
                 imgEl.src = img;
                 imgEl.classList.remove('hidden');
-                imgCont.querySelector('span')?.remove();
+                const oldSpan = imgCont.querySelector('span');
+                if(oldSpan) oldSpan.remove();
             } else {
                 imgEl.classList.add('hidden');
                 imgCont.innerHTML = '<span style="font-size:64px;">👟</span>';
@@ -178,13 +201,17 @@
             allSizes.forEach(size => {
                 const stock = stockMap[size] || 0;
                 const btn = document.createElement('button');
-                btn.className = `size-btn w-12 h-12 rounded-xl border-2 flex items-center justify-center font-bold text-sm transition-all ${stock > 0 ? 'border-slate-200 text-slate-700 hover:border-orange-600' : 'border-slate-100 text-slate-200 cursor-not-allowed opacity-50'}`;
+                btn.className = `size-btn w-12 h-12 rounded-xl border-2 flex items-center justify-center font-bold text-sm transition-all ${stock > 0 ? 'border-slate-200 text-slate-700 hover:border-orange-600 cursor-pointer' : 'border-slate-100 text-slate-200 cursor-not-allowed opacity-50'}`;
                 btn.innerText = size;
                 if (stock > 0) {
                     btn.onclick = () => {
                         document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         selectedSize = size;
+                        availableStock = stock;
+                        currentQty = 1;
+                        document.getElementById('modal-qty').innerText = currentQty;
+                        document.getElementById('stock-display').innerText = `Disponibles: ${stock}`;
                     };
                 }
                 sCont.appendChild(btn);
@@ -195,6 +222,17 @@
                 document.getElementById('modal-content').classList.remove('translate-y-full');
             }, 10);
             document.body.classList.add('modal-active');
+        }
+
+        function changeQty(delta) {
+            if (!selectedSize) return alert('Primero selecciona una talla');
+            const nextQty = currentQty + delta;
+            if (nextQty >= 1 && nextQty <= availableStock) {
+                currentQty = nextQty;
+                document.getElementById('modal-qty').innerText = currentQty;
+            } else if (nextQty > availableStock) {
+                alert(`Solo hay ${availableStock} unidades disponibles en esta talla`);
+            }
         }
 
         function closeProduct() {
@@ -208,11 +246,20 @@
         function addToCart() {
             if (!selectedSize) return alert('Por favor selecciona una talla');
             
-            cart.push({
-                ...currentProduct,
-                size: selectedSize,
-                qty: 1
-            });
+            // Check if item already exists in cart with same size
+            const existing = cart.find(i => i.name === currentProduct.name && i.size === selectedSize);
+            if(existing) {
+                if((existing.qty + currentQty) > availableStock) {
+                    return alert(`No puedes agregar más. El stock máximo de la talla ${selectedSize} es ${availableStock}.`);
+                }
+                existing.qty += currentQty;
+            } else {
+                cart.push({
+                    ...currentProduct,
+                    size: selectedSize,
+                    qty: currentQty
+                });
+            }
             
             updateCart();
             closeProduct();
@@ -220,7 +267,7 @@
         }
 
         function updateCart() {
-            const count = cart.length;
+            const count = cart.reduce((s, i) => s + i.qty, 0);
             document.getElementById('cart-count').innerText = count;
             
             const itemsCont = document.getElementById('cart-items');
@@ -228,7 +275,8 @@
             
             let total = 0;
             cart.forEach((item, index) => {
-                total += item.price;
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-4 bg-slate-50 p-4 rounded-2xl relative';
                 div.innerHTML = `
@@ -237,10 +285,10 @@
                     </div>
                     <div class="flex-1">
                         <h4 class="font-bold text-sm uppercase">${item.name}</h4>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Talla ${item.size}</p>
-                        <p class="text-orange-600 font-extrabold text-sm">$${item.price.toLocaleString('es-CO')}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Talla ${item.size} | Cant: ${item.qty}</p>
+                        <p class="text-orange-600 font-extrabold text-sm">$${itemTotal.toLocaleString('es-CO')}</p>
                     </div>
-                    <button onclick="removeItem(${index})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                    <button onclick="removeItem(${index})" class="text-slate-300 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 itemsCont.appendChild(div);
             });
@@ -267,8 +315,8 @@
             if (cart.length === 0) return alert('El carrito está vacío');
             if (!name || !id || !phone || !addr) return alert('Por favor completa todos los datos de envío');
 
-            const total = cart.reduce((s, i) => s + i.price, 0);
-            let itemsText = cart.map(i => `- ${i.name} (Talla ${i.size})`).join('\\n');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let itemsText = cart.map(i => `- ${i.qty}x ${i.name} (Talla ${i.size})`).join('\\n');
             const waText = `🚀 *NUEVO PEDIDO WEB (CALZADO KOOL)*\\n${itemsText}\\n\\n💰 *Total: $${total.toLocaleString('es-CO')}*\\n\\n👤 Cliente: ${name}\\n🆔 CC: ${id}\\n📱 Cel: ${phone}\\n📍 Envío: ${addr}`;
 
             // Notificar WhatsApp
@@ -297,8 +345,8 @@
                 });
 
                 const data = await response.json();
-                if (data.payload && data.payload.url) {
-                    window.location.href = data.payload.url;
+                if (data.url) {
+                    window.location.href = data.url;
                 } else {
                     alert('Error en Bold. Por favor intenta de nuevo.');
                     btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> AUTORIZAR PAGO BOLD';
