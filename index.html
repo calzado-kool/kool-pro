@@ -2,167 +2,163 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calzado Kool - Pro Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calzado Kool - Catálogo Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
-        .product-card { transition: transform 0.2s; }
-        .product-card:active { transform: scale(0.98); }
-        .btn-gradient { background: linear-gradient(90deg, #ff8c00, #ff4500); }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
+        .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; }
+        .btn-buy { background: linear-gradient(90deg, #ff8c00, #ff4500); color: white; width: 100%; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; margin-top: 8px; }
+        #modal { transition: transform 0.3s ease-out; }
+        .size-btn.selected { border-color: #ea580c; background-color: #fff7ed; color: #ea580c; }
+        .size-btn.out-of-stock { opacity: 0.3; pointer-events: none; text-decoration: line-through; }
     </style>
 </head>
-<body class="pb-24">
-    <!-- Header -->
-    <header class="sticky top-0 bg-white shadow-sm z-50 px-4 py-3 flex items-center justify-between">
-        <h1 class="text-xl font-extrabold tracking-tighter text-gray-900">CALZADO <span class="text-orange-600">KOOL</span></h1>
-        <div class="flex gap-4 text-gray-500">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <i class="fa-solid fa-bag-shopping"></i>
-        </div>
-    </header>
+<body class="pb-20">
 
-    <!-- Banner -->
-    <div class="px-4 py-4">
-        <div class="bg-black rounded-2xl p-6 text-white relative overflow-hidden h-40 flex flex-col justify-center">
-            <h2 class="text-2xl font-bold z-10">Nueva Colección</h2>
-            <p class="text-gray-400 z-10">Premium Sneakers 2026</p>
-            <button class="mt-2 bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-bold w-fit z-10">Ver más</button>
-            <div class="absolute -right-4 -bottom-4 opacity-20 transform -rotate-12">
-                <i class="fa-solid fa-shoe-prints text-9xl"></i>
+    <!-- Navbar -->
+    <nav class="bg-white px-4 py-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
+        <h1 class="text-xl font-black italic tracking-tighter uppercase">Calzado <span class="text-orange-600">Kool</span></h1>
+        <div class="flex gap-4">
+            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+            <div class="relative">
+                <i class="fa-solid fa-cart-shopping text-gray-800"></i>
+                <span class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">1</span>
             </div>
+        </div>
+    </nav>
+
+    <!-- Promo Banner -->
+    <div class="px-4 mt-4">
+        <div class="bg-black rounded-2xl p-6 text-white flex justify-between items-center overflow-hidden relative">
+            <div>
+                <p class="text-xs font-bold uppercase opacity-80">Edición Especial</p>
+                <h2 class="text-2xl font-black uppercase leading-tight">Botas <br>Premium</h2>
+            </div>
+            <i class="fa-solid fa-gem text-5xl opacity-20 absolute -right-2"></i>
         </div>
     </div>
 
     <!-- Product Grid -->
-    <div class="px-4 grid grid-cols-2 gap-4">
-        <!-- Product 1 -->
-        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon White', 145000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')">
-            <div class="relative h-40 bg-gray-50">
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" class="w-full h-full object-cover">
-                <div class="absolute top-2 left-2 bg-black text-white text-[10px] font-bold px-2 py-1 rounded">-25%</div>
+    <div class="product-grid">
+        <!-- PRODUCTO REAL: BOTAS AMARILLAS -->
+        <div class="card" onclick="openModal('Bota Classic Amarilla', 160000, 'img/boots_yellow.jpg', ['34', '35', '37', '38', '39', '41', '42'])">
+            <div class="relative">
+                <img src="img/boots_yellow.jpg" class="h-48 w-full object-cover">
+                <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-lg text-[10px] font-black text-gray-900 shadow-sm">NUEVO</div>
             </div>
             <div class="p-3">
-                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon White Premium</h3>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-lg font-bold text-orange-600">$145k</span>
-                    <span class="text-xs text-gray-400 line-through">$195k</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Product 2 -->
-        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon Red', 185000, 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500')">
-            <div class="relative h-40 bg-gray-50">
-                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500" class="w-full h-full object-cover">
-                <div class="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded">HOT</div>
-            </div>
-            <div class="p-3">
-                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon Red Sport</h3>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-lg font-bold text-orange-600">$185k</span>
-                    <span class="text-xs text-gray-400 line-through">$220k</span>
-                </div>
+                <p class="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Outdoor Series</p>
+                <h4 class="text-sm font-bold text-gray-800 truncate">Bota Classic Amarilla</h4>
+                <p class="text-lg font-black text-gray-900 mt-1">$160.000</p>
+                <button class="btn-buy mt-2">Lo quiero</button>
             </div>
         </div>
     </div>
 
-    <!-- Checkout Modal -->
-    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
-        <div class="bg-white w-full rounded-t-3xl p-6 animate-slide-up">
+    <!-- Modal Checkout -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
+        <div id="modal" class="bg-white w-full rounded-t-3xl p-6 transform translate-y-full transition-transform max-h-[90vh] overflow-y-auto">
             <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
             
             <div class="flex gap-4 mb-6">
-                <img id="modalImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100">
+                <img id="mImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100 shadow-sm">
                 <div>
-                    <h2 id="modalTitle" class="text-xl font-bold text-gray-900"></h2>
-                    <p id="modalPrice" class="text-orange-600 font-bold text-lg"></p>
-                    <p class="text-xs text-gray-500">Envío gratis a todo el país</p>
+                    <h2 id="mTitle" class="text-xl font-extrabold text-gray-900 leading-tight"></h2>
+                    <p id="mPrice" class="text-orange-600 font-black text-lg"></p>
+                    <p class="text-[10px] text-green-600 font-bold mt-1 uppercase"><i class="fa-solid fa-check"></i> Disponible para envío inmediato</p>
                 </div>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Talla</label>
-                    <div class="flex gap-2" id="sizeSelector">
-                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold border-orange-600 bg-orange-50 text-orange-600">36</button>
-                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">37</button>
-                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">38</button>
-                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">39</button>
-                    </div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Selecciona tu Talla</label>
+                    <div id="mSizes" class="flex gap-2 flex-wrap"></div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="custName" placeholder="Nombre completo" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
-                    <input type="text" id="custId" placeholder="Cédula" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                <div class="bg-gray-50 rounded-2xl p-4 space-y-3">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Datos de Entrega</p>
+                    <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="cId" placeholder="Cédula / NIT" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
+                        <input type="text" id="cPhone" placeholder="Celular" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
+                    </div>
+                    <input type="text" id="cAddr" placeholder="Dirección, Ciudad y Barrio" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
                 </div>
-                <input type="text" id="custAddr" placeholder="Dirección de envío" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
                 
-                <button onclick="confirmPurchase()" class="w-full btn-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-orange-200 mt-4">
-                    Confirmar y Pagar
+                <button onclick="sendOrder()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-orange-200 mt-4 active:scale-95 transition-all">
+                    PAGAR $160.000
                 </button>
-                <button onclick="closeCheckout()" class="w-full text-gray-400 text-sm font-medium py-2">Cancelar</button>
+                <button onclick="closeModal()" class="w-full text-gray-400 text-[10px] font-black py-2 uppercase tracking-widest">Seguir viendo</button>
             </div>
         </div>
     </div>
 
     <script>
-        let currentProduct = null;
-        let selectedSize = '36';
+        let product = null;
+        let size = null;
 
-        function openCheckout(name, price, img) {
-            currentProduct = { name, price, img };
-            document.getElementById('modalTitle').innerText = name;
-            document.getElementById('modalPrice').innerText = '$' + (price/1000).toFixed(0) + '.000';
-            document.getElementById('modalImg').src = img;
-            document.getElementById('checkoutModal').classList.remove('hidden');
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkoutModal').classList.add('hidden');
-        }
-
-        function selectSize(btn) {
-            document.querySelectorAll('#sizeSelector button').forEach(b => {
-                b.classList.remove('border-orange-600', 'bg-orange-50', 'text-orange-600');
+        function openModal(name, price, img, sizes) {
+            product = { name, price, img };
+            document.getElementById('mTitle').innerText = name;
+            document.getElementById('mPrice').innerText = '$' + price.toLocaleString('es-CO');
+            document.getElementById('mImg').src = img;
+            
+            const sCont = document.getElementById('mSizes');
+            sCont.innerHTML = '';
+            sizes.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center';
+                btn.innerText = s;
+                btn.onclick = () => {
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600'));
+                    btn.classList.add('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600');
+                    size = s;
+                };
+                sCont.appendChild(btn);
             });
-            btn.classList.add('border-orange-600', 'bg-orange-50', 'text-orange-600');
-            selectedSize = btn.innerText;
+
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('modal').style.transform = 'translateY(0)';
+            }, 10);
         }
 
-        function confirmPurchase() {
-            const name = document.getElementById('custName').value;
-            const addr = document.getElementById('custAddr').value;
-            const id = document.getElementById('custId').value;
+        function closeModal() {
+            document.getElementById('modal').style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                document.getElementById('modalOverlay').classList.add('hidden');
+            }, 300);
+        }
 
-            if(!name || !addr || !id) {
-                alert('Por favor completa todos los datos de envío');
-                return;
-            }
+        function sendOrder() {
+            const name = document.getElementById('cName').value;
+            const id = document.getElementById('cId').value;
+            const phone = document.getElementById('cPhone').value;
+            const addr = document.getElementById('cAddr').value;
 
-            const msg = `Hola! Quiero comprar:
-👟 *${currentProduct.name}*
-📏 Talla: ${selectedSize}
+            if(!size) return alert('Por favor elige una talla');
+            if(!name || !id || !phone || !addr) return alert('Por favor completa todos los datos');
+
+            const text = `🚀 *NUEVO PEDIDO WEB*
+👟 *Bota Classic Amarilla*
+📏 Talla: ${size}
 👤 Cliente: ${name}
 🆔 CC: ${id}
-📍 Dir: ${addr}`;
+📱 Cel: ${phone}
+📍 Dirección: ${addr}
+---
+✅ *Procediendo al pago seguro...*`;
 
-            const waUrl = `https://wa.me/573057778133?text=${encodeURIComponent(msg)}`;
-            const boldUrl = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+            const wa = `https://wa.me/573057778133?text=${encodeURIComponent(text)}`;
+            const bold = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
 
-            window.open(waUrl, '_blank');
-            window.location.href = boldUrl;
+            window.open(wa, '_blank');
+            window.location.href = bold;
         }
     </script>
-
-    <style>
-        @keyframes slide-up {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .animate-slide-up { animation: slide-up 0.3s ease-out; }
-    </style>
 </body>
 </html>
