@@ -148,35 +148,35 @@
         
         
         
-        <!-- PRODUCTO DE PRUEBA -->
-        <div class="product-card bg-white/5 rounded-3xl overflow-hidden border border-white/10 group" onclick="openProduct('PRODUCTO PRUEBA', 1000, '', {'35': 1})">
-            <div class="relative overflow-hidden" style="height:180px;background:linear-gradient(135deg,#1a1a1a,#FF4500);">
-                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-                    <span style="font-size:64px;">👟</span>
-                </div>
-                <div class="absolute top-4 right-4 bg-orange-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-xl">Test Mode</div>
-            </div>
-            <div class="p-6">
-                <h3 class="font-futuristic text-xl text-white mb-1 tracking-tight uppercase">PRODUCTO PRUEBA</h3>
-                <p class="text-gray-500 text-xs mb-4 uppercase tracking-widest">Licencia Kool #TEST</p>
-                <div class="flex items-end justify-between">
-                    <div>
-                        <p class="text-gray-400 text-[10px] uppercase font-bold tracking-tighter">Precio Especial</p>
-                        <p class="text-2xl font-black text-white">$1.000</p>
-                    </div>
-                    <button class="bg-white text-black h-12 w-12 rounded-2xl flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300 shadow-lg active:scale-95">
-                        <i class="fa-solid fa-plus text-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- FIN PRODUCTO DE PRUEBA -->
+        
 
 
 
 
 
     <div class="grid grid-cols-2 gap-4 px-6 mt-6">
+        <!-- PRODUCTO DE PRUEBA -->
+        <div class="product-card overflow-hidden" onclick="openProduct('PRODUCTO PRUEBA', 1000, '', {'35': 1})">
+            <div class="relative group">
+                <div class="h-56 w-full flex items-center justify-center rounded-t-[24px]" style="background:linear-gradient(135deg,#1a1a1a,#FF4500);">
+                    <span style="font-size:64px;">👟</span>
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div class="absolute bottom-3 left-3">
+                    <span class="bg-orange-600 text-[8px] font-black px-2 py-1 rounded-full uppercase">Test Mode</span>
+                </div>
+            </div>
+            <div class="p-4 bg-white/5 rounded-b-[24px]">
+                <h3 class="text-white font-futuristic text-xs uppercase tracking-tighter truncate">PRODUCTO PRUEBA</h3>
+                <div class="flex items-center justify-between mt-1">
+                    <span class="text-white font-black text-sm">$1.000</span>
+                    <div class="h-6 w-6 bg-white rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-plus text-[10px] text-black"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIN PRODUCTO DE PRUEBA -->
         <div class="product-card overflow-hidden" onclick="openProduct('Tractor Power', 160000, 'img/boots_yellow.jpg', {'34': 2, '35': 3, '37': 4, '38': 2, '39': 9, '41': 1, '42': 2})">
             <div class="relative group">
                 <img src="img/boots_yellow.jpg" class="h-56 w-full object-cover rounded-t-[24px]">
