@@ -10,8 +10,8 @@
         body { background: var(--bg); color: var(--primary); padding-bottom: 20px; }
         .header { background: var(--primary); color: #fff; padding: 15px; text-align: center; font-weight: 900; font-size: 18px; position: sticky; top:0; z-index: 1000; }
         .product-card { background: #fff; margin: 15px; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .img-box { background: #eee; min-height: 250px; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: auto; display: block; }
+        .img-box { background: #fff; min-height: 250px; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: auto; display: block; object-fit: cover; }
         .info { padding: 20px; }
         .title { font-size: 20px; font-weight: 900; margin-bottom: 5px; }
         .price { font-size: 22px; font-weight: 900; color: var(--accent); margin-bottom: 15px; }
@@ -30,8 +30,8 @@
 <div class="header">CALZADO KOOL — PRO</div>
 <div class="product-card">
     <div class="img-box">
-        <img src="https://http2.mlstatic.com/D_NQ_NP_605925-MCO48141443657_112021-O.webp" 
-             onerror="this.src=\"https://via.placeholder.com/600x400?text=Carbon+White\"">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" 
+             alt="Carbon White">
     </div>
     <div class="info">
         <p class="title">Carbon White</p>
@@ -62,9 +62,13 @@ function closeM() { document.getElementById("form-modal").style.display="none"; 
 function c() {
     const n=document.getElementById("nom").value, c=document.getElementById("ced").value, l=document.getElementById("cel").value, d=document.getElementById("dir").value;
     if(!n||!c||!l||!d) return alert("Por favor completa todos los datos.");
-    const msg = \"🚀 NUEVO PEDIDO PRO\\n---------------------------\\n👟 Producto: Carbon White\\n📏 Talla: \" + tS + \"\\n👤 Cliente: \" + n + \"\\n🆔 CC: \" + c + \"\\n📱 Cel: \" + l + \"\\n📍 Dir: \" + d + \"\\n---------------------------\\n💳 Estado: Pagando en Bold.\";
-    window.open(\"https://checkout.bold.co/payment/LNK_C41NH1MPJA\", \"_blank\");
-    window.location.href = \"https://wa.me/573057778133?text=\" + encodeURIComponent(msg);
+    const msg = "🚀 NUEVO PEDIDO PRO\n---------------------------\n👟 Producto: Carbon White\n📏 Talla: " + tS + "\n👤 Cliente: " + n + "\n🆔 CC: " + c + "\n📱 Cel: " + l + "\n📍 Dir: " + d + "\n---------------------------\n💳 Estado: Pagando en Bold.";
+    
+    // TRUCO: Abrir Bold en una nueva pestaña y luego redirigir a WhatsApp
+    window.open("https://checkout.bold.co/payment/LNK_C41NH1MPJA", "_blank");
+    setTimeout(() => {
+        window.location.href = "https://wa.me/573057778133?text=" + encodeURIComponent(msg);
+    }, 500);
 }
 </script>
 </body>
