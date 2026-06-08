@@ -2,74 +2,167 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calzado Kool — Pro App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calzado Kool - Pro Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #1a1a2e; --accent: #ff6a00; --bg: #f8f9fa; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-        body { background: var(--bg); color: var(--primary); padding-bottom: 20px; }
-        .header { background: var(--primary); color: #fff; padding: 15px; text-align: center; font-weight: 900; font-size: 18px; position: sticky; top:0; z-index: 1000; }
-        .product-card { background: #fff; margin: 15px; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .img-box { background: #fff; min-height: 250px; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: auto; display: block; object-fit: cover; }
-        .info { padding: 20px; }
-        .title { font-size: 20px; font-weight: 900; margin-bottom: 5px; }
-        .price { font-size: 22px; font-weight: 900; color: var(--accent); margin-bottom: 15px; }
-        .tallas-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .talla-btn { border: 2px solid #eee; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 800; }
-        .talla-btn.active { border-color: var(--accent); background: #fff8f4; color: var(--accent); }
-        .btn-pay { background: var(--accent); color: white; border: none; width: 100%; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 16px; cursor: pointer; display: block; text-align: center; text-decoration: none; }
-        #form-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .form-content { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; font-weight: 800; color: #666; margin-bottom: 5px; }
-        .input-group input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 16px; outline: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .product-card { transition: transform 0.2s; }
+        .product-card:active { transform: scale(0.98); }
+        .btn-gradient { background: linear-gradient(90deg, #ff8c00, #ff4500); }
     </style>
 </head>
-<body>
-<div class="header">CALZADO KOOL — PRO</div>
-<div class="product-card">
-    <div class="img-box">
-        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" 
-             alt="Carbon White">
-    </div>
-    <div class="info">
-        <p class="title">Carbon White</p>
-        <p class="price">$145.000</p>
-        <div class="tallas-grid">
-            <div class="talla-btn" onclick="setT(35, this)">35</div>
-            <div class="talla-btn" onclick="setT(36, this)">36</div>
-            <div class="talla-btn" onclick="setT(37, this)">37</div>
-            <div class="talla-btn" onclick="setT(38, this)">38</div>
+<body class="pb-24">
+    <!-- Header -->
+    <header class="sticky top-0 bg-white shadow-sm z-50 px-4 py-3 flex items-center justify-between">
+        <h1 class="text-xl font-extrabold tracking-tighter text-gray-900">CALZADO <span class="text-orange-600">KOOL</span></h1>
+        <div class="flex gap-4 text-gray-500">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-bag-shopping"></i>
         </div>
-        <button class="btn-pay" onclick="openM()">PAGAR AHORA</button>
+    </header>
+
+    <!-- Banner -->
+    <div class="px-4 py-4">
+        <div class="bg-black rounded-2xl p-6 text-white relative overflow-hidden h-40 flex flex-col justify-center">
+            <h2 class="text-2xl font-bold z-10">Nueva Colección</h2>
+            <p class="text-gray-400 z-10">Premium Sneakers 2026</p>
+            <button class="mt-2 bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-bold w-fit z-10">Ver más</button>
+            <div class="absolute -right-4 -bottom-4 opacity-20 transform -rotate-12">
+                <i class="fa-solid fa-shoe-prints text-9xl"></i>
+            </div>
+        </div>
     </div>
-</div>
-<div id="form-modal"><div class="form-content">
-    <h3 style="margin-bottom:15px">Datos de Envío</h3>
-    <div class="input-group"><label>Nombre</label><input id="nom" placeholder="Ej: Leonardo"></div>
-    <div class="input-group"><label>Cédula</label><input id="ced" type="number"></div>
-    <div class="input-group"><label>Celular</label><input id="cel" type="number"></div>
-    <div class="input-group"><label>Dirección</label><input id="dir" placeholder="Ciudad, Barrio, Calle"></div>
-    <button class="btn-pay" onclick="c()">ENVIAR Y PAGAR 🚀</button>
-    <p onclick="closeM()" style="text-align: center; margin-top: 15px; font-size: 13px; color: #999; cursor: pointer;">Cancelar</p>
-</div></div>
-<script>
-let tS = null;
-function setT(t, e) { tS=t; document.querySelectorAll(".talla-btn").forEach(b=>b.classList.remove("active")); e.classList.add("active"); }
-function openM() { if(!tS) return alert("Por favor elige una talla."); document.getElementById("form-modal").style.display="flex"; }
-function closeM() { document.getElementById("form-modal").style.display="none"; }
-function c() {
-    const n=document.getElementById("nom").value, c=document.getElementById("ced").value, l=document.getElementById("cel").value, d=document.getElementById("dir").value;
-    if(!n||!c||!l||!d) return alert("Por favor completa todos los datos.");
-    const msg = "🚀 NUEVO PEDIDO PRO\n---------------------------\n👟 Producto: Carbon White\n📏 Talla: " + tS + "\n👤 Cliente: " + n + "\n🆔 CC: " + c + "\n📱 Cel: " + l + "\n📍 Dir: " + d + "\n---------------------------\n💳 Estado: Pagando en Bold.";
-    
-    // TRUCO: Abrir Bold en una nueva pestaña y luego redirigir a WhatsApp
-    window.open("https://checkout.bold.co/payment/LNK_C41NH1MPJA", "_blank");
-    setTimeout(() => {
-        window.location.href = "https://wa.me/573057778133?text=" + encodeURIComponent(msg);
-    }, 500);
-}
-</script>
+
+    <!-- Product Grid -->
+    <div class="px-4 grid grid-cols-2 gap-4">
+        <!-- Product 1 -->
+        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon White', 145000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')">
+            <div class="relative h-40 bg-gray-50">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" class="w-full h-full object-cover">
+                <div class="absolute top-2 left-2 bg-black text-white text-[10px] font-bold px-2 py-1 rounded">-25%</div>
+            </div>
+            <div class="p-3">
+                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon White Premium</h3>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-lg font-bold text-orange-600">$145k</span>
+                    <span class="text-xs text-gray-400 line-through">$195k</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon Red', 185000, 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500')">
+            <div class="relative h-40 bg-gray-50">
+                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500" class="w-full h-full object-cover">
+                <div class="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded">HOT</div>
+            </div>
+            <div class="p-3">
+                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon Red Sport</h3>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-lg font-bold text-orange-600">$185k</span>
+                    <span class="text-xs text-gray-400 line-through">$220k</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
+        <div class="bg-white w-full rounded-t-3xl p-6 animate-slide-up">
+            <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+            
+            <div class="flex gap-4 mb-6">
+                <img id="modalImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100">
+                <div>
+                    <h2 id="modalTitle" class="text-xl font-bold text-gray-900"></h2>
+                    <p id="modalPrice" class="text-orange-600 font-bold text-lg"></p>
+                    <p class="text-xs text-gray-500">Envío gratis a todo el país</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Talla</label>
+                    <div class="flex gap-2" id="sizeSelector">
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold border-orange-600 bg-orange-50 text-orange-600">36</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">37</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">38</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">39</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="custName" placeholder="Nombre completo" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                    <input type="text" id="custId" placeholder="Cédula" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                </div>
+                <input type="text" id="custAddr" placeholder="Dirección de envío" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                
+                <button onclick="confirmPurchase()" class="w-full btn-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-orange-200 mt-4">
+                    Confirmar y Pagar
+                </button>
+                <button onclick="closeCheckout()" class="w-full text-gray-400 text-sm font-medium py-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProduct = null;
+        let selectedSize = '36';
+
+        function openCheckout(name, price, img) {
+            currentProduct = { name, price, img };
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalPrice').innerText = '$' + (price/1000).toFixed(0) + '.000';
+            document.getElementById('modalImg').src = img;
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function selectSize(btn) {
+            document.querySelectorAll('#sizeSelector button').forEach(b => {
+                b.classList.remove('border-orange-600', 'bg-orange-50', 'text-orange-600');
+            });
+            btn.classList.add('border-orange-600', 'bg-orange-50', 'text-orange-600');
+            selectedSize = btn.innerText;
+        }
+
+        function confirmPurchase() {
+            const name = document.getElementById('custName').value;
+            const addr = document.getElementById('custAddr').value;
+            const id = document.getElementById('custId').value;
+
+            if(!name || !addr || !id) {
+                alert('Por favor completa todos los datos de envío');
+                return;
+            }
+
+            const msg = `Hola! Quiero comprar:
+👟 *${currentProduct.name}*
+📏 Talla: ${selectedSize}
+👤 Cliente: ${name}
+🆔 CC: ${id}
+📍 Dir: ${addr}`;
+
+            const waUrl = `https://wa.me/573057778133?text=${encodeURIComponent(msg)}`;
+            const boldUrl = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+
+            window.open(waUrl, '_blank');
+            window.location.href = boldUrl;
+        }
+    </script>
+
+    <style>
+        @keyframes slide-up {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slide-up 0.3s ease-out; }
+    </style>
 </body>
 </html>
