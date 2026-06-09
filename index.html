@@ -36,7 +36,7 @@
   </header>
   <main class="max-w-7xl mx-auto px-5 md:px-8 py-8">
     <div class="mb-4 text-sm text-gray-600 font-bold">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
-    <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div>
+    <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div><div class="mb-4 flex gap-3"><button onclick="toggleCart(true)" class="btn">Terminar pedido</button><div class="text-sm text-gray-500 self-center">El carrito solo se abre cuando el cliente decide cerrar el pedido.</div></div>
     <div id="grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
   </main>
   <aside id="drawer" class="drawer">
@@ -70,7 +70,7 @@
     function choose(pid, size){ selected[pid]=size; render(); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
-    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); updateCart(); toggleCart(true); render(); }
+    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); updateCart(); render(); }
     function remove(i){ cart.splice(i,1); updateCart(); render(); }
     function updateCart(){ document.getElementById('count').innerText = cart.length; document.getElementById('total').innerText = '$' + cart.reduce((a,b)=>a+b.price,0).toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-700 font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
     function toggleCart(open){ const d=document.getElementById('drawer'); const o=document.getElementById('ov'); if(open){d.classList.add('open');o.classList.add('on')} else {d.classList.remove('open');o.classList.remove('on')} }
