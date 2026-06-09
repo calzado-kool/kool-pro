@@ -1,309 +1,341 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CALZADO KOOL | Tienda Oficial</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calzado Kool | Tienda Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfc; color: #1a1a1a; scroll-behavior: smooth; }
-    .kool-card { background: white; border: 1px solid #eee; border-radius: 28px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .kool-card:hover { transform: translateY(-8px); border-color: #f97316; box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
-    .grad { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-    .size-btn { border: 2px solid #f0f0f0; border-radius: 14px; transition: all 0.2s; cursor: pointer; }
-    .size-btn.active { border-color: #ea580c; background: #fff7ed; color: #ea580c; font-weight: 800; transform: scale(1.05); }
-    .size-btn.disabled { opacity: 0.2; cursor: not-allowed; background: #fafafa; }
-    .btn-main { background: #1a1a1a; color: white; border-radius: 16px; transition: all 0.3s; }
-    .btn-main:hover { background: #ea580c; transform: scale(1.02); box-shadow: 0 10px 20px rgba(234, 88, 12, 0.2); }
-    .sidebar { position: fixed; top: 0; right: 0; height: 100%; width: 100%; max-width: 420px; background: white; z-index: 1000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -15px 0 40px rgba(0,0,0,0.06); }
-    .sidebar.open { transform: translateX(0); }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 999; opacity: 0; pointer-events: none; transition: 0.3s; }
-    .overlay.open { opacity: 1; pointer-events: auto; }
-    .input-kool { width: 100%; padding: 14px 18px; border: 1.5px solid #eee; border-radius: 14px; outline: none; transition: 0.2s; background: #fafafa; }
-    .input-kool:focus { border-color: #ea580c; background: white; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); }
-    .qty-badge { background: #ea580c; color: white; font-size: 10px; font-weight: 800; border-radius: 99px; padding: 2px 6px; }
+    :root{--kool:#ea580c;--kool2:#f97316;--ink:#0f172a;--muted:#64748b}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#fff 0%,#f8fafc 100%);color:var(--ink)}
+    .glass{backdrop-filter: blur(18px); background: rgba(255,255,255,.76)}
+    .soft{box-shadow:0 20px 45px rgba(15,23,42,.08)}
+    .grad{background:linear-gradient(135deg,var(--kool2),var(--kool))}
+    .kool-card{background:#fff;border:1px solid #e2e8f0;border-radius:28px;overflow:hidden;transition:.25s ease;}
+    .kool-card:hover{transform:translateY(-4px);box-shadow:0 24px 55px rgba(15,23,42,.09);border-color:#fdba74}
+    .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .75rem;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chip-muted{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}
+    .chip-live{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+    .size{border:2px solid #e2e8f0;border-radius:16px;padding:.9rem .75rem;transition:.2s;cursor:pointer;background:#fff}
+    .size:hover{border-color:#fdba74;background:#fff7ed}
+    .size.active{border-color:var(--kool);background:#fff7ed;box-shadow:0 0 0 4px rgba(234,88,12,.08)}
+    .size.disabled{opacity:.35;cursor:not-allowed;background:#f8fafc}
+    .btn-main{background:#111827;color:#fff;border-radius:18px;transition:.2s}
+    .btn-main:hover{background:var(--kool);transform:translateY(-1px)}
+    .input-kool{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:16px;outline:none;background:#fff;transition:.2s}
+    .input-kool:focus{border-color:var(--kool);box-shadow:0 0 0 4px rgba(234,88,12,.1)}
+    .drawer{position:fixed;inset:0;z-index:1000;pointer-events:none}
+    .drawer.open{pointer-events:auto}
+    .drawer .overlay{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(5px);opacity:0;transition:.25s}
+    .drawer.open .overlay{opacity:1}
+    .drawer .panel{position:absolute;top:0;right:0;height:100%;width:min(100%,440px);background:#fff;transform:translateX(100%);transition:.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+    .drawer.open .panel{transform:translateX(0)}
+    .qty{min-width:92px}
   </style>
 </head>
 <body>
-
-  <!-- NAVEGACIÓN -->
-  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 grad rounded-2xl flex items-center justify-center text-white shadow-lg"><i class="fa-solid fa-shoe-prints text-xl"></i></div>
+        <div class="w-11 h-11 rounded-2xl grad text-white flex items-center justify-center soft"><i class="fa-solid fa-shoe-prints"></i></div>
         <div>
-          <span class="text-xl font-black tracking-tighter block leading-none">CALZADO KOOL</span>
-          <span class="text-[9px] uppercase tracking-widest text-orange-600 font-extrabold">IA Operativa</span>
+          <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">Calzado Kool</div>
+          <h1 class="text-xl sm:text-2xl font-black tracking-tight leading-none">Tienda Inteligente</h1>
         </div>
       </div>
-      <div class="flex gap-4">
-        <button onclick="localStorage.removeItem('kool_cart_v3'); location.reload();" class="text-[10px] font-bold text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors">Limpiar</button>
-        <button onclick="toggleCart(true)" class="relative p-2 text-gray-800 hover:text-orange-600 transition-transform active:scale-90">
-          <i class="fa-solid fa-bag-shopping text-2xl"></i>
-          <span id="badge" class="absolute -top-1 -right-1 w-5 h-5 grad text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white scale-0 transition-transform">0</span>
+      <div class="flex items-center gap-2">
+        <span class="chip chip-live"><i class="fa-solid fa-signal"></i> IA Activa</span>
+        <button onclick="App.toggleCart(true)" class="relative rounded-2xl border border-slate-200 bg-white px-4 py-3 soft hover:border-orange-200 transition-colors">
+          <i class="fa-solid fa-bag-shopping text-slate-800"></i>
+          <span id="cartBadge" class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full grad text-white text-[10px] font-black flex items-center justify-center border-2 border-white scale-0 transition-transform">0</span>
         </button>
       </div>
     </div>
-  </nav>
+  </header>
 
-  <!-- CATÁLOGO -->
-  <main class="max-w-7xl mx-auto px-6 py-12 md:py-20">
-    <div class="mb-16 text-center md:text-left">
-      <h1 class="text-5xl font-black mb-4 tracking-tight">Tu Estilo, Tu <span class="text-orange-600">Paso</span>.</h1>
-      <p class="text-gray-500 max-w-xl text-lg">Explora nuestra colección premium con stock real sincronizado. Agrega lo que te gusta y paga seguro con Bold.</p>
-    </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+    <section class="grid lg:grid-cols-2 gap-8 items-center">
+      <div class="space-y-6">
+        <div class="flex flex-wrap gap-2">
+          <span class="chip chip-live"><i class="fa-solid fa-bolt"></i> Bold + GESADMIN</span>
+          <span class="chip chip-muted"><i class="fa-solid fa-cart-shopping"></i> Multicarrito</span>
+          <span class="chip chip-muted"><i class="fa-solid fa-swatchbook"></i> Stock real</span>
+        </div>
+        <div>
+          <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-[.95]">Una tienda que <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">vende sola</span> y se ve premium</h2>
+          <p class="mt-4 text-slate-500 text-lg max-w-2xl">Catálogo de autor, tallas visibles, carrito persistente y salida directa a pago. Todo sincronizado con inventario y facturación.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button class="btn-main px-5 py-4 font-bold shadow-xl" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-store"></i> Ver catálogo</button>
+          <button class="px-5 py-4 rounded-2xl border border-slate-200 bg-white font-bold text-slate-700 hover:border-orange-200 transition-colors" onclick="App.toggleDrawer('cart',true)"><i class="fa-solid fa-bag-shopping"></i> Abrir carrito</button>
+        </div>
+      </div>
+      <div class="kool-card soft grad text-white p-5 sm:p-6">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <div class="text-white/70 text-sm font-semibold uppercase tracking-[.2em]">Producto destacado</div>
+            <div class="text-2xl sm:text-3xl font-black">Bota Urbana Roja</div>
+          </div>
+          <div class="chip bg-white/15 text-white border-white/20">Desde $2.000</div>
+        </div>
+        <div class="rounded-[24px] overflow-hidden bg-white/10 border border-white/15 soft">
+          <img src="img/bota_roja.jpg" alt="Bota Urbana Roja" class="w-full aspect-square object-cover">
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
+          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Foto grande + zoom</div>
+          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Tallas visibles</div>
+          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Carrito persistente</div>
+          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Checkout claro</div>
+        </div>
+      </div>
+    </section>
 
-    <div id="grid" class="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <!-- Los productos se cargan aquí -->
-    </div>
+    <section id="catalog" class="space-y-5">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="text-3xl font-black tracking-tight">Catálogo</h3>
+          <p class="text-slate-500">Selecciona talla, agrega y sigue comprando. El inventario no deja pasar más de lo disponible.</p>
+        </div>
+        <div class="chip chip-muted"><i class="fa-solid fa-shield-heart"></i> Stock protegido</div>
+      </div>
+      <div id="grid" class="grid grid-cols-1 xl:grid-cols-2 gap-8"></div>
+    </section>
   </main>
 
-  <!-- CARRITO SIDEBAR -->
-  <div id="overlay" class="overlay" onclick="toggleCart(false)"></div>
-  <div id="cart" class="sidebar flex flex-col">
-    <div class="p-8 border-b flex justify-between items-center">
-      <div>
-        <h2 class="text-2xl font-black">Tu Carrito</h2>
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Sincronizado por IA</p>
-      </div>
-      <button onclick="toggleCart(false)" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-black hover:bg-gray-100 transition-all"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    
-    <div id="cart-items" class="flex-grow overflow-y-auto p-8 space-y-6">
-      <!-- Items del carrito -->
-    </div>
-
-    <div id="form-section" class="p-8 border-t bg-gray-50/80 space-y-6">
-      <div id="client-form" class="space-y-4">
-        <div class="flex items-center gap-2 mb-2">
-          <div class="w-2 h-6 grad rounded-full"></div>
-          <h3 class="font-black text-gray-800 uppercase text-xs tracking-widest">Datos de Entrega</h3>
+  <div id="drawer-cart" class="drawer">
+    <div class="overlay" onclick="App.toggleDrawer('cart',false)"></div>
+    <div class="panel">
+      <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+        <div>
+          <h3 class="text-2xl font-black">Tu Carrito</h3>
+          <p class="text-xs uppercase tracking-[.18em] text-slate-400 font-bold">Resumen del pedido</p>
         </div>
-        <input type="text" id="name" placeholder="Tu nombre completo" class="input-kool">
-        <input type="tel" id="phone" placeholder="WhatsApp (Ej: 305...)" class="input-kool">
-        <textarea id="addr" placeholder="Dirección completa, Ciudad y Barrio" class="input-kool h-24 resize-none"></textarea>
+        <button onclick="App.toggleDrawer('cart',false)" class="w-11 h-11 rounded-full hover:bg-white border border-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <div class="flex justify-between items-center text-2xl font-black pt-4">
-        <span class="text-gray-400 text-sm uppercase tracking-widest">Total a pagar</span>
-        <span id="total" class="text-orange-600">$0</span>
+      <div id="cartItems" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4"></div>
+      <div class="p-5 sm:p-6 border-t border-slate-100 bg-slate-50/70 space-y-4">
+        <div id="clientForm" class="space-y-3">
+          <div class="flex items-center gap-2 mb-1"><div class="w-2 h-6 rounded-full grad"></div><h4 class="font-black text-slate-800 uppercase text-xs tracking-[.2em]">Datos de entrega</h4></div>
+          <input id="cName" class="input-kool" type="text" placeholder="Nombre completo">
+          <input id="cPhone" class="input-kool" type="tel" placeholder="WhatsApp">
+          <textarea id="cAddr" class="input-kool h-24 resize-none" placeholder="Dirección completa, ciudad y barrio"></textarea>
+        </div>
+        <div class="flex items-center justify-between pt-2">
+          <span class="text-sm uppercase tracking-[.18em] text-slate-400 font-black">Total</span>
+          <span id="cartTotal" class="text-2xl font-black text-orange-600">$0</span>
+        </div>
+        <button id="btnPay" class="btn-main w-full py-4 font-black shadow-xl flex items-center justify-center gap-2" onclick="App.checkout()"><i class="fa-solid fa-shield-check"></i> Finalizar y pagar</button>
+        <p class="text-[10px] text-center text-slate-400 uppercase tracking-[.18em] font-bold">Pago seguro por Bold • IA Kool sincroniza inventario y GESADMIN</p>
       </div>
-
-      <button id="btn-pay" onclick="App.checkout()" class="w-full py-5 grad text-white font-black text-lg rounded-2xl shadow-xl shadow-orange-200 hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-3">
-        <span>FINALIZAR Y PAGAR</span> <i class="fa-solid fa-shield-check"></i>
-      </button>
-      <p class="text-[10px] text-center text-gray-400 uppercase font-bold tracking-tighter">🔒 Pago procesado por Bold • IA Kool verifica tu pedido</p>
     </div>
+  </div>
+
+  <div id="drawer-product" class="drawer">
+    <div class="overlay" onclick="App.toggleDrawer('product',false)"></div>
+    <div class="panel" id="productPanel"></div>
   </div>
 
   <script>
     const App = {
-      // BRIDGE URL ACTUALIZADA Y FUNCIONAL
-      BRIDGE: 'https://bold-bridge-7qge.vercel.app/api/checkout',
-      
+      bridgeUrl: 'https://bold-bridge-7qge.vercel.app/api/checkout',
       products: [
-        { id:'p1', name:'Bota Urbana Roja', price:160000, img:'img/bota_roja.jpg', desc:'Bota táctica de alto rendimiento, resistente y ligera.', stock:{'34':1,'35':2,'36':0,'37':1,'38':2,'39':1}, skus:{'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'} },
-        { id:'p2', name:'Tractor Power', price:160000, img:'img/tractor_power.jpg', desc:'Resistencia máxima para trabajo pesado y montaña.', stock:{'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus:{'34':'TR34','36':'TR36','37':'TR37','38':'TR38','39':'TR39','40':'TR40'} },
-        { id:'p3', name:'Tenis Premium Edition', price:145000, img:'img/tenis_premium.jpg', desc:'Elegancia y confort en cada paso. Diseño exclusivo.', stock:{'35':3,'36':5,'37':2,'38':4,'39':1}, skus:{'35':'TP35','36':'TP36','37':'TP37','38':'TP38','39':'TP39'} },
-        { id:'p4', name:'Sneakers Urban', price:145000, img:'img/sneakers_urban.jpg', desc:'Estilo versátil para el día a día en la ciudad.', stock:{'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus:{'34':'SU34','35':'SU35','36':'SU36','37':'SU37','38':'SU38','39':'SU39'} }
+        { id:'p1', name:'Bota Urbana Roja', category:'Táctico Urbano', price:160000, images:['img/bota_roja.jpg','img/bota_roja_2.jpg'], desc:'Bota diseñada para la máxima durabilidad y estilo. Suela antideslizante y materiales premium resistentes al agua.', tech:['Material premium','Suela antideslizante','Resistente al agua'], stock:{'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus:{'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color:'Rojo' },
+        { id:'p2', name:'Tractor Power', category:'Resistente', price:160000, images:['img/tractor_power.jpg'], desc:'La bota más fuerte para trabajo pesado o outdoor. Construcción reforzada y confort superior.', tech:['Construcción reforzada','Outdoor','Confort superior'], stock:{'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus:{'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color:'Camel' },
+        { id:'p3', name:'Tenis Premium Edition', category:'Lifestyle', price:145000, images:['img/tenis_premium.jpg'], desc:'Diseño exclusivo con acabados hechos a mano. La combinación perfecta entre elegancia y comodidad deportiva.', tech:['Hecho a mano','Acabado premium','Ligero'], stock:{'35':3,'36':5,'37':2,'38':4,'39':1}, skus:{'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color:'Blanco/Negro' },
+        { id:'p4', name:'Sneakers Urban Premium', category:'Urban', price:145000, images:['img/sneakers_urban.jpg'], desc:'Versatilidad total para el día a día en la ciudad.', tech:['Uso diario','Versátil','Ligero'], stock:{'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus:{'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color:'Negro' }
       ],
-      
       cart: [],
-      sel: {},
+      selected: JSON.parse(localStorage.getItem('kool_selected_v1') || '{}'),
+      editing: null,
 
       init() {
-        // Carga robusta de carrito
-        try {
-          const stored = localStorage.getItem('kool_cart_v3');
-          this.cart = stored ? JSON.parse(stored) : [];
-          if (!Array.isArray(this.cart)) this.cart = [];
-        } catch(e) { this.cart = []; }
-        
+        try { this.cart = JSON.parse(localStorage.getItem('kool_cart_v4') || '[]'); if(!Array.isArray(this.cart)) this.cart = []; } catch { this.cart = []; }
         this.renderCatalog();
         this.renderCart();
       },
 
-      fmt(v) { return '$' + Number(v).toLocaleString('es-CO'); },
+      fmt(v){ return '$' + Number(v).toLocaleString('es-CO'); },
 
-      renderCatalog() {
-        const container = document.getElementById('grid');
-        container.innerHTML = this.products.map(p => `
-          <div class="kool-card overflow-hidden flex flex-col h-full">
-            <div class="aspect-square bg-gray-100 overflow-hidden relative group">
-              <img src="${p.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-              <div class="absolute top-6 left-6 bg-white/95 backdrop-blur-xl px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-gray-800 shadow-xl border border-white/20">EDICIÓN 2026</div>
+      saveCart(){ localStorage.setItem('kool_cart_v4', JSON.stringify(this.cart)); },
+      saveSelected(){ localStorage.setItem('kool_selected_v1', JSON.stringify(this.selected)); },
+
+      renderCatalog(){
+        document.getElementById('grid').innerHTML = this.products.map(p => `
+          <article class="kool-card flex flex-col lg:flex-row min-h-[640px]">
+            <div class="lg:w-1/2 relative bg-slate-50 group overflow-hidden">
+              <img src="${p.images[0]}" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-110" alt="${p.name}">
+              <div class="absolute top-4 left-4 chip chip-live"><i class="fa-solid fa-sparkles"></i> ${p.category}</div>
+              <div class="absolute bottom-4 left-4 chip chip-muted bg-white/90"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
             </div>
-            <div class="p-8 flex flex-col justify-between flex-grow space-y-8">
+            <div class="lg:w-1/2 p-5 sm:p-6 md:p-8 flex flex-col gap-6">
               <div>
-                <h2 class="text-3xl font-black text-gray-900 tracking-tight">${p.name}</h2>
-                <p class="text-orange-600 font-extrabold text-2xl mt-2">${this.fmt(p.price)}</p>
-                <p class="text-gray-400 text-sm mt-4 leading-relaxed line-clamp-2">${p.desc}</p>
-              </div>
-              
-              <div class="space-y-4">
-                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  <span>Seleccionar Talla</span>
-                  <span>Disponibles</span>
+                <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">${p.category}</div>
+                <h4 class="text-3xl font-black tracking-tight mt-1">${p.name}</h4>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                  <div class="text-3xl font-black text-orange-600">${this.fmt(p.price)}</div>
+                  <div class="chip chip-muted">Stock real</div>
                 </div>
-                <div class="grid grid-cols-3 gap-3">
-                  ${Object.entries(p.stock).map(([s, q]) => {
-                    const ok = q > 0;
-                    return `
-                      <button onclick="${ok ? `App.select('${p.id}', '${s}')` : ''}" 
-                              id="btn-${p.id}-${s}" 
-                              class="size-btn p-4 flex flex-col items-center gap-1 ${!ok ? 'disabled' : 'hover:border-orange-200'}">
-                        <span class="text-xl font-black text-gray-800">${s}</span>
-                        <span class="text-[9px] font-black ${q < 3 ? 'text-red-500' : 'text-gray-300'}">${ok ? q + ' UDS' : 'AGOTADO'}</span>
-                      </button>`;
-                  }).join('')}
+                <p class="mt-4 text-slate-500 leading-relaxed">${p.desc}</p>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h5 class="font-black text-slate-800">Selecciona talla</h5>
+                  <span class="text-[10px] uppercase tracking-[.18em] text-slate-400 font-bold">Disponible</span>
+                </div>
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  ${Object.entries(p.stock).map(([s,q]) => `<button class="size ${q>0?'':'disabled'} ${this.selected[p.id]===s?'active':''}" ${q>0?`onclick="App.pickSize('${p.id}','${s}')"`:'disabled'}><div class="text-lg font-black">${s}</div><div class="text-[10px] font-black ${q<3?'text-red-500':'text-slate-400'}">${q>0?`${q} uds`:'Agotado'}</div></button>`).join('')}
                 </div>
               </div>
-
-              <button onclick="App.add('${p.id}')" class="btn-main w-full py-5 font-black text-sm shadow-2xl flex items-center justify-center gap-3">
-                <i class="fa-solid fa-cart-plus text-lg"></i> AGREGAR AL CARRITO
-              </button>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <button class="btn-main py-4 font-black" onclick="App.add('${p.id}')"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
+                <button class="border border-slate-200 rounded-2xl py-4 font-black text-slate-700 hover:border-orange-200 hover:text-orange-600 transition-colors" onclick="App.openProduct('${p.id}')"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Ver detalles</button>
+              </div>
             </div>
-          </div>
+          </article>
         `).join('');
       },
 
-      select(pid, s) {
-        this.sel[pid] = s;
-        document.querySelectorAll(\`[id^="btn-\${pid}-"]\`).forEach(b => b.classList.remove('active'));
-        document.getElementById(\`btn-\${pid}-\${s}\`).classList.add('active');
+      openProduct(id){
+        const p = this.products.find(x=>x.id===id);
+        this.editing = p;
+        document.getElementById('productPanel').innerHTML = `
+          <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+            <div>
+              <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">Ficha inmersiva</div>
+              <h3 class="text-2xl font-black">${p.name}</h3>
+            </div>
+            <button onclick="App.toggleDrawer('product',false)" class="w-11 h-11 rounded-full hover:bg-white border border-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+            <div class="rounded-[24px] overflow-hidden bg-slate-50 border border-slate-100 soft relative group">
+              <img src="${p.images[0]}" class="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-125 cursor-zoom-in" onclick="window.open(this.src,'_blank')" alt="${p.name}">
+              <div class="absolute top-4 left-4 chip chip-live">Zoom real</div>
+            </div>
+            <div>
+              <div class="text-3xl font-black text-orange-600">${this.fmt(p.price)}</div>
+              <p class="mt-3 text-slate-500 leading-relaxed">${p.desc}</p>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-3">
+              ${p.tech.map(t => `<div class="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm font-bold text-slate-700">${t}</div>`).join('')}
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-3"><h5 class="font-black text-slate-800">Tallas</h5><span class="text-[10px] uppercase tracking-[.18em] text-slate-400 font-bold">Stock real</span></div>
+              <div class="grid grid-cols-3 gap-3">${Object.entries(p.stock).map(([s,q])=>`<button class="size ${q>0?'':'disabled'} ${this.selected[p.id]===s?'active':''}" ${q>0?`onclick="App.pickSize('${p.id}','${s}')"`:'disabled'}><div class="text-lg font-black">${s}</div><div class="text-[10px] font-black ${q<3?'text-red-500':'text-slate-400'}">${q>0?`${q} uds`:'Agotado'}</div></button>`).join('')}</div>
+            </div>
+            <button class="btn-main w-full py-4 font-black" onclick="App.add('${p.id}',true)"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
+          </div>`;
+        this.toggleDrawer('product',true);
       },
 
-      add(pid) {
-        const s = this.sel[pid];
-        if(!s) return alert('Por favor, toca una talla antes de agregar.');
-        const p = this.products.find(x => x.id === pid);
-        const item = this.cart.find(i => i.id === pid && i.size === s);
-        
-        if(item) {
-          if(item.qty >= p.stock[s]) return alert('⚠️ Límite alcanzado: No hay más stock de esta talla.');
-          item.qty++;
-        } else {
-          this.cart.push({ id:p.id, name:p.name, price:p.price, size:s, sku:p.skus[s], img:p.img, qty:1, stockLimit: p.stock[s] });
-        }
-        this.save();
-        toggleCart(true);
-      },
+      pickSize(pid,size){ this.selected[pid]=size; this.saveSelected(); this.renderCatalog(); if(this.editing && this.editing.id===pid) this.openProduct(pid); },
 
-      save() {
-        localStorage.setItem('kool_cart_v3', JSON.stringify(this.cart));
+      add(pid, fromModal=false){
+        const size = this.selected[pid];
+        if(!size) return alert('Selecciona una talla primero');
+        const p = this.products.find(x=>x.id===pid);
+        const current = this.cart.find(i => i.id===pid && i.size===size);
+        const stockLimit = p.stock[size] || 0;
+        if((current?.qty || 0) >= stockLimit) return alert('No hay más stock disponible de esta talla');
+        if(current) current.qty += 1;
+        else this.cart.push({ id:p.id, name:p.name, price:p.price, size, sku:p.skus[size], img:p.images[0], qty:1, stockLimit });
+        this.saveCart();
         this.renderCart();
+        if(fromModal) this.toggleDrawer('product',false);
+        this.toggleDrawer('cart',true);
       },
 
-      renderCart() {
-        const list = document.getElementById('cart-items');
-        const count = this.cart.reduce((s,i) => s + i.qty, 0);
-        const total = this.cart.reduce((s,i) => s + (i.price * i.qty), 0);
-        
-        const b = document.getElementById('badge');
-        b.textContent = count;
-        b.classList.toggle('scale-0', count === 0);
-        b.classList.toggle('scale-100', count > 0);
-        
-        document.getElementById('total').textContent = this.fmt(total);
+      qty(idx,d){
+        const item = this.cart[idx];
+        const p = this.products.find(x=>x.id===item.id);
+        const limit = p.stock[item.size] || item.stockLimit || 0;
+        if(d>0 && item.qty >= limit) return alert('Límite de stock alcanzado');
+        item.qty += d;
+        if(item.qty<=0) this.cart.splice(idx,1);
+        this.saveCart(); this.renderCart();
+      },
 
-        if(!this.cart.length) {
-          list.innerHTML = `
-            <div class="text-center py-20">
-              <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fa-solid fa-cart-shopping text-4xl text-gray-200"></i>
-              </div>
-              <p class="font-bold text-gray-400 uppercase text-xs tracking-widest">Tu carrito está vacío</p>
-            </div>`;
-          document.getElementById('client-form').classList.add('hidden');
-          document.getElementById('btn-pay').classList.add('hidden');
+      remove(idx){ this.cart.splice(idx,1); this.saveCart(); this.renderCart(); },
+
+      renderCart(){
+        const list = document.getElementById('cartItems');
+        const total = this.cart.reduce((s,i)=>s + i.price*i.qty, 0);
+        const count = this.cart.reduce((s,i)=>s + i.qty, 0);
+        const badge = document.getElementById('cartBadge');
+        badge.textContent = count;
+        badge.classList.toggle('scale-0', count===0);
+        badge.classList.toggle('scale-100', count>0);
+        document.getElementById('cartTotal').textContent = this.fmt(total);
+        if(!this.cart.length){
+          list.innerHTML = `<div class="text-center py-16 text-slate-300"><i class="fa-solid fa-cart-shopping text-6xl mb-4 opacity-20"></i><p class="font-bold uppercase text-xs tracking-[.2em]">Tu carrito está vacío</p></div>`;
+          document.getElementById('clientForm').classList.add('hidden');
+          document.getElementById('btnPay').classList.add('hidden');
           return;
         }
-
-        document.getElementById('client-form').classList.remove('hidden');
-        document.getElementById('btn-pay').classList.remove('hidden');
-        
-        list.innerHTML = this.cart.map((i, idx) => `
-          <div class="flex gap-5 p-5 bg-white border border-gray-100 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow">
-            <img src="${i.img}" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
-            <div class="flex-grow flex flex-col justify-between">
-              <div class="flex justify-between items-start">
-                <div>
-                  <h4 class="font-black text-sm text-gray-900 leading-tight">${i.name}</h4>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="text-[9px] font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded uppercase">Talla ${i.size}</span>
-                    <span class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">SKU ${i.sku}</span>
+        document.getElementById('clientForm').classList.remove('hidden');
+        document.getElementById('btnPay').classList.remove('hidden');
+        list.innerHTML = this.cart.map((i,idx)=>`
+          <div class="rounded-[22px] border border-slate-100 bg-white p-4 soft flex gap-4">
+            <img src="${i.img}" class="w-20 h-20 rounded-2xl object-cover">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <h4 class="font-black text-slate-900 truncate">${i.name}</h4>
+                  <div class="mt-1 flex flex-wrap gap-2 items-center">
+                    <span class="chip chip-live">Talla ${i.size}</span>
+                    <span class="text-[10px] font-black tracking-[.18em] text-slate-300 uppercase">SKU ${i.sku}</span>
                   </div>
                 </div>
-                <button onclick="App.remove(${idx})" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                <button class="w-9 h-9 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500" onclick="App.remove(${idx})"><i class="fa-solid fa-trash-can"></i></button>
               </div>
-              <div class="flex justify-between items-center mt-4">
-                <div class="flex items-center gap-4 bg-gray-50 rounded-2xl px-4 py-2 font-black text-sm">
-                  <button onclick="App.qty(${idx},-1)" class="text-gray-400 hover:text-orange-600"><i class="fa-solid fa-minus"></i></button>
-                  <span class="w-4 text-center">${i.qty}</span>
-                  <button onclick="App.qty(${idx},1)" class="text-gray-400 hover:text-orange-600"><i class="fa-solid fa-plus"></i></button>
+              <div class="mt-4 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-2 qty">
+                  <button onclick="App.qty(${idx},-1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-minus"></i></button>
+                  <span class="font-black w-5 text-center">${i.qty}</span>
+                  <button onclick="App.qty(${idx},1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-plus"></i></button>
                 </div>
-                <span class="font-black text-lg text-gray-900">${this.fmt(i.price * i.qty)}</span>
+                <div class="font-black text-slate-900">${this.fmt(i.price*i.qty)}</div>
               </div>
             </div>
-          </div>
-        `).join('');
+          </div>`).join('');
       },
 
-      qty(idx, d) {
-        const i = this.cart[idx];
-        if(d > 0 && i.qty >= i.stockLimit) return alert('⚠️ No hay más unidades disponibles.');
-        i.qty += d;
-        if(i.qty <= 0) this.cart.splice(idx, 1);
-        this.save();
-      },
-
-      remove(idx) { this.cart.splice(idx, 1); this.save(); },
-
-      async checkout() {
-        const n = document.getElementById('name').value.trim();
-        const p = document.getElementById('phone').value.trim();
-        const a = document.getElementById('addr').value.trim();
-        if(!n || !p || !a) return alert('⚠️ Por favor completa tus datos de entrega.');
-
-        const btn = document.getElementById('btn-pay');
-        const orig = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO PAGO SEGURO...';
-
+      async checkout(){
+        const name = document.getElementById('cName').value.trim();
+        const phone = document.getElementById('cPhone').value.trim();
+        const addr = document.getElementById('cAddr').value.trim();
+        if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+        if(!this.cart.length) return alert('Tu carrito está vacío');
+        const btn = document.getElementById('btnPay');
+        const original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando pago...';
         const oid = 'KOOL-' + Date.now();
-        const total = this.cart.reduce((s,i) => s + (i.price * i.qty), 0);
-        // Formato IA: [ORD:ID | SKU:CODE | SZ:SIZE | NAME:NAME | QTY:QTY]
+        const total = this.cart.reduce((s,i)=>s + i.price*i.qty, 0);
         const desc = this.cart.map(i => `[ORD:${oid} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | QTY:${i.qty}]`).join(' ');
-
-        try {
-          const res = await fetch(this.BRIDGE, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total, label: 'PEDIDO KOOL '+oid, description: desc + ' | ENVIO: ' + a, order_id: oid })
-          });
-          if(!res.ok) throw 'err';
+        try{
+          const res = await fetch(this.bridgeUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:total,label:'PEDIDO KOOL '+oid,description:desc+' | ENVIO: '+addr,order_id:oid})});
+          if(!res.ok) throw new Error('bridge');
           const data = await res.json();
-          if(data.url) {
-            const itemsList = this.cart.map(i => `✅ ${i.qty}x ${i.name} (T${i.size})`).join('%0A');
-            const wa = `👟 *NUEVO PEDIDO KOOL*%0A%0A🆔 *Orden:* ${oid}%0A%0A📦 *Productos:*%0A${itemsList}%0A%0A💰 *Total:* ${this.fmt(total)}%0A👤 *Cliente:* ${n}%0A📱 *WhatsApp:* ${p}%0A📍 *Envío:* ${a}`;
-            window.open(`https://wa.me/573057778133?text=${wa}`, '_blank');
-            setTimeout(() => window.location.href = data.url, 800);
-          } else throw 'err';
-        } catch(e) {
-          alert('❌ Hubo un problema con la pasarela. Intenta de nuevo.');
-          btn.disabled = false;
-          btn.innerHTML = orig;
+          if(!data.url) throw new Error('no-url');
+          const wa = `👟 *NUEVO PEDIDO KOOL*%0A%0A🆔 *Orden:* ${oid}%0A%0A${this.cart.map(i=>`✅ ${i.qty}x ${i.name} (T${i.size})`).join('%0A')}%0A%0A💰 *Total:* ${this.fmt(total)}%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Envío:* ${addr}`;
+          window.open(`https://wa.me/573057778133?text=${wa}`,'_blank');
+          setTimeout(()=>location.href = data.url, 900);
+        }catch(e){
+          alert('Hubo un problema con la pasarela. Intenta de nuevo.');
+          btn.disabled = false; btn.innerHTML = original;
         }
+      },
+
+      toggleDrawer(which, open){
+        const el = document.getElementById(which === 'cart' ? 'drawer-cart' : 'drawer-product');
+        el.classList.toggle('open', open);
       }
     };
-
-    function toggleCart(open) {
-      document.getElementById('cart').classList.toggle('open', open);
-      document.getElementById('overlay').classList.toggle('open', open);
-    }
-
     App.init();
   </script>
 </body>
