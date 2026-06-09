@@ -81,15 +81,28 @@
     function choose(pid, size){ selected[pid]=size; render(); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
-    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); updateCart(); render(); }
+    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); render(); }
     function remove(i){ const item = cart[i]; if(item) inventory[item.id] = (inventory[item.id]||0)+1; cart.splice(i,1); saveState(); updateCart(); render(); }
     function updateCart(){ document.getElementById('count').innerText = cart.length; document.getElementById('total').innerText = '$' + cart.reduce((a,b)=>a+b.price,0).toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
-    function toggleCart(open){ const d=document.getElementById('drawer'); const o=document.getElementById('ov'); if(open){d.classList.add('open');o.classList.add('on')} else {d.classList.remove('open');o.classList.remove('on')} }
+    function toggleCart(open){ 
+      const d=document.getElementById('drawer'); 
+      const o=document.getElementById('ov'); 
+      const f=document.getElementById('floatingAction');
+      if(open){
+        d.classList.add('open');
+        o.classList.add('on');
+        if(f) f.classList.add('hidden');
+      } else {
+        d.classList.remove('open');
+        o.classList.remove('on');
+        if(f) f.classList.remove('hidden');
+      } 
+    }
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
     render();
   </script>
 
-  <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-2 pointer-events-none">
+  <div id="floatingAction" class="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-2 pointer-events-none">
     <div class="bg-black text-white px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl animate-bounce pointer-events-auto">
       ¡Cierra tu pedido aquí!
     </div>
