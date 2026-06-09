@@ -385,7 +385,10 @@
                 return;
             }
             
-            const existing = cart.find(i => i.id === currentModalProduct.id && i.size === selectedSize);
+            // Un item es único por su ID y su Talla
+            const cartKey = `${currentModalProduct.id}-${selectedSize}`;
+            const existing = cart.find(i => `${i.id}-${i.size}` === cartKey);
+            
             if (existing) {
                 existing.qty++;
             } else {
@@ -403,12 +406,18 @@
 
             renderCart();
             closeModal();
-            toggleCart();
+            
+            // Forzar apertura de carrito para que el cliente vea sus datos
+            const sidebar = document.getElementById('cart-sidebar');
+            const isOpen = !sidebar.classList.contains('pointer-events-none');
+            if (!isOpen) toggleCart();
         }
 
         function renderCart() {
             const container = document.getElementById('cart-items');
             const badge = document.getElementById('cart-badge');
+            const checkoutForm = document.getElementById('checkout-form');
+            const btnCheckout = document.getElementById('btn-checkout');
             
             if (cart.length === 0) {
                 container.innerHTML = `
@@ -420,10 +429,15 @@
                     </div>
                 `;
                 badge.classList.add('scale-0');
+                checkoutForm.classList.add('hidden');
                 document.getElementById('cart-subtotal').textContent = '$0';
                 document.getElementById('cart-total').textContent = '$0';
                 return;
             }
+
+            // Mostrar campos de datos siempre que haya algo en el carrito
+            checkoutForm.classList.remove('hidden');
+            btnCheckout.innerHTML = `<span>GENERAR PAGO SEGURO</span> <i class="fa-solid fa-shield-check"></i>`;
 
             badge.textContent = cart.reduce((s, i) => s + i.qty, 0);
             badge.classList.remove('scale-0');
@@ -431,20 +445,20 @@
 
             container.innerHTML = cart.map((item, idx) => `
                 <div class="cart-item flex gap-4 p-4 bg-white border border-slate-100 rounded-3xl shadow-sm">
-                    <img src="${item.img}" class="w-20 h-20 rounded-2xl object-cover">
+                    <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover">
                     <div class="flex-grow">
                         <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-slate-800">${item.name}</h4>
-                            <button onclick="removeFromCart(${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                            <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                            <button onclick="removeFromCart(${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
                         </div>
-                        <p class="text-xs text-slate-400 mb-2">Talla ${item.size} | ${item.color}</p>
+                        <p class="text-[10px] text-slate-400 mb-2 font-bold uppercase tracking-tighter">Talla ${item.size} | SKU ${item.sku}</p>
                         <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3 bg-slate-100 rounded-full px-3 py-1">
-                                <button onclick="changeQty(${idx}, -1)" class="text-slate-500"><i class="fa-solid fa-minus text-[10px]"></i></button>
-                                <span class="font-bold text-sm">${item.qty}</span>
-                                <button onclick="changeQty(${idx}, 1)" class="text-slate-500"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                            <div class="flex items-center gap-3 bg-slate-100 rounded-full px-2 py-1">
+                                <button onclick="changeQty(${idx}, -1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-minus text-[8px]"></i></button>
+                                <span class="font-bold text-xs">${item.qty}</span>
+                                <button onclick="changeQty(${idx}, 1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-plus text-[8px]"></i></button>
                             </div>
-                            <span class="font-black text-orange-600">${fmt(item.price * item.qty)}</span>
+                            <span class="font-black text-orange-600 text-sm">${fmt(item.price * item.qty)}</span>
                         </div>
                     </div>
                 </div>
@@ -466,27 +480,13 @@
             renderCart();
         }
 
-        // CHECKOUT FLOW
-        let checkoutStep = 1;
-
         function resetCheckout() {
-            checkoutStep = 1;
-            document.getElementById('checkout-form').classList.add('hidden');
-            document.getElementById('btn-checkout').innerHTML = `<span>CONTINUAR</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+            // No reseteamos nada para que el cliente no pierda sus datos escritos
         }
 
         function initCheckout() {
-            if (cart.length === 0) return alert('Agrega productos primero');
-            
-            if (checkoutStep === 1) {
-                document.getElementById('checkout-form').classList.remove('hidden');
-                document.getElementById('btn-checkout').innerHTML = `<span>GENERAR PAGO</span> <i class="fa-solid fa-credit-card"></i>`;
-                checkoutStep = 2;
-                // Scroll to form
-                document.getElementById('checkout-form').scrollIntoView({behavior: 'smooth'});
-            } else {
-                processPayment();
-            }
+            if (cart.length === 0) return alert('El carrito está vacío');
+            processPayment();
         }
 
         async function processPayment() {
@@ -495,20 +495,20 @@
             const address = document.getElementById('client-address').value.trim();
 
             if (!name || !phone || !address) {
-                alert('Por favor completa todos tus datos para la entrega');
+                alert('⚠️ INFORMACIÓN REQUERIDA:\nPor seguridad, necesitamos tu Nombre, WhatsApp y Dirección de entrega antes de proceder al pago.');
+                if(!name) document.getElementById('client-name').focus();
+                else if(!phone) document.getElementById('client-phone').focus();
+                else document.getElementById('client-address').focus();
                 return;
             }
 
             const btn = document.getElementById('btn-checkout');
             const original = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> PROCESANDO CON IA...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> CREANDO VINCULO BOLD...`;
             btn.disabled = true;
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const orderId = 'KOOL-' + Date.now();
-            
-            // Descripción robusta para el motor de IA
-            // [ORD:ID | SKU:CODE | SZ:SIZE | NAME:NAME | CLR:COLOR]
             const robustDesc = cart.map(i => `[ORD:${orderId} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | CLR:${i.color}]`).join(' ');
 
             try {
@@ -517,45 +517,36 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         amount: total,
-                        label: 'Calzado Kool #' + orderId.split('-')[1],
+                        label: 'CALZADO KOOL - PEDIDO #' + orderId.split('-')[1],
                         description: robustDesc + ' | ENVIO: ' + address,
                         order_id: orderId
                     })
                 });
 
                 if (!response.ok) throw new Error('Servidor fuera de línea');
-                
                 const data = await response.json();
                 
                 if (data.url) {
-                    // Save to local storage for tracking
                     let history = JSON.parse(localStorage.getItem('kool_history') || '[]');
                     history.unshift({
                         order_id: orderId,
                         date: new Date().toISOString(),
                         items: cart.map(i => `${i.qty}x ${i.name} (Talla ${i.size})`),
                         total: total,
-                        status: 'PENDIENTE DE PAGO'
+                        status: 'PAGADO'
                     });
                     localStorage.setItem('kool_history', JSON.stringify(history));
 
-                    // WhatsApp Notify
-                    const itemsText = cart.map(i => `• ${i.qty}x ${i.name} (Talla ${i.size})`).join('%0A');
-                    const waMsg = `🚀 *NUEVO PEDIDO WEB (CALZADO KOOL)*%0A%0A${itemsText}%0A%0A💰 *Total: ${fmt(total)}*%0A%0A👤 Cliente: ${name}%0A📱 Cel: ${phone}%0A📍 Envío: ${address}%0A🆔 Orden: ${orderId}`;
+                    const itemsList = cart.map(i => `✅ ${i.qty}x ${i.name} (Talla ${i.size})`).join('%0A');
+                    const waMsg = `👟 *NUEVO PEDIDO WEB PENDIENTE DE PAGO*%0A%0A🆔 *Orden:* ${orderId}%0A%0A📦 *Productos:*%0A${itemsList}%0A%0A💰 *Total a cobrar:* ${fmt(total)}%0A%0A👤 *Cliente:* ${name}%0A📱 *Cel:* ${phone}%0A📍 *Envío:* ${address}%0A%0A⚠️ _La IA procesará esto automáticamente al detectar el pago en Bold._`;
                     
-                    // Abrir WhatsApp en pestaña nueva
-                    setTimeout(() => {
-                        window.open(`https://wa.me/573057778133?text=${waMsg}`, '_blank');
-                    }, 500);
-
-                    // Redirigir a Bold
-                    window.location.href = data.url;
+                    window.open(`https://wa.me/573057778133?text=${waMsg}`, '_blank');
+                    setTimeout(() => { window.location.href = data.url; }, 800);
                 } else {
-                    throw new Error('No se generó link');
+                    throw new Error('Link no generado');
                 }
             } catch (error) {
-                console.error(error);
-                alert('❌ Error de conexión: No pudimos contactar a la pasarela de pagos. Por favor intenta de nuevo.');
+                alert('❌ Error de conexión: Intenta de nuevo en un momento.');
                 btn.innerHTML = original;
                 btn.disabled = false;
             }
