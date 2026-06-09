@@ -36,7 +36,7 @@
   </header>
   <main class="max-w-7xl mx-auto px-5 md:px-8 py-8">
     <div class="mb-4 text-sm text-gray-600 font-bold">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
-    <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div><div class="mb-4 flex gap-3"><button onclick="toggleCart(true)" class="btn">Terminar pedido</button><div class="text-sm text-gray-500 self-center">El carrito solo se abre cuando el cliente decide cerrar el pedido.</div></div>
+    <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div>
     <div id="grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
   </main>
   <aside id="drawer" class="drawer">
@@ -77,5 +77,18 @@
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
     render();
   </script>
+
+  <div class="fixed bottom-8 right-8 z-[100] flex flex-col items-end gap-3 pointer-events-none">
+    <div class="bg-black text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-2xl animate-bounce pointer-events-auto">
+      ¡Cierra tu pedido aquí!
+    </div>
+    <button onclick="toggleCart(true)" class="group pointer-events-auto flex items-center gap-4 bg-black text-white p-2 pl-6 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform active:scale-95">
+      <span class="text-sm font-black uppercase tracking-widest">Terminar pedido</span>
+      <div class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-arrow-right text-xl group-hover:translate-x-1 transition-transform"></i>
+      </div>
+    </button>
+  </div>
+
 </body>
 </html>
