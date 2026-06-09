@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO</title>
+  <title>KOOL PRO v1781041135</title><!-- v1781041135 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -91,18 +91,18 @@
       if(open){
         d.classList.add('open');
         o.classList.add('on');
-        if(f) f.style.display = 'none';
+        if(f) f.style.setProperty('display', 'none', 'important');
       } else {
         d.classList.remove('open');
         o.classList.remove('on');
-        if(f) f.style.display = 'flex';
+        if(f) f.style.setProperty('display', 'flex', 'important');
       } 
     }
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
     render();
   </script>
 
-  <div id="floatingAction" class="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-2 pointer-events-none">
+  <div id="floatingAction" class="fixed bottom-6 right-6 z-[40] flex flex-col items-end gap-2 pointer-events-none">
     <div class="bg-black text-white px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl animate-bounce pointer-events-auto">
       ¡Cierra tu pedido aquí!
     </div>
