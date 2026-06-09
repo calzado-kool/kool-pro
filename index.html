@@ -21,92 +21,37 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 glass">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-shoe-prints"></i></div>
         <h1 class="text-2xl font-black tracking-tighter">CALZADO KOOL</h1>
       </div>
-      <button onclick="toggleCart(true)" class="relative p-3 bg-white border rounded-2xl shadow-sm hover:bg-orange-50 transition-colors group">
+      <button onclick="KoolApp.toggleCart(true)" class="relative p-3 bg-white border rounded-2xl shadow-sm hover:bg-orange-50 transition-colors group">
         <i class="fa-solid fa-bag-shopping text-slate-700 group-hover:text-orange-600"></i>
         <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">0</span>
       </button>
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="max-w-7xl mx-auto px-4 py-10 space-y-12">
-    
-    <!-- CATALOG -->
     <section>
       <div class="mb-8">
         <h2 class="text-3xl font-black text-slate-800">Catálogo Premium</h2>
         <p class="text-slate-500">Agrega productos y tallas directamente al carrito.</p>
       </div>
-      <div id="productGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <!-- Products with integrated selector -->
-      </div>
+      <div id="productGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-10"></div>
     </section>
-
   </main>
 
-  <!-- PRODUCT MODAL -->
-  <div id="modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
-      <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:text-orange-600 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
-      
-      <!-- IMAGE SECTION -->
-      <div class="w-full md:w-1/2 bg-slate-100 overflow-hidden relative group">
-        <img id="mImg" src="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-125 cursor-zoom-in" alt="Zoom" onclick="window.open(this.src)">
-      </div>
-
-      <!-- DETAILS SECTION -->
-      <div class="w-full md:w-1/2 p-6 md:p-10 overflow-y-auto flex flex-col space-y-6">
-        <div>
-          <span id="mCat" class="text-orange-600 font-bold text-xs uppercase tracking-widest">Premium</span>
-          <h3 id="mTitle" class="text-4xl font-black text-slate-900 mt-2">Nombre</h3>
-          <p id="mPrice" class="text-3xl font-extrabold text-slate-800 mt-2">$0</p>
-        </div>
-
-        <div class="space-y-4">
-          <h4 class="font-bold text-slate-700 flex justify-between items-center">
-            <span>Selecciona tu talla</span>
-            <span class="text-xs text-slate-400 font-normal uppercase tracking-widest">Stock real</span>
-          </h4>
-          <div id="mSizes" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-            <!-- Sizes cards -->
-          </div>
-        </div>
-
-        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
-           <h4 class="font-bold text-slate-700 text-sm">Descripción del producto</h4>
-           <p id="mDesc" class="text-sm text-slate-500 leading-relaxed"></p>
-        </div>
-
-        <button onclick="addToCart()" class="btn-kool w-full py-5 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3">
-          <i class="fa-solid fa-cart-plus"></i> AGREGAR AL CARRITO
-        </button>
-        
-        <p class="text-[10px] text-center text-slate-400 uppercase tracking-tighter">Sincronizado automáticamente con inventario IA</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- CART SIDEBAR -->
   <aside id="cartSidebar" class="fixed inset-0 z-[100] hidden">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleCart(false)"></div>
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="KoolApp.toggleCart(false)"></div>
     <div id="cartPanel" class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 translate-x-full">
       <div class="p-6 border-b flex items-center justify-between">
         <h3 class="text-2xl font-black tracking-tight">Tu Carrito</h3>
-        <button onclick="toggleCart(false)" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <button onclick="KoolApp.toggleCart(false)" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
-
-      <div id="cartItems" class="flex-grow p-6 overflow-y-auto space-y-4">
-        <!-- Cart lines -->
-      </div>
-
+      <div id="cartItems" class="flex-grow p-6 overflow-y-auto space-y-4"></div>
       <div class="p-6 border-t bg-slate-50/80 space-y-6">
         <div id="checkoutForm" class="space-y-4">
           <h4 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-orange-600"></i> Datos de entrega</h4>
@@ -114,13 +59,11 @@
           <input type="tel" id="cPhone" placeholder="WhatsApp" class="w-full p-4 border rounded-2xl outline-none focus:border-orange-500 transition-all">
           <textarea id="cAddr" placeholder="Dirección completa (Ciudad, Barrio, etc.)" class="w-full p-4 border rounded-2xl outline-none focus:border-orange-500 transition-all h-20 resize-none"></textarea>
         </div>
-
         <div class="flex justify-between items-center text-2xl font-black">
           <span>Total</span>
           <span id="cartTotal" class="text-orange-600">$0</span>
         </div>
-
-        <button onclick="processPayment()" id="btnPay" class="btn-kool w-full py-5 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3">
+        <button onclick="KoolApp.processPayment()" id="btnPay" class="btn-kool w-full py-5 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3">
           <span>FINALIZAR Y PAGAR</span> <i class="fa-solid fa-shield-check"></i>
         </button>
       </div>
@@ -128,17 +71,15 @@
   </aside>
 
   <script>
-    // USAR UN NAMESPACE ÚNICO PARA EVITAR COLISIONES EN EL NAVEGADOR
     const KoolApp = {
       products: [
-        { id: 'p1', name: 'Bota Urbana Roja', category: 'Táctico Urbano', price: 160000, images: ['img/bota_roja.jpg','img/bota_roja_2.jpg'], description: 'Bota diseñada para la máxima durabilidad y estilo. Suela antideslizante y materiales premium resistentes al agua.', stock: {'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus: {'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color: 'Rojo' },
-        { id: 'p2', name: 'Tractor Power', category: 'Resistente', price: 160000, images: ['img/tractor_power.jpg'], description: 'La bota más fuerte para el trabajo pesado o el outdoor. Construcción reforzada y confort superior.', stock: {'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus: {'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color: 'Camel' },
-        { id: 'p3', name: 'Tenis Premium Edition', category: 'Lifestyle', price: 145000, images: ['img/tenis_premium.jpg'], description: 'Diseño exclusivo con acabados hechos a mano. La combinación perfecta entre elegancia y comodidad deportiva.', stock: {'35':3,'36':5,'37':2,'38':4,'39':1}, skus: {'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color: 'Blanco/Negro' },
-        { id: 'p4', name: 'Sneakers Urban Premium', category: 'Urban', price: 145000, images: ['img/sneakers_urban.jpg'], description: 'Caminatas largas o salidas casuales, estos sneakers son tu mejor aliado. Versatilidad total.', stock: {'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus: {'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color: 'Negro' }
+        { id: 'p1', name: 'Bota Urbana Roja', category: 'Táctico Urbano', price: 160000, images: ['img/bota_roja.jpg','img/bota_roja_2.jpg'], description: 'Bota diseñada para la máxima durabilidad y estilo.', stock: {'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus: {'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color: 'Rojo' },
+        { id: 'p2', name: 'Tractor Power', category: 'Resistente', price: 160000, images: ['img/tractor_power.jpg'], description: 'La bota más fuerte para el trabajo pesado o el outdoor.', stock: {'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus: {'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color: 'Camel' },
+        { id: 'p3', name: 'Tenis Premium Edition', category: 'Lifestyle', price: 145000, images: ['img/tenis_premium.jpg'], description: 'Diseño exclusivo con acabados hechos a mano.', stock: {'35':3,'36':5,'37':2,'38':4,'39':1}, skus: {'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color: 'Blanco/Negro' },
+        { id: 'p4', name: 'Sneakers Urban Premium', category: 'Urban', price: 145000, images: ['img/sneakers_urban.jpg'], description: 'Caminatas largas o salidas casuales, versatilidad total.', stock: {'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus: {'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color: 'Negro' }
       ],
       cart: JSON.parse(localStorage.getItem('kool_cart_v2') || '[]'),
-      currentProduct: null,
-      selectedSize: null,
+      selectedSizes: {},
 
       init() {
         this.renderCatalog();
@@ -150,161 +91,126 @@
       renderCatalog() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = this.products.map(p => `
-          <div class="bg-white border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col md:flex-row h-full">
-            <!-- Imagen Grande al Lado -->
+          <div class="bg-white border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col md:flex-row">
             <div class="w-full md:w-1/2 aspect-square bg-slate-50 relative overflow-hidden group">
               <img src="${p.images[0]}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
               <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-slate-800">${p.category}</div>
             </div>
-            
-            <!-- Selector y Botón al Lado -->
             <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between space-y-6">
               <div>
                 <h4 class="font-black text-2xl text-slate-800">${p.name}</h4>
                 <p class="text-orange-600 font-black text-2xl mt-1">${this.fmt(p.price)}</p>
-                <p class="text-slate-500 text-sm mt-3 line-clamp-2">${p.description}</p>
               </div>
-
               <div class="space-y-3">
                 <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-400">
-                  <span>Seleccionar Talla</span>
-                  <span>Stock Disp.</span>
+                  <span>Talla</span><span>Stock</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                   ${Object.entries(p.stock).map(([s, q]) => {
                     const ok = q > 0;
-                    return `
-                      <button onclick="${ok ? `KoolApp.quickSelectSize('${p.id}', '${s}')` : ''}" 
-                              id="size-${p.id}-${s}"
-                              class="size-btn-grid border-2 border-slate-100 rounded-xl py-2 flex flex-col items-center transition-all
-                              ${!ok ? 'opacity-20 cursor-not-allowed bg-slate-50' : 'hover:border-orange-200 hover:bg-orange-50'}">
-                        <span class="text-lg font-black">${s}</span>
-                        <span class="text-[9px] font-bold ${q < 3 ? 'text-red-500' : 'text-slate-400'}">${ok ? q : '0'}</span>
-                      </button>`;
+                    return `<button onclick="${ok ? `KoolApp.selectSize('${p.id}', '${s}')` : ''}" id="size-${p.id}-${s}" class="border-2 border-slate-100 rounded-xl py-2 flex flex-col items-center transition-all ${!ok ? 'opacity-20' : 'hover:border-orange-200'}">
+                      <span class="text-lg font-black">${s}</span><span class="text-[9px] font-bold ${q<3?'text-red-500':'text-slate-400'}">${q}</span>
+                    </button>`;
                   }).join('')}
                 </div>
               </div>
-
-              <button onclick="KoolApp.quickAddToCart('${p.id}')" 
-                      id="btn-add-${p.id}"
-                      class="btn-kool w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2">
-                <i class="fa-solid fa-cart-plus"></i> CARGAR AL CARRITO
+              <button onclick="KoolApp.addToCart('${p.id}')" class="btn-kool w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cart-plus"></i> CARGAR
               </button>
             </div>
           </div>
         `).join('');
       },
 
-      selectedSizesByProduct: {},
-
-      quickSelectSize(productId, size) {
-        this.selectedSizesByProduct[productId] = size;
-        // Limpiar otros botones del mismo producto
-        const btns = document.querySelectorAll(`[id^="size-${productId}-"]`);
-        btns.forEach(b => b.classList.remove('active', 'border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-100'));
-        // Activar el seleccionado
-        const selected = document.getElementById(`size-${productId}-${size}`);
-        selected.classList.add('active', 'border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-100');
+      selectSize(pid, s) {
+        this.selectedSizes[pid] = s;
+        document.querySelectorAll(\`[id^="size-\${pid}-"]\`).forEach(b => b.classList.remove('border-orange-500','bg-orange-50'));
+        document.getElementById(\`size-\${pid}-\${s}\`).classList.add('border-orange-500','bg-orange-50');
       },
 
-      quickAddToCart(productId) {
-        const size = this.selectedSizesByProduct[productId];
-        if (!size) return alert('Por favor, selecciona una talla primero.');
-        
-        const product = this.products.find(p => p.id === productId);
-        const stockActual = product.stock[size];
-        
-        // Validar Stock antes de agregar
-        const cartKey = `${productId}-${size}`;
-        const existing = this.cart.find(i => `${i.id}-${i.size}` === cartKey);
-        const qtyInCart = existing ? existing.qty : 0;
-
-        if (qtyInCart >= stockActual) {
-            alert(`⚠️ STOCK AGOTADO:\nNo puedes agregar más de ${stockActual} unidades de la talla ${size}.`);
-            return;
-        }
-
-        if (existing) {
-          existing.qty++;
+      addToCart(pid) {
+        const s = this.selectedSizes[pid];
+        if(!s) return alert('Elige una talla');
+        const p = this.products.find(x=>x.id===pid);
+        const item = this.cart.find(i=>i.id===pid && i.size===s);
+        if(item) {
+          if(item.qty >= p.stock[s]) return alert('No hay más stock');
+          item.qty++;
         } else {
-          this.cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            size: size,
-            sku: product.skus[size],
-            color: product.color,
-            img: product.images[0],
-            stockLimit: stockActual, // Guardar el límite
-            qty: 1
-          });
+          this.cart.push({ ...p, size:s, sku:p.skus[s], qty:1 });
         }
-        
         this.saveAndRender();
         this.toggleCart(true);
       },
 
-      changeQty(idx, d) {
-        const item = this.cart[idx];
-        const product = this.products.find(p => p.id === item.id);
-        const stockMax = product.stock[item.size];
+      saveAndRender() { localStorage.setItem('kool_cart_v2', JSON.stringify(this.cart)); this.renderCart(); },
 
-        if (d > 0 && item.qty >= stockMax) {
-            alert(`⚠️ LÍMITE DE STOCK:\nSolo quedan ${stockMax} unidades disponibles de esta talla.`);
-            return;
+      toggleCart(open) {
+        const s = document.getElementById('cartSidebar');
+        const p = document.getElementById('cartPanel');
+        if(open){ s.classList.remove('hidden'); setTimeout(()=>p.classList.remove('translate-x-full'),10); }
+        else { p.classList.add('translate-x-full'); setTimeout(()=>s.classList.add('hidden'),300); }
+      },
+
+      renderCart() {
+        const l = document.getElementById('cartItems');
+        const t = this.cart.reduce((s,i)=>s+(i.price*i.qty),0);
+        document.getElementById('cartCount').textContent = this.cart.reduce((s,i)=>s+i.qty,0);
+        document.getElementById('cartTotal').textContent = this.fmt(t);
+        if(!this.cart.length) {
+          l.innerHTML = '<p class="text-center py-20 text-slate-400">Vacío</p>';
+          document.getElementById('checkoutForm').classList.add('hidden');
+          return;
         }
-
-        item.qty += d;
-        if (item.qty <= 0) this.cart.splice(idx, 1);
-        this.saveAndRender();
+        document.getElementById('checkoutForm').classList.remove('hidden');
+        l.innerHTML = this.cart.map((i,idx)=>`
+          <div class="flex gap-4 bg-white p-4 border rounded-3xl">
+            <img src="\${i.images[0]}" class="w-12 h-12 rounded-xl object-cover">
+            <div class="flex-grow">
+              <div class="flex justify-between">
+                <h5 class="font-bold text-sm">\${i.name}</h5>
+                <button onclick="KoolApp.remove(\${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+              </div>
+              <div class="text-[10px] text-orange-600 font-bold">Talla \${i.size}</div>
+              <div class="flex justify-between items-center mt-2">
+                <div class="flex items-center gap-2 bg-slate-100 rounded-full px-2 py-1 text-xs">
+                  <button onclick="KoolApp.qty(\${idx},-1)"><i class="fa-solid fa-minus"></i></button>
+                  <span>\${i.qty}</span>
+                  <button onclick="KoolApp.qty(\${idx},1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <span class="font-black text-orange-600 text-xs">\${this.fmt(i.price*i.qty)}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
       },
 
-      removeFromCart(idx) {
-        this.cart.splice(idx, 1);
-        this.saveAndRender();
+      qty(idx,d){ 
+        const i = this.cart[idx];
+        const p = this.products.find(x=>x.id===i.id);
+        if(d>0 && i.qty >= p.stock[i.size]) return alert('No hay más stock');
+        i.qty+=d; if(i.qty<=0) this.cart.splice(idx,1); this.saveAndRender(); 
       },
+      remove(idx){ this.cart.splice(idx,1); this.saveAndRender(); },
 
       async processPayment() {
-        const n = document.getElementById('cName').value.trim();
-        const p = document.getElementById('cPhone').value.trim();
-        const a = document.getElementById('cAddr').value.trim();
-        if (!n || !p || !a) return alert('Por favor, completa todos los datos de entrega.');
-
-        const btn = document.getElementById('btnPay');
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO PAGO...`;
-
-        const orderId = 'KOOL-' + Date.now();
-        const total = this.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        const desc = this.cart.map(i => `[ORD:${orderId} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | CLR:${i.color}]`).join(' ');
-
+        const n=document.getElementById('cName').value.trim(), p=document.getElementById('cPhone').value.trim(), a=document.getElementById('cAddr').value.trim();
+        if(!n||!p||!a) return alert('Faltan datos');
+        const b = document.getElementById('btnPay');
+        b.disabled=true; b.innerHTML='GENERANDO...';
+        const oid='KOOL-'+Date.now(), t=this.cart.reduce((s,i)=>s+(i.price*i.qty),0);
+        const desc=this.cart.map(i=>\`[ORD:\${oid} | SKU:\${i.sku} | SZ:\${i.size} | NAME:\${i.name}]\`).join(' ');
         try {
-          const res = await fetch('https://bold-bridge-7qge-6pdxknayx-lhvlhv13-1274s-projects.vercel.app/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: total,
-              label: 'CALZADO KOOL - PEDIDO #' + orderId.split('-')[1],
-              description: desc + ' | ENVIO: ' + a,
-              order_id: orderId
-            })
-          });
+          const res = await fetch('https://bold-bridge-7qge-6pdxknayx-lhvlhv13-1274s-projects.vercel.app/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:t,label:'KOOL '+oid,description:desc+' | ENVIO: '+a,order_id:oid})});
           const data = await res.json();
-          if (data.url) {
-            const wa = `🚀 *NUEVO PEDIDO WEB (CALZADO KOOL)*%0A%0A\${this.cart.map(i=>`• \${i.qty}x \${i.name} (Talla \${i.size})`).join('%0A')}%0A%0A💰 *Total:* \${this.fmt(total)}%0A%0A👤 *Cliente:* \${n}%0A📱 *Cel:* \${p}%0A📍 *Envío:* \${a}%0A🆔 *Orden:* \${orderId}`;
-            window.open(`https://wa.me/573057778133?text=\${wa}`, '_blank');
-            setTimeout(() => window.location.href = data.url, 800);
-          } else throw 'Error';
-        } catch (e) {
-          alert('❌ Error al conectar con la pasarela de pagos. Por favor, intenta de nuevo.');
-          btn.disabled = false;
-          btn.innerHTML = originalText;
-        }
+          if(data.url) {
+            const wa = \`🚀 *PEDIDO KOOL*%0A\${this.cart.map(i=>\`• \${i.qty}x \${i.name} T\${i.size}\`).join('%0A')}%0A💰 *Total:* \${this.fmt(t)}%0A👤 \${n}%0A📱 \${p}%0A📍 \${a}\`;
+            window.open(\`https://wa.me/573057778133?text=\${wa}\`,'_blank');
+            window.location.href=data.url;
+          }
+        } catch(e){ alert('Error'); b.disabled=false; b.innerHTML='REINTENTAR'; }
       }
     };
-
-    // Lanzar la aplicación
     KoolApp.init();
   </script>
 </body>
