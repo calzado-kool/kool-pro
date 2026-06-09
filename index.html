@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781043267</title><!-- v1781043267 -->
+  <title>KOOL PRO v1781043466</title><!-- v1781043466 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -89,7 +89,7 @@
       const gate = document.getElementById('loadingGate');
       if (gate) gate.innerHTML = 'Productos cargados. El módulo de venta ya está activo.';
     }
-    function choose(pid, size){ selected[pid]=size; render(); }
+    function choose(pid, size){ selected[pid]=size; add(pid); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
     function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); render(); }
