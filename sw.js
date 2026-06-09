@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kool-pro-v1';
+const CACHE_NAME = 'kool-pro-1781042415';
 const APP_SHELL = ['/kool-pro/'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
