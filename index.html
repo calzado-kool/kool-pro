@@ -128,172 +128,219 @@
   </aside>
 
   <script>
-    const products = [
-      { id: 'p1', name: 'Bota Urbana Roja', category: 'Táctico Urbano', price: 160000, images: ['img/bota_roja.jpg','img/bota_roja_2.jpg'], description: 'Bota diseñada para la máxima durabilidad y estilo. Suela antideslizante y materiales premium resistentes al agua.', stock: {'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus: {'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color: 'Rojo' },
-      { id: 'p2', name: 'Tractor Power', category: 'Resistente', price: 160000, images: ['img/tractor_power.jpg'], description: 'La bota más fuerte para el trabajo pesado o el outdoor. Construcción reforzada y confort superior.', stock: {'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus: {'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color: 'Camel' },
-      { id: 'p3', name: 'Tenis Premium Edition', category: 'Lifestyle', price: 145000, images: ['img/tenis_premium.jpg'], description: 'Diseño exclusivo con acabados hechos a mano. La combinación perfecta entre elegancia y comodidad deportiva.', stock: {'35':3,'36':5,'37':2,'38':4,'39':1}, skus: {'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color: 'Blanco/Negro' },
-      { id: 'p4', name: 'Sneakers Urban Premium', category: 'Urban', price: 145000, images: ['img/sneakers_urban.jpg'], description: 'Caminatas largas o salidas casuales, estos sneakers son tu mejor aliado. Versatilidad total.', stock: {'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus: {'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color: 'Negro' }
-    ];
+    // USAR UN NAMESPACE ÚNICO PARA EVITAR COLISIONES EN EL NAVEGADOR
+    const KoolApp = {
+      products: [
+        { id: 'p1', name: 'Bota Urbana Roja', category: 'Táctico Urbano', price: 160000, images: ['img/bota_roja.jpg','img/bota_roja_2.jpg'], description: 'Bota diseñada para la máxima durabilidad y estilo. Suela antideslizante y materiales premium resistentes al agua.', stock: {'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus: {'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color: 'Rojo' },
+        { id: 'p2', name: 'Tractor Power', category: 'Resistente', price: 160000, images: ['img/tractor_power.jpg'], description: 'La bota más fuerte para el trabajo pesado o el outdoor. Construcción reforzada y confort superior.', stock: {'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus: {'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color: 'Camel' },
+        { id: 'p3', name: 'Tenis Premium Edition', category: 'Lifestyle', price: 145000, images: ['img/tenis_premium.jpg'], description: 'Diseño exclusivo con acabados hechos a mano. La combinación perfecta entre elegancia y comodidad deportiva.', stock: {'35':3,'36':5,'37':2,'38':4,'39':1}, skus: {'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color: 'Blanco/Negro' },
+        { id: 'p4', name: 'Sneakers Urban Premium', category: 'Urban', price: 145000, images: ['img/sneakers_urban.jpg'], description: 'Caminatas largas o salidas casuales, estos sneakers son tu mejor aliado. Versatilidad total.', stock: {'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus: {'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color: 'Negro' }
+      ],
+      cart: JSON.parse(localStorage.getItem('kool_cart_v2') || '[]'),
+      currentProduct: null,
+      selectedSize: null,
 
-    let cart = [];
-    let curProd = null;
-    let selSize = null;
+      init() {
+        this.renderCatalog();
+        this.renderCart();
+      },
 
-    const fmt = v => '$' + Number(v).toLocaleString('es-CO');
+      fmt(v) { return '$' + Number(v).toLocaleString('es-CO'); },
 
-    function renderCatalog() {
-      document.getElementById('productGrid').innerHTML = products.map(p => `
-        <div onclick="openModal('${p.id}')" class="bg-white border rounded-[2rem] overflow-hidden cursor-pointer hover:shadow-xl transition-all group">
-          <div class="aspect-square bg-slate-50 relative overflow-hidden">
-            <img src="${p.images[0]}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-slate-800">${p.category}</div>
-          </div>
-          <div class="p-6">
-            <h4 class="font-extrabold text-lg text-slate-800 group-hover:text-orange-600">${p.name}</h4>
-            <p class="text-orange-600 font-black text-xl mt-1">${fmt(p.price)}</p>
-            <div class="mt-4 flex flex-wrap gap-1">
-              ${Object.keys(p.stock).map(s => `<span class="text-[9px] font-bold border rounded-md px-1.5 py-0.5 ${p.stock[s]>0?'text-slate-400':'text-red-300 line-through'}">T${s}</span>`).join('')}
+      renderCatalog() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = this.products.map(p => `
+          <div onclick="KoolApp.openModal('${p.id}')" class="bg-white border rounded-[2rem] overflow-hidden cursor-pointer hover:shadow-xl transition-all group">
+            <div class="aspect-square bg-slate-50 relative overflow-hidden">
+              <img src="${p.images[0]}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+              <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-slate-800">${p.category}</div>
             </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openModal(id) {
-      curProd = products.find(x => x.id === id);
-      selSize = null;
-      document.getElementById('mTitle').textContent = curProd.name;
-      document.getElementById('mPrice').textContent = fmt(curProd.price);
-      document.getElementById('mDesc').textContent = curProd.description;
-      document.getElementById('mCat').textContent = curProd.category;
-      document.getElementById('mImg').src = curProd.images[0];
-      
-      const sizesDiv = document.getElementById('mSizes');
-      sizesDiv.innerHTML = Object.entries(curProd.stock).map(([s, q]) => {
-        const ok = q > 0;
-        return `<div onclick="${ok ? `selectSize('${s}')` : ''}" class="size-card ${!ok ? 'disabled' : ''} ${selSize === s ? 'active' : ''}" data-size="${s}">
-          <div class="text-xl font-black text-center">${s}</div>
-          <div class="text-[10px] text-center font-bold uppercase mt-1 ${q < 3 ? 'text-red-500' : 'text-slate-400'}">${ok ? q + ' Disp.' : 'Agotado'}</div>
-        </div>`;
-      }).join('');
-
-      document.getElementById('modal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function selectSize(s) {
-      selSize = s;
-      document.querySelectorAll('.size-card').forEach(el => {
-        el.classList.toggle('active', el.dataset.size === s);
-      });
-    }
-
-    function closeModal() {
-      document.getElementById('modal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-
-    function addToCart() {
-      if (!selSize) return alert('Selecciona una talla primero');
-      const key = `${curProd.id}-${selSize}`;
-      const item = cart.find(i => `${i.id}-${i.size}` === key);
-      if (item) item.qty++;
-      else cart.push({ ...curProd, size: selSize, sku: curProd.skus[selSize], qty: 1 });
-      
-      renderCart();
-      closeModal();
-      toggleCart(true);
-    }
-
-    function toggleCart(open) {
-      const sidebar = document.getElementById('cartSidebar');
-      const panel = document.getElementById('cartPanel');
-      if (open) {
-        sidebar.classList.remove('hidden');
-        setTimeout(() => panel.classList.remove('translate-x-full'), 10);
-      } else {
-        panel.classList.add('translate-x-full');
-        setTimeout(() => sidebar.classList.add('hidden'), 300);
-      }
-    }
-
-    function renderCart() {
-      const list = document.getElementById('cartItems');
-      const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-      const count = cart.reduce((s, i) => s + i.qty, 0);
-      
-      document.getElementById('cartCount').textContent = count;
-      document.getElementById('cartTotal').textContent = fmt(total);
-
-      if (cart.length === 0) {
-        list.innerHTML = `<div class="text-center py-20 text-slate-300"><i class="fa-solid fa-cart-plus text-6xl mb-4"></i><p class="font-bold">Carrito vacío</p></div>`;
-        document.getElementById('checkoutForm').classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('checkoutForm').classList.remove('hidden');
-      list.innerHTML = cart.map((i, idx) => `
-        <div class="flex gap-4 bg-white p-4 border rounded-3xl shadow-sm">
-          <img src="${i.images[0]}" class="w-16 h-16 rounded-2xl object-cover">
-          <div class="flex-grow">
-            <div class="flex justify-between items-start">
-              <h5 class="font-bold text-slate-800 text-sm">${i.name}</h5>
-              <button onclick="remove(${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
-            </div>
-            <div class="flex items-center gap-2 mt-1">
-              <span class="bg-orange-50 text-orange-600 text-[10px] font-black px-2 py-0.5 rounded">Talla ${i.size}</span>
-            </div>
-            <div class="flex justify-between items-center mt-2">
-              <div class="flex items-center gap-3 bg-slate-100 rounded-full px-3 py-1 font-bold text-xs">
-                <button onclick="qty(${idx},-1)"><i class="fa-solid fa-minus"></i></button>
-                <span>${i.qty}</span>
-                <button onclick="qty(${idx},1)"><i class="fa-solid fa-plus"></i></button>
+            <div class="p-6">
+              <h4 class="font-extrabold text-lg text-slate-800 group-hover:text-orange-600">${p.name}</h4>
+              <p class="text-orange-600 font-black text-xl mt-1">${this.fmt(p.price)}</p>
+              <div class="mt-4 flex flex-wrap gap-1">
+                ${Object.keys(p.stock).map(s => `<span class="text-[9px] font-bold border rounded-md px-1.5 py-0.5 ${p.stock[s]>0?'text-slate-400':'text-red-300 line-through'}">T${s}</span>`).join('')}
               </div>
-              <span class="font-black text-orange-600">${fmt(i.price * i.qty)}</span>
             </div>
           </div>
-        </div>
-      `).join('');
-    }
+        `).join('');
+      },
 
-    function qty(idx, d) { cart[idx].qty += d; if (cart[idx].qty <= 0) cart.splice(idx, 1); renderCart(); }
-    function remove(idx) { cart.splice(idx, 1); renderCart(); }
+      openModal(id) {
+        this.currentProduct = this.products.find(x => x.id === id);
+        this.selectedSize = null;
+        document.getElementById('mTitle').textContent = this.currentProduct.name;
+        document.getElementById('mPrice').textContent = this.fmt(this.currentProduct.price);
+        document.getElementById('mDesc').textContent = this.currentProduct.description;
+        document.getElementById('mCat').textContent = this.currentProduct.category;
+        document.getElementById('mImg').src = this.currentProduct.images[0];
+        
+        const sizesDiv = document.getElementById('mSizes');
+        sizesDiv.innerHTML = Object.entries(this.currentProduct.stock).map(([s, q]) => {
+          const available = q > 0;
+          return `
+            <div onclick="${available ? `KoolApp.selectSize('${s}')` : ''}" 
+                 class="size-card ${!available ? 'disabled' : ''}" 
+                 data-size="${s}">
+              <div class="text-xl font-black text-center">${s}</div>
+              <div class="text-[10px] text-center font-bold uppercase mt-1 ${q < 3 ? 'text-red-500' : 'text-slate-400'}">
+                ${available ? q + ' Disp.' : 'Agotado'}
+              </div>
+            </div>`;
+        }).join('');
 
-    async function processPayment() {
-      const n = document.getElementById('cName').value.trim();
-      const p = document.getElementById('cPhone').value.trim();
-      const a = document.getElementById('cAddr').value.trim();
-      if (!n || !p || !a) return alert('Completa todos los datos de entrega');
+        document.getElementById('modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      },
 
-      const btn = document.getElementById('btnPay');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO PAGO...`;
-
-      const orderId = 'KOOL-' + Date.now();
-      const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-      const desc = cart.map(i => `[ORD:${orderId} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | CLR:${i.color}]`).join(' ');
-
-      try {
-        const res = await fetch('https://bold-bridge-7qge-6pdxknayx-lhvlhv13-1274s-projects.vercel.app/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total, label: 'CALZADO KOOL #' + orderId.split('-')[1], description: desc + ' | ENVIO: ' + a, order_id: orderId })
+      selectSize(s) {
+        this.selectedSize = s;
+        document.querySelectorAll('.size-card').forEach(el => {
+          el.classList.toggle('active', el.dataset.size === s);
         });
-        const data = await res.json();
-        if (data.url) {
-          const wa = `🚀 *NUEVO PEDIDO WEB (CALZADO KOOL)*%0A%0A${cart.map(i=>`• ${i.qty}x ${i.name} (Talla ${i.size})`).join('%0A')}%0A%0A💰 *Total:* ${fmt(total)}%0A%0A👤 *Cliente:* ${n}%0A📱 *Cel:* ${p}%0A📍 *Envío:* ${a}%0A🆔 *Orden:* ${orderId}`;
-          window.open(`https://wa.me/573057778133?text=${wa}`, '_blank');
-          setTimeout(() => window.location.href = data.url, 800);
-        } else throw 'Error';
-      } catch (e) {
-        alert('Error al conectar con Bold');
-        btn.disabled = false;
-        btn.innerHTML = 'REINTENTAR PAGO';
-      }
-    }
+      },
 
-    renderCatalog();
-    renderCart();
+      closeModal() {
+        document.getElementById('modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      },
+
+      addToCart() {
+        if (!this.selectedSize) return alert('Por favor, selecciona una talla primero.');
+        
+        const key = `${this.currentProduct.id}-${this.selectedSize}`;
+        const existing = this.cart.find(i => `${i.id}-${i.size}` === key);
+        
+        if (existing) {
+          existing.qty++;
+        } else {
+          this.cart.push({
+            id: this.currentProduct.id,
+            name: this.currentProduct.name,
+            price: this.currentProduct.price,
+            size: this.selectedSize,
+            sku: this.currentProduct.skus[this.selectedSize],
+            color: this.currentProduct.color,
+            img: this.currentProduct.images[0],
+            qty: 1
+          });
+        }
+        
+        this.saveAndRender();
+        this.closeModal();
+        this.toggleCart(true);
+      },
+
+      saveAndRender() {
+        localStorage.setItem('kool_cart_v2', JSON.stringify(this.cart));
+        this.renderCart();
+      },
+
+      toggleCart(open) {
+        const sidebar = document.getElementById('cartSidebar');
+        const panel = document.getElementById('cartPanel');
+        if (open) {
+          sidebar.classList.remove('hidden');
+          setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+        } else {
+          panel.classList.add('translate-x-full');
+          setTimeout(() => sidebar.classList.add('hidden'), 300);
+        }
+      },
+
+      renderCart() {
+        const list = document.getElementById('cartItems');
+        const total = this.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        const count = this.cart.reduce((s, i) => s + i.qty, 0);
+        
+        document.getElementById('cartCount').textContent = count;
+        document.getElementById('cartTotal').textContent = this.fmt(total);
+
+        if (this.cart.length === 0) {
+          list.innerHTML = `<div class="text-center py-20 text-slate-300"><i class="fa-solid fa-cart-plus text-6xl mb-4"></i><p class="font-bold">Tu carrito está vacío</p></div>`;
+          document.getElementById('checkoutForm').classList.add('hidden');
+          return;
+        }
+
+        document.getElementById('checkoutForm').classList.remove('hidden');
+        list.innerHTML = this.cart.map((i, idx) => `
+          <div class="flex gap-4 bg-white p-4 border rounded-3xl shadow-sm">
+            <img src="${i.img}" class="w-16 h-16 rounded-2xl object-cover">
+            <div class="flex-grow">
+              <div class="flex justify-between items-start">
+                <h5 class="font-bold text-slate-800 text-sm">${i.name}</h5>
+                <button onclick="KoolApp.removeFromCart(${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
+              </div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="bg-orange-50 text-orange-600 text-[10px] font-black px-2 py-0.5 rounded">Talla ${i.size}</span>
+                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">SKU ${i.sku}</span>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                <div class="flex items-center gap-3 bg-slate-100 rounded-full px-3 py-1 font-bold text-xs">
+                  <button onclick="KoolApp.changeQty(${idx},-1)"><i class="fa-solid fa-minus"></i></button>
+                  <span>${i.qty}</span>
+                  <button onclick="KoolApp.changeQty(${idx},1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <span class="font-black text-orange-600">${this.fmt(i.price * i.qty)}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      changeQty(idx, d) {
+        this.cart[idx].qty += d;
+        if (this.cart[idx].qty <= 0) this.cart.splice(idx, 1);
+        this.saveAndRender();
+      },
+
+      removeFromCart(idx) {
+        this.cart.splice(idx, 1);
+        this.saveAndRender();
+      },
+
+      async processPayment() {
+        const n = document.getElementById('cName').value.trim();
+        const p = document.getElementById('cPhone').value.trim();
+        const a = document.getElementById('cAddr').value.trim();
+        if (!n || !p || !a) return alert('Por favor, completa todos los datos de entrega.');
+
+        const btn = document.getElementById('btnPay');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> GENERANDO PAGO...`;
+
+        const orderId = 'KOOL-' + Date.now();
+        const total = this.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        const desc = this.cart.map(i => `[ORD:${orderId} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | CLR:${i.color}]`).join(' ');
+
+        try {
+          const res = await fetch('https://bold-bridge-7qge-6pdxknayx-lhvlhv13-1274s-projects.vercel.app/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: total,
+              label: 'CALZADO KOOL - PEDIDO #' + orderId.split('-')[1],
+              description: desc + ' | ENVIO: ' + a,
+              order_id: orderId
+            })
+          });
+          const data = await res.json();
+          if (data.url) {
+            const wa = `🚀 *NUEVO PEDIDO WEB (CALZADO KOOL)*%0A%0A\${this.cart.map(i=>`• \${i.qty}x \${i.name} (Talla \${i.size})`).join('%0A')}%0A%0A💰 *Total:* \${this.fmt(total)}%0A%0A👤 *Cliente:* \${n}%0A📱 *Cel:* \${p}%0A📍 *Envío:* \${a}%0A🆔 *Orden:* \${orderId}`;
+            window.open(`https://wa.me/573057778133?text=\${wa}`, '_blank');
+            setTimeout(() => window.location.href = data.url, 800);
+          } else throw 'Error';
+        } catch (e) {
+          alert('❌ Error al conectar con la pasarela de pagos. Por favor, intenta de nuevo.');
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      }
+    };
+
+    // Lanzar la aplicación
+    KoolApp.init();
   </script>
 </body>
 </html>
