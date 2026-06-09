@@ -3,340 +3,161 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calzado Kool | Tienda Inteligente</title>
+  <title>Kool Pro | Adidas Style</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root{--kool:#ea580c;--kool2:#f97316;--ink:#0f172a;--muted:#64748b}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#fff 0%,#f8fafc 100%);color:var(--ink)}
-    .glass{backdrop-filter: blur(18px); background: rgba(255,255,255,.76)}
-    .soft{box-shadow:0 20px 45px rgba(15,23,42,.08)}
-    .grad{background:linear-gradient(135deg,var(--kool2),var(--kool))}
-    .kool-card{background:#fff;border:1px solid #e2e8f0;border-radius:28px;overflow:hidden;transition:.25s ease;}
-    .kool-card:hover{transform:translateY(-4px);box-shadow:0 24px 55px rgba(15,23,42,.09);border-color:#fdba74}
-    .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .75rem;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-    .chip-muted{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}
-    .chip-live{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
-    .size{border:2px solid #e2e8f0;border-radius:16px;padding:.9rem .75rem;transition:.2s;cursor:pointer;background:#fff}
-    .size:hover{border-color:#fdba74;background:#fff7ed}
-    .size.active{border-color:var(--kool);background:#fff7ed;box-shadow:0 0 0 4px rgba(234,88,12,.08)}
-    .size.disabled{opacity:.35;cursor:not-allowed;background:#f8fafc}
-    .btn-main{background:#111827;color:#fff;border-radius:18px;transition:.2s}
-    .btn-main:hover{background:var(--kool);transform:translateY(-1px)}
-    .input-kool{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:16px;outline:none;background:#fff;transition:.2s}
-    .input-kool:focus{border-color:var(--kool);box-shadow:0 0 0 4px rgba(234,88,12,.1)}
-    .drawer{position:fixed;inset:0;z-index:1000;pointer-events:none}
-    .drawer.open{pointer-events:auto}
-    .drawer .overlay{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(5px);opacity:0;transition:.25s}
-    .drawer.open .overlay{opacity:1}
-    .drawer .panel{position:absolute;top:0;right:0;height:100%;width:min(100%,440px);background:#fff;transform:translateX(100%);transition:.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-    .drawer.open .panel{transform:translateX(0)}
-    .qty{min-width:92px}
+    body { font-family: 'Inter', sans-serif; background: #fff; color: #000; }
+    .btn-adidas { background: #000; color: #fff; font-weight: 900; text-transform: uppercase; padding: 1.2rem; border-radius: 4px; transition: 0.2s; }
+    .btn-adidas:hover { background: #333; }
+    .card { border: 1px solid #eee; transition: 0.3s; }
+    .card:hover { border-color: #000; }
+    .size-btn { border: 1px solid #ddd; padding: 10px; text-align: center; cursor: pointer; font-weight: 700; font-size: 14px; }
+    .size-btn.active { border-color: #000; background: #000; color: #fff; }
+    .cart-drawer { position: fixed; right: -400px; top: 0; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.3s; z-index: 1000; padding: 20px; display: flex; flex-direction: column; }
+    .cart-drawer.open { right: 0; }
   </style>
 </head>
 <body>
-  <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 glass">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl grad text-white flex items-center justify-center soft"><i class="fa-solid fa-shoe-prints"></i></div>
-        <div>
-          <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">Calzado Kool</div>
-          <h1 class="text-xl sm:text-2xl font-black tracking-tight leading-none">Tienda Inteligente</h1>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="chip chip-live"><i class="fa-solid fa-signal"></i> IA Activa</span>
-        <button onclick="App.toggleCart(true)" class="relative rounded-2xl border border-slate-200 bg-white px-4 py-3 soft hover:border-orange-200 transition-colors">
-          <i class="fa-solid fa-bag-shopping text-slate-800"></i>
-          <span id="cartBadge" class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full grad text-white text-[10px] font-black flex items-center justify-center border-2 border-white scale-0 transition-transform">0</span>
-        </button>
-      </div>
+  <nav class="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-50">
+    <div class="text-2xl font-black uppercase tracking-tighter">Kool Pro <span class="text-gray-400">/ Adidas Style</span></div>
+    <div class="flex gap-6 items-center">
+      <button onclick="toggleCart()" class="relative">
+        <i class="fa-solid fa-cart-shopping text-xl"></i>
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+      </button>
     </div>
-  </header>
+  </nav>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
-    <section class="grid lg:grid-cols-2 gap-8 items-center">
-      <div class="space-y-6">
-        <div class="flex flex-wrap gap-2">
-          <span class="chip chip-live"><i class="fa-solid fa-bolt"></i> Bold + GESADMIN</span>
-          <span class="chip chip-muted"><i class="fa-solid fa-cart-shopping"></i> Multicarrito</span>
-          <span class="chip chip-muted"><i class="fa-solid fa-swatchbook"></i> Stock real</span>
-        </div>
-        <div>
-          <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-[.95]">Una tienda que <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">vende sola</span> y se ve premium</h2>
-          <p class="mt-4 text-slate-500 text-lg max-w-2xl">Catálogo de autor, tallas visibles, carrito persistente y salida directa a pago. Todo sincronizado con inventario y facturación.</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <button class="btn-main px-5 py-4 font-bold shadow-xl" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-store"></i> Ver catálogo</button>
-          <button class="px-5 py-4 rounded-2xl border border-slate-200 bg-white font-bold text-slate-700 hover:border-orange-200 transition-colors" onclick="App.toggleDrawer('cart',true)"><i class="fa-solid fa-bag-shopping"></i> Abrir carrito</button>
-        </div>
-      </div>
-      <div class="kool-card soft grad text-white p-5 sm:p-6">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <div class="text-white/70 text-sm font-semibold uppercase tracking-[.2em]">Producto destacado</div>
-            <div class="text-2xl sm:text-3xl font-black">Bota Urbana Roja</div>
-          </div>
-          <div class="chip bg-white/15 text-white border-white/20">Desde $2.000</div>
-        </div>
-        <div class="rounded-[24px] overflow-hidden bg-white/10 border border-white/15 soft">
-          <img src="img/bota_roja.jpg" alt="Bota Urbana Roja" class="w-full aspect-square object-cover">
-        </div>
-        <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
-          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Foto grande + zoom</div>
-          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Tallas visibles</div>
-          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Carrito persistente</div>
-          <div class="bg-white/10 border border-white/15 rounded-2xl p-3">Checkout claro</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="catalog" class="space-y-5">
-      <div class="flex items-end justify-between gap-4 flex-wrap">
-        <div>
-          <h3 class="text-3xl font-black tracking-tight">Catálogo</h3>
-          <p class="text-slate-500">Selecciona talla, agrega y sigue comprando. El inventario no deja pasar más de lo disponible.</p>
-        </div>
-        <div class="chip chip-muted"><i class="fa-solid fa-shield-heart"></i> Stock protegido</div>
-      </div>
-      <div id="grid" class="grid grid-cols-1 xl:grid-cols-2 gap-8"></div>
-    </section>
+  <main class="max-w-7xl mx-auto p-6 md:p-12">
+    <div id="catalog" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
   </main>
 
-  <div id="drawer-cart" class="drawer">
-    <div class="overlay" onclick="App.toggleDrawer('cart',false)"></div>
-    <div class="panel">
-      <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
-        <div>
-          <h3 class="text-2xl font-black">Tu Carrito</h3>
-          <p class="text-xs uppercase tracking-[.18em] text-slate-400 font-bold">Resumen del pedido</p>
-        </div>
-        <button onclick="App.toggleDrawer('cart',false)" class="w-11 h-11 rounded-full hover:bg-white border border-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div id="cartItems" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4"></div>
-      <div class="p-5 sm:p-6 border-t border-slate-100 bg-slate-50/70 space-y-4">
-        <div id="clientForm" class="space-y-3">
-          <div class="flex items-center gap-2 mb-1"><div class="w-2 h-6 rounded-full grad"></div><h4 class="font-black text-slate-800 uppercase text-xs tracking-[.2em]">Datos de entrega</h4></div>
-          <input id="cName" class="input-kool" type="text" placeholder="Nombre completo">
-          <input id="cPhone" class="input-kool" type="tel" placeholder="WhatsApp">
-          <textarea id="cAddr" class="input-kool h-24 resize-none" placeholder="Dirección completa, ciudad y barrio"></textarea>
-        </div>
-        <div class="flex items-center justify-between pt-2">
-          <span class="text-sm uppercase tracking-[.18em] text-slate-400 font-black">Total</span>
-          <span id="cartTotal" class="text-2xl font-black text-orange-600">$0</span>
-        </div>
-        <button id="btnPay" class="btn-main w-full py-4 font-black shadow-xl flex items-center justify-center gap-2" onclick="App.checkout()"><i class="fa-solid fa-shield-check"></i> Finalizar y pagar</button>
-        <p class="text-[10px] text-center text-slate-400 uppercase tracking-[.18em] font-bold">Pago seguro por Bold • IA Kool sincroniza inventario y GESADMIN</p>
-      </div>
+  <div id="cartDrawer" class="cart-drawer">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-black uppercase">Tu Carrito</h2>
+      <button onclick="toggleCart()"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
-  </div>
-
-  <div id="drawer-product" class="drawer">
-    <div class="overlay" onclick="App.toggleDrawer('product',false)"></div>
-    <div class="panel" id="productPanel"></div>
+    <div id="cartItems" class="flex-1 overflow-y-auto space-y-4"></div>
+    <div class="border-t border-gray-100 pt-6 mt-6 space-y-4">
+      <div class="flex justify-between text-xl font-black">
+        <span>TOTAL</span>
+        <span id="cartTotal">$0</span>
+      </div>
+      <div class="space-y-2">
+        <input id="cName" class="w-full border p-3" placeholder="Nombre completo">
+        <input id="cPhone" class="w-full border p-3" placeholder="WhatsApp">
+        <textarea id="cAddr" class="w-full border p-3 h-20" placeholder="Dirección de envío"></textarea>
+      </div>
+      <button onclick="checkout()" id="btnPay" class="btn-adidas w-full">Finalizar Compra</button>
+    </div>
   </div>
 
   <script>
-    const App = {
-      bridgeUrl: 'https://bold-bridge-7qge.vercel.app/api/checkout',
-      products: [
-        { id:'p1', name:'Bota Urbana Roja', category:'Táctico Urbano', price:160000, images:['img/bota_roja.jpg','img/bota_roja_2.jpg'], desc:'Bota diseñada para la máxima durabilidad y estilo. Suela antideslizante y materiales premium resistentes al agua.', tech:['Material premium','Suela antideslizante','Resistente al agua'], stock:{'34':1,'35':2,'36':2,'37':2,'38':3,'39':1}, skus:{'34':'020','35':'021','36':'022','37':'023','38':'024','39':'025'}, color:'Rojo' },
-        { id:'p2', name:'Tractor Power', category:'Resistente', price:160000, images:['img/tractor_power.jpg'], desc:'La bota más fuerte para trabajo pesado o outdoor. Construcción reforzada y confort superior.', tech:['Construcción reforzada','Outdoor','Confort superior'], stock:{'34':2,'36':1,'37':4,'38':2,'39':5,'40':2}, skus:{'34':'TR-34','36':'TR-36','37':'TR-37','38':'TR-38','39':'TR-39','40':'TR-40'}, color:'Camel' },
-        { id:'p3', name:'Tenis Premium Edition', category:'Lifestyle', price:145000, images:['img/tenis_premium.jpg'], desc:'Diseño exclusivo con acabados hechos a mano. La combinación perfecta entre elegancia y comodidad deportiva.', tech:['Hecho a mano','Acabado premium','Ligero'], stock:{'35':3,'36':5,'37':2,'38':4,'39':1}, skus:{'35':'TP-35','36':'TP-36','37':'TP-37','38':'TP-38','39':'TP-39'}, color:'Blanco/Negro' },
-        { id:'p4', name:'Sneakers Urban Premium', category:'Urban', price:145000, images:['img/sneakers_urban.jpg'], desc:'Versatilidad total para el día a día en la ciudad.', tech:['Uso diario','Versátil','Ligero'], stock:{'34':2,'35':1,'36':3,'37':2,'38':4,'39':2}, skus:{'34':'SU-34','35':'SU-35','36':'SU-36','37':'SU-37','38':'SU-38','39':'SU-39'}, color:'Negro' }
-      ],
-      cart: [],
-      selected: JSON.parse(localStorage.getItem('kool_selected_v1') || '{}'),
-      editing: null,
+    const products = [
+      { id: 'p1', name: 'Runner Blue Mesh', price: 155000, color: 'Azul Oscuro', material: 'Malla transpirable de alto rendimiento', img: 'media/1781009828516.jpg', sizes: [35,36,37,38,39,40] },
+      { id: 'p2', name: 'Urban Black Gum', price: 145000, color: 'Negro / Caramelo', material: 'Sintético reforzado con suela de goma', img: 'media/1781009836099.jpg', sizes: [35,36,37,38,39,40] },
+      { id: 'p3', name: 'Nude Texture Heel', price: 135000, color: 'Beige / Nude', material: 'Cuero sintético con acabado texturizado', img: 'media/1781009853950.jpg', sizes: [35,36,37,38,39,40] }
+    ];
 
-      init() {
-        try { this.cart = JSON.parse(localStorage.getItem('kool_cart_v4') || '[]'); if(!Array.isArray(this.cart)) this.cart = []; } catch { this.cart = []; }
-        this.renderCatalog();
-        this.renderCart();
-      },
+    let cart = [];
+    let selectedSizes = {};
 
-      fmt(v){ return '$' + Number(v).toLocaleString('es-CO'); },
-
-      saveCart(){ localStorage.setItem('kool_cart_v4', JSON.stringify(this.cart)); },
-      saveSelected(){ localStorage.setItem('kool_selected_v1', JSON.stringify(this.selected)); },
-
-      renderCatalog(){
-        document.getElementById('grid').innerHTML = this.products.map(p => `
-          <article class="kool-card flex flex-col lg:flex-row min-h-[640px]">
-            <div class="lg:w-1/2 relative bg-slate-50 group overflow-hidden">
-              <img src="${p.images[0]}" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-110" alt="${p.name}">
-              <div class="absolute top-4 left-4 chip chip-live"><i class="fa-solid fa-sparkles"></i> ${p.category}</div>
-              <div class="absolute bottom-4 left-4 chip chip-muted bg-white/90"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
-            </div>
-            <div class="lg:w-1/2 p-5 sm:p-6 md:p-8 flex flex-col gap-6">
-              <div>
-                <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">${p.category}</div>
-                <h4 class="text-3xl font-black tracking-tight mt-1">${p.name}</h4>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                  <div class="text-3xl font-black text-orange-600">${this.fmt(p.price)}</div>
-                  <div class="chip chip-muted">Stock real</div>
-                </div>
-                <p class="mt-4 text-slate-500 leading-relaxed">${p.desc}</p>
-              </div>
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <h5 class="font-black text-slate-800">Selecciona talla</h5>
-                  <span class="text-[10px] uppercase tracking-[.18em] text-slate-400 font-bold">Disponible</span>
-                </div>
-                <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                  ${Object.entries(p.stock).map(([s,q]) => `<button class="size ${q>0?'':'disabled'} ${this.selected[p.id]===s?'active':''}" ${q>0?`onclick="App.pickSize('${p.id}','${s}')"`:'disabled'}><div class="text-lg font-black">${s}</div><div class="text-[10px] font-black ${q<3?'text-red-500':'text-slate-400'}">${q>0?`${q} uds`:'Agotado'}</div></button>`).join('')}
-                </div>
-              </div>
-              <div class="grid sm:grid-cols-2 gap-3">
-                <button class="btn-main py-4 font-black" onclick="App.add('${p.id}')"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
-                <button class="border border-slate-200 rounded-2xl py-4 font-black text-slate-700 hover:border-orange-200 hover:text-orange-600 transition-colors" onclick="App.openProduct('${p.id}')"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Ver detalles</button>
-              </div>
-            </div>
-          </article>
-        `).join('');
-      },
-
-      openProduct(id){
-        const p = this.products.find(x=>x.id===id);
-        this.editing = p;
-        document.getElementById('productPanel').innerHTML = `
-          <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-            <div>
-              <div class="text-xs uppercase tracking-[.22em] text-slate-400 font-bold">Ficha inmersiva</div>
-              <h3 class="text-2xl font-black">${p.name}</h3>
-            </div>
-            <button onclick="App.toggleDrawer('product',false)" class="w-11 h-11 rounded-full hover:bg-white border border-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    function render() {
+      const cat = document.getElementById('catalog');
+      cat.innerHTML = products.map(p => `
+        <div class="card p-4">
+          <img src="${p.img}" class="w-full aspect-square object-cover mb-4">
+          <h3 class="text-xl font-black uppercase">${p.name}</h3>
+          <p class="text-gray-500 text-sm mb-4">${p.color} | ${p.material}</p>
+          <div class="text-2xl font-black mb-6">$${p.price.toLocaleString()}</div>
+          <div class="grid grid-cols-6 gap-1 mb-6">
+            ${p.sizes.map(s => `
+              <div onclick="selectSize('${p.id}', ${s})" class="size-btn ${selectedSizes[p.id] === s ? 'active' : ''}">${s}</div>
+            `).join('')}
           </div>
-          <div class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
-            <div class="rounded-[24px] overflow-hidden bg-slate-50 border border-slate-100 soft relative group">
-              <img src="${p.images[0]}" class="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-125 cursor-zoom-in" onclick="window.open(this.src,'_blank')" alt="${p.name}">
-              <div class="absolute top-4 left-4 chip chip-live">Zoom real</div>
-            </div>
-            <div>
-              <div class="text-3xl font-black text-orange-600">${this.fmt(p.price)}</div>
-              <p class="mt-3 text-slate-500 leading-relaxed">${p.desc}</p>
-            </div>
-            <div class="grid sm:grid-cols-3 gap-3">
-              ${p.tech.map(t => `<div class="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm font-bold text-slate-700">${t}</div>`).join('')}
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-3"><h5 class="font-black text-slate-800">Tallas</h5><span class="text-[10px] uppercase tracking-[.18em] text-slate-400 font-bold">Stock real</span></div>
-              <div class="grid grid-cols-3 gap-3">${Object.entries(p.stock).map(([s,q])=>`<button class="size ${q>0?'':'disabled'} ${this.selected[p.id]===s?'active':''}" ${q>0?`onclick="App.pickSize('${p.id}','${s}')"`:'disabled'}><div class="text-lg font-black">${s}</div><div class="text-[10px] font-black ${q<3?'text-red-500':'text-slate-400'}">${q>0?`${q} uds`:'Agotado'}</div></button>`).join('')}</div>
-            </div>
-            <button class="btn-main w-full py-4 font-black" onclick="App.add('${p.id}',true)"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button>
-          </div>`;
-        this.toggleDrawer('product',true);
-      },
+          <button onclick="addToCart('${p.id}')" class="btn-adidas w-full">Agregar</button>
+        </div>
+      `).join('');
+    }
 
-      pickSize(pid,size){ this.selected[pid]=size; this.saveSelected(); this.renderCatalog(); if(this.editing && this.editing.id===pid) this.openProduct(pid); },
+    function selectSize(pid, size) {
+      selectedSizes[pid] = size;
+      render();
+    }
 
-      add(pid, fromModal=false){
-        const size = this.selected[pid];
-        if(!size) return alert('Selecciona una talla primero');
-        const p = this.products.find(x=>x.id===pid);
-        const current = this.cart.find(i => i.id===pid && i.size===size);
-        const stockLimit = p.stock[size] || 0;
-        if((current?.qty || 0) >= stockLimit) return alert('No hay más stock disponible de esta talla');
-        if(current) current.qty += 1;
-        else this.cart.push({ id:p.id, name:p.name, price:p.price, size, sku:p.skus[size], img:p.images[0], qty:1, stockLimit });
-        this.saveCart();
-        this.renderCart();
-        if(fromModal) this.toggleDrawer('product',false);
-        this.toggleDrawer('cart',true);
-      },
+    function addToCart(pid) {
+      if (!selectedSizes[pid]) return alert('Selecciona una talla');
+      const p = products.find(x => x.id === pid);
+      cart.push({ ...p, size: selectedSizes[pid] });
+      updateCart();
+      toggleCart(true);
+    }
 
-      qty(idx,d){
-        const item = this.cart[idx];
-        const p = this.products.find(x=>x.id===item.id);
-        const limit = p.stock[item.size] || item.stockLimit || 0;
-        if(d>0 && item.qty >= limit) return alert('Límite de stock alcanzado');
-        item.qty += d;
-        if(item.qty<=0) this.cart.splice(idx,1);
-        this.saveCart(); this.renderCart();
-      },
+    function updateCart() {
+      document.getElementById('cartCount').innerText = cart.length;
+      const items = document.getElementById('cartItems');
+      const total = cart.reduce((s, i) => s + i.price, 0);
+      document.getElementById('cartTotal').innerText = '$' + total.toLocaleString();
+      
+      items.innerHTML = cart.map((i, idx) => `
+        <div class="flex gap-4 border-b pb-4">
+          <img src="${i.img}" class="w-16 h-16 object-cover">
+          <div class="flex-1">
+            <div class="font-bold uppercase text-xs">${i.name}</div>
+            <div class="text-xs text-gray-400">Talla: ${i.size}</div>
+            <div class="font-black">$${i.price.toLocaleString()}</div>
+          </div>
+          <button onclick="removeItem(${idx})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
 
-      remove(idx){ this.cart.splice(idx,1); this.saveCart(); this.renderCart(); },
+    function removeItem(idx) {
+      cart.splice(idx, 1);
+      updateCart();
+    }
 
-      renderCart(){
-        const list = document.getElementById('cartItems');
-        const total = this.cart.reduce((s,i)=>s + i.price*i.qty, 0);
-        const count = this.cart.reduce((s,i)=>s + i.qty, 0);
-        const badge = document.getElementById('cartBadge');
-        badge.textContent = count;
-        badge.classList.toggle('scale-0', count===0);
-        badge.classList.toggle('scale-100', count>0);
-        document.getElementById('cartTotal').textContent = this.fmt(total);
-        if(!this.cart.length){
-          list.innerHTML = `<div class="text-center py-16 text-slate-300"><i class="fa-solid fa-cart-shopping text-6xl mb-4 opacity-20"></i><p class="font-bold uppercase text-xs tracking-[.2em]">Tu carrito está vacío</p></div>`;
-          document.getElementById('clientForm').classList.add('hidden');
-          document.getElementById('btnPay').classList.add('hidden');
-          return;
+    function toggleCart(force) {
+      const drawer = document.getElementById('cartDrawer');
+      if (force === true) drawer.classList.add('open');
+      else if (force === false) drawer.classList.remove('open');
+      else drawer.classList.toggle('open');
+    }
+
+    async function checkout() {
+      const name = document.getElementById('cName').value;
+      const phone = document.getElementById('cPhone').value;
+      const addr = document.getElementById('cAddr').value;
+      if (!name || !phone || !addr) return alert('Completa los datos');
+
+      const btn = document.getElementById('btnPay');
+      btn.disabled = true;
+      btn.innerText = 'Procesando...';
+
+      const total = cart.reduce((s, i) => s + i.price, 0);
+      const desc = cart.map(i => `${i.name} (T:${i.size})`).join(', ');
+
+      try {
+        const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ amount: total, label: 'Calzado Kool', description: desc + ' | Envío: ' + addr })
+        });
+        const data = await res.json();
+        if (data.url) {
+           window.open('https://wa.me/573057778133?text=Hola, acabo de hacer un pedido: ' + desc + ' por $' + total.toLocaleString(), '_blank');
+           location.href = data.url;
         }
-        document.getElementById('clientForm').classList.remove('hidden');
-        document.getElementById('btnPay').classList.remove('hidden');
-        list.innerHTML = this.cart.map((i,idx)=>`
-          <div class="rounded-[22px] border border-slate-100 bg-white p-4 soft flex gap-4">
-            <img src="${i.img}" class="w-20 h-20 rounded-2xl object-cover">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <h4 class="font-black text-slate-900 truncate">${i.name}</h4>
-                  <div class="mt-1 flex flex-wrap gap-2 items-center">
-                    <span class="chip chip-live">Talla ${i.size}</span>
-                    <span class="text-[10px] font-black tracking-[.18em] text-slate-300 uppercase">SKU ${i.sku}</span>
-                  </div>
-                </div>
-                <button class="w-9 h-9 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500" onclick="App.remove(${idx})"><i class="fa-solid fa-trash-can"></i></button>
-              </div>
-              <div class="mt-4 flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-2 qty">
-                  <button onclick="App.qty(${idx},-1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-minus"></i></button>
-                  <span class="font-black w-5 text-center">${i.qty}</span>
-                  <button onclick="App.qty(${idx},1)" class="text-slate-500 hover:text-orange-600"><i class="fa-solid fa-plus"></i></button>
-                </div>
-                <div class="font-black text-slate-900">${this.fmt(i.price*i.qty)}</div>
-              </div>
-            </div>
-          </div>`).join('');
-      },
-
-      async checkout(){
-        const name = document.getElementById('cName').value.trim();
-        const phone = document.getElementById('cPhone').value.trim();
-        const addr = document.getElementById('cAddr').value.trim();
-        if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
-        if(!this.cart.length) return alert('Tu carrito está vacío');
-        const btn = document.getElementById('btnPay');
-        const original = btn.innerHTML;
-        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando pago...';
-        const oid = 'KOOL-' + Date.now();
-        const total = this.cart.reduce((s,i)=>s + i.price*i.qty, 0);
-        const desc = this.cart.map(i => `[ORD:${oid} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | QTY:${i.qty}]`).join(' ');
-        try{
-          const res = await fetch(this.bridgeUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:total,label:'PEDIDO KOOL '+oid,description:desc+' | ENVIO: '+addr,order_id:oid})});
-          if(!res.ok) throw new Error('bridge');
-          const data = await res.json();
-          if(!data.url) throw new Error('no-url');
-          const wa = `👟 *NUEVO PEDIDO KOOL*%0A%0A🆔 *Orden:* ${oid}%0A%0A${this.cart.map(i=>`✅ ${i.qty}x ${i.name} (T${i.size})`).join('%0A')}%0A%0A💰 *Total:* ${this.fmt(total)}%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Envío:* ${addr}`;
-          window.open(`https://wa.me/573057778133?text=${wa}`,'_blank');
-          setTimeout(()=>location.href = data.url, 900);
-        }catch(e){
-          alert('Hubo un problema con la pasarela. Intenta de nuevo.');
-          btn.disabled = false; btn.innerHTML = original;
-        }
-      },
-
-      toggleDrawer(which, open){
-        const el = document.getElementById(which === 'cart' ? 'drawer-cart' : 'drawer-product');
-        el.classList.toggle('open', open);
+      } catch (e) {
+        alert('Error al conectar con Bold');
+        btn.disabled = false;
+        btn.innerText = 'Finalizar Compra';
       }
-    };
-    App.init();
+    }
+
+    render();
   </script>
 </body>
 </html>
