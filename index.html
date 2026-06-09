@@ -17,6 +17,9 @@
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
     .overlay.on{display:block}
     .badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:#6b7280}
+  
+    .drawer.open ~ #floatingAction { display: none !important; }
+    .overlay.on ~ #floatingAction { display: none !important; }
   </style>
   <link rel="manifest" href="/kool-pro/manifest.json">
   <meta name="theme-color" content="#111111">
@@ -87,15 +90,12 @@
     function toggleCart(open){ 
       const d = document.getElementById('drawer'); 
       const o = document.getElementById('ov'); 
-      const f = document.getElementById('floatingAction');
       if(open){
         d.classList.add('open');
         o.classList.add('on');
-        if(f) f.style.setProperty('display', 'none', 'important');
       } else {
         d.classList.remove('open');
         o.classList.remove('on');
-        if(f) f.style.setProperty('display', 'flex', 'important');
       } 
     }
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
