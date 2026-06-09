@@ -121,13 +121,13 @@
                     </div>
                 </div>
 
-                <div class="space-y-8 flex-grow">
+                <div class="space-y-6 flex-grow">
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <h4 class="font-bold text-slate-700">Selecciona tu talla</h4>
                             <a href="#" class="text-xs font-bold text-slate-400 hover:text-orange-600 underline">Guía de tallas</a>
                         </div>
-                        <div id="modal-sizes" class="flex flex-wrap gap-3">
+                        <div id="modal-sizes" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
                             <!-- Sizes -->
                         </div>
                     </div>
@@ -138,11 +138,11 @@
                     </div>
                 </div>
 
-                <div class="mt-10">
-                    <button onclick="addToCart()" class="w-full kool-gradient text-white py-5 rounded-2xl font-bold shadow-xl shadow-orange-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                <div class="mt-4">
+                    <button onclick="addToCart()" class="w-full kool-gradient text-white py-4 rounded-2xl font-bold shadow-xl shadow-orange-200 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-3">
                         <i class="fa-solid fa-cart-plus"></i> AGREGAR AL CARRITO
                     </button>
-                    <p class="text-[10px] text-center text-slate-400 mt-4 uppercase tracking-tighter">Sincronizado con el sistema de inventario Kool IA</p>
+                    <p class="text-[10px] text-center text-slate-400 mt-3 uppercase tracking-tighter">Sincronizado con el sistema de inventario Kool IA</p>
                 </div>
             </div>
         </div>
@@ -352,7 +352,8 @@
             selectedSize = size;
             const btns = document.querySelectorAll('.size-btn');
             btns.forEach(b => {
-                if(b.textContent.trim() === size) b.classList.add('active');
+                const txt = b.querySelector('span') ? b.querySelector('span').textContent.trim() : b.textContent.trim();
+                if (txt === size) b.classList.add('active');
                 else b.classList.remove('active');
             });
         }
@@ -397,7 +398,7 @@
                 return;
             }
             
-            // Un item es único por su ID y su Talla
+            // Un item es único por producto + talla
             const cartKey = `${currentModalProduct.id}-${selectedSize}`;
             const existing = cart.find(i => `${i.id}-${i.size}` === cartKey);
             
@@ -416,13 +417,17 @@
                 });
             }
 
+            // Mantener la interfaz lista para que agregue otra talla o otro producto
             renderCart();
             closeModal();
             
-            // Forzar apertura de carrito para que el cliente vea sus datos
+            // Solo abrir carrito para revisar, no ir al pago todavía
             const sidebar = document.getElementById('cart-sidebar');
             const isOpen = !sidebar.classList.contains('pointer-events-none');
             if (!isOpen) toggleCart();
+            
+            // Mantener el flujo en carrito, no disparar checkout
+            document.getElementById('btn-checkout').innerHTML = `<span>IR AL PAGO</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
         }
 
         function renderCart() {
