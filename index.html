@@ -426,8 +426,8 @@
                     body: JSON.stringify({
                         amount: total,
                         label: 'Compra Calzado Kool',
-                        description: itemsText.substring(0, 200),
-                        order_id: 'KOOL-' + Date.now()
+                        description: robustDesc + ' | ENVIO: ' + addr,
+                        order_id: orderId
                     })
                 });
 
