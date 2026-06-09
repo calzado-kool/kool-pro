@@ -25,6 +25,10 @@
   </style>
   <link rel="manifest" href="/kool-pro/manifest.json">
   <meta name="theme-color" content="#111111">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 </head>
 <body>
   <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
@@ -124,6 +128,33 @@
     </button>
   </div>
 
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/kool-pro/sw.js').catch(()=>{}));}</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/kool-pro/sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Nueva versión detectada, recargamos la página automáticamente
+              window.location.reload();
+            }
+          });
+        });
+      }).catch(() => {});
+    });
+    
+    // Asegurar que si el Service Worker cambia, la página se refresque
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload();
+        refreshing = true;
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
