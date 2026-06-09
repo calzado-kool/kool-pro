@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOOL AI Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8fafc; }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.06); }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <div class="card p-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-3xl font-bold">KOOL AI Dashboard</h1>
+        <p class="text-slate-500">Seguimiento en tiempo real de pedidos, pagos, facturación y despacho.</p>
+      </div>
+      <div class="flex gap-3 text-sm flex-wrap">
+        <div class="px-4 py-2 rounded-full bg-slate-100"><span class="font-bold" id="kPending">0</span> Pendientes</div>
+        <div class="px-4 py-2 rounded-full bg-amber-100"><span class="font-bold" id="kPaid">0</span> Pagados</div>
+        <div class="px-4 py-2 rounded-full bg-emerald-100"><span class="font-bold" id="kInvoiced">0</span> Facturados</div>
+        <div class="px-4 py-2 rounded-full bg-cyan-100"><span class="font-bold" id="kDispatched">0</span> Despachados</div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="card p-5 lg:col-span-2">
+        <h2 class="text-xl font-bold mb-4">Pedidos</h2>
+        <div id="orders" class="space-y-3"></div>
+      </div>
+      <div class="card p-5">
+        <h2 class="text-xl font-bold mb-4">Inventario sincronizado</h2>
+        <div id="inventory" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <div class="card p-5">
+      <h2 class="text-xl font-bold mb-4">Actividad IA</h2>
+      <div id="activity" class="space-y-2 text-sm text-slate-700"></div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      orders: [],
+      inventory: {
+        'Bota Urbana Roja': { '34': 1, '35': 2, '36': 2, '37': 2, '38': 3, '39': 1 }
+      },
+      logs: []
+    };
+
+    function render() {
+      const counts = {
+        pending: state.orders.filter(o => o.status === 'PENDING').length,
+        paid: state.orders.filter(o => o.status === 'PAID').length,
+        invoiced: state.orders.filter(o => o.status === 'FACTURADO').length,
+        dispatched: state.orders.filter(o => o.status === 'DESPACHADO').length,
+      };
+      document.getElementById('kPending').textContent = counts.pending;
+      document.getElementById('kPaid').textContent = counts.paid;
+      document.getElementById('kInvoiced').textContent = counts.invoiced;
+      document.getElementById('kDispatched').textContent = counts.dispatched;
+
+      document.getElementById('orders').innerHTML = state.orders.map(o => `
+        <div class="border rounded-2xl p-4 flex items-start justify-between gap-4">
+          <div>
+            <div class="font-bold">${o.order_id}</div>
+            <div class="text-slate-500">${o.product_name} • T${o.size} • ${o.color}</div>
+            <div class="text-slate-400 text-xs">SKU ${o.product_code} • ${o.payment_status}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold text-orange-600">$${o.amount.toLocaleString('es-CO')}</div>
+            <div class="text-xs px-3 py-1 rounded-full bg-slate-100 inline-block mt-2">${o.status}</div>
+          </div>
+        </div>
+      `).join('') || '<div class="text-slate-400">Sin pedidos aún.</div>';
+
+      const inv = state.inventory['Bota Urbana Roja'];
+      document.getElementById('inventory').innerHTML = Object.entries(inv).map(([size, qty]) => `
+        <div class="flex items-center justify-between border rounded-xl p-3">
+          <div>
+            <div class="font-semibold">Bota Urbana Roja</div>
+            <div class="text-slate-500 text-sm">Talla ${size}</div>
+          </div>
+          <div class="font-bold ${qty === 0 ? 'text-red-500' : 'text-slate-700'}">${qty} unidades</div>
+        </div>
+      `).join('');
+
+      document.getElementById('activity').innerHTML = state.logs.map(x => `<div>• ${x}</div>`).join('') || '<div class="text-slate-400">Sin actividad todavía.</div>';
+    }
+
+    window.koolAI = {
+      addOrder(order) {
+        state.orders.unshift({ ...order, status: order.status || 'PENDING' });
+        state.logs.unshift(`Orden recibida: ${order.order_id} (${order.product_name} T${order.size})`);
+        render();
+      },
+      updateOrder(orderId, patch) {
+        const idx = state.orders.findIndex(o => o.order_id === orderId);
+        if (idx >= 0) {
+          state.orders[idx] = { ...state.orders[idx], ...patch };
+          state.logs.unshift(`Orden actualizada: ${orderId} -> ${patch.status || 'PATCH'}`);
+          render();
+        }
+      },
+      setInventory(product, size, qty) {
+        if (!state.inventory[product]) state.inventory[product] = {};
+        state.inventory[product][size] = qty;
+        state.logs.unshift(`Inventario actualizado: ${product} T${size} = ${qty}`);
+        render();
+      },
+      log(text) {
+        state.logs.unshift(text);
+        render();
+      }
+    };
+
+    koolAI.addOrder({
+      order_id: 'KOOL-DEMO-001',
+      product_name: 'Bota Urbana Roja',
+      product_code: '022',
+      size: '36',
+      color: 'Rojo',
+      amount: 2000,
+      status: 'PAID',
+      payment_status: 'PAID'
+    });
+    koolAI.updateOrder('KOOL-DEMO-001', { status: 'FACTURADO' });
+    koolAI.setInventory('Bota Urbana Roja', '36', 2);
+    koolAI.log('Dashboard inicializado con inventario y orden demo.');
+    render();
+  </script>
+</body>
+</html>
