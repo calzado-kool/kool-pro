@@ -18,6 +18,8 @@
     .overlay.on{display:block}
     .badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:#6b7280}
   </style>
+  <link rel="manifest" href="/kool-pro/manifest.json">
+  <meta name="theme-color" content="#111111">
 </head>
 <body>
   <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
@@ -90,5 +92,6 @@
     </button>
   </div>
 
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/kool-pro/sw.js').catch(()=>{}));}</script>
 </body>
 </html>
