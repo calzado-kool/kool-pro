@@ -42,10 +42,10 @@
     <section>
       <div class="mb-8">
         <h2 class="text-3xl font-black text-slate-800">Catálogo Premium</h2>
-        <p class="text-slate-500">Selecciona el producto para ver detalles y agregar múltiples tallas.</p>
+        <p class="text-slate-500">Agrega productos y tallas directamente al carrito.</p>
       </div>
-      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Products -->
+      <div id="productGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Products with integrated selector -->
       </div>
     </section>
 
@@ -150,147 +150,112 @@
       renderCatalog() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = this.products.map(p => `
-          <div onclick="KoolApp.openModal('${p.id}')" class="bg-white border rounded-[2rem] overflow-hidden cursor-pointer hover:shadow-xl transition-all group">
-            <div class="aspect-square bg-slate-50 relative overflow-hidden">
-              <img src="${p.images[0]}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="bg-white border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col md:flex-row h-full">
+            <!-- Imagen Grande al Lado -->
+            <div class="w-full md:w-1/2 aspect-square bg-slate-50 relative overflow-hidden group">
+              <img src="${p.images[0]}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
               <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-slate-800">${p.category}</div>
             </div>
-            <div class="p-6">
-              <h4 class="font-extrabold text-lg text-slate-800 group-hover:text-orange-600">${p.name}</h4>
-              <p class="text-orange-600 font-black text-xl mt-1">${this.fmt(p.price)}</p>
-              <div class="mt-4 flex flex-wrap gap-1">
-                ${Object.keys(p.stock).map(s => `<span class="text-[9px] font-bold border rounded-md px-1.5 py-0.5 ${p.stock[s]>0?'text-slate-400':'text-red-300 line-through'}">T${s}</span>`).join('')}
+            
+            <!-- Selector y Botón al Lado -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between space-y-6">
+              <div>
+                <h4 class="font-black text-2xl text-slate-800">${p.name}</h4>
+                <p class="text-orange-600 font-black text-2xl mt-1">${this.fmt(p.price)}</p>
+                <p class="text-slate-500 text-sm mt-3 line-clamp-2">${p.description}</p>
               </div>
+
+              <div class="space-y-3">
+                <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <span>Seleccionar Talla</span>
+                  <span>Stock Disp.</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  ${Object.entries(p.stock).map(([s, q]) => {
+                    const ok = q > 0;
+                    return `
+                      <button onclick="${ok ? `KoolApp.quickSelectSize('${p.id}', '${s}')` : ''}" 
+                              id="size-${p.id}-${s}"
+                              class="size-btn-grid border-2 border-slate-100 rounded-xl py-2 flex flex-col items-center transition-all
+                              ${!ok ? 'opacity-20 cursor-not-allowed bg-slate-50' : 'hover:border-orange-200 hover:bg-orange-50'}">
+                        <span class="text-lg font-black">${s}</span>
+                        <span class="text-[9px] font-bold ${q < 3 ? 'text-red-500' : 'text-slate-400'}">${ok ? q : '0'}</span>
+                      </button>`;
+                  }).join('')}
+                </div>
+              </div>
+
+              <button onclick="KoolApp.quickAddToCart('${p.id}')" 
+                      id="btn-add-${p.id}"
+                      class="btn-kool w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cart-plus"></i> CARGAR AL CARRITO
+              </button>
             </div>
           </div>
         `).join('');
       },
 
-      openModal(id) {
-        this.currentProduct = this.products.find(x => x.id === id);
-        this.selectedSize = null;
-        document.getElementById('mTitle').textContent = this.currentProduct.name;
-        document.getElementById('mPrice').textContent = this.fmt(this.currentProduct.price);
-        document.getElementById('mDesc').textContent = this.currentProduct.description;
-        document.getElementById('mCat').textContent = this.currentProduct.category;
-        document.getElementById('mImg').src = this.currentProduct.images[0];
-        
-        const sizesDiv = document.getElementById('mSizes');
-        sizesDiv.innerHTML = Object.entries(this.currentProduct.stock).map(([s, q]) => {
-          const available = q > 0;
-          return `
-            <div onclick="${available ? `KoolApp.selectSize('${s}')` : ''}" 
-                 class="size-card ${!available ? 'disabled' : ''}" 
-                 data-size="${s}">
-              <div class="text-xl font-black text-center">${s}</div>
-              <div class="text-[10px] text-center font-bold uppercase mt-1 ${q < 3 ? 'text-red-500' : 'text-slate-400'}">
-                ${available ? q + ' Disp.' : 'Agotado'}
-              </div>
-            </div>`;
-        }).join('');
+      selectedSizesByProduct: {},
 
-        document.getElementById('modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+      quickSelectSize(productId, size) {
+        this.selectedSizesByProduct[productId] = size;
+        // Limpiar otros botones del mismo producto
+        const btns = document.querySelectorAll(`[id^="size-${productId}-"]`);
+        btns.forEach(b => b.classList.remove('active', 'border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-100'));
+        // Activar el seleccionado
+        const selected = document.getElementById(`size-${productId}-${size}`);
+        selected.classList.add('active', 'border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-100');
       },
 
-      selectSize(s) {
-        this.selectedSize = s;
-        document.querySelectorAll('.size-card').forEach(el => {
-          el.classList.toggle('active', el.dataset.size === s);
-        });
-      },
-
-      closeModal() {
-        document.getElementById('modal').classList.add('hidden');
-        document.body.style.overflow = '';
-      },
-
-      addToCart() {
-        if (!this.selectedSize) return alert('Por favor, selecciona una talla primero.');
+      quickAddToCart(productId) {
+        const size = this.selectedSizesByProduct[productId];
+        if (!size) return alert('Por favor, selecciona una talla primero.');
         
-        const key = `${this.currentProduct.id}-${this.selectedSize}`;
-        const existing = this.cart.find(i => `${i.id}-${i.size}` === key);
+        const product = this.products.find(p => p.id === productId);
+        const stockActual = product.stock[size];
         
+        // Validar Stock antes de agregar
+        const cartKey = `${productId}-${size}`;
+        const existing = this.cart.find(i => `${i.id}-${i.size}` === cartKey);
+        const qtyInCart = existing ? existing.qty : 0;
+
+        if (qtyInCart >= stockActual) {
+            alert(`⚠️ STOCK AGOTADO:\nNo puedes agregar más de ${stockActual} unidades de la talla ${size}.`);
+            return;
+        }
+
         if (existing) {
           existing.qty++;
         } else {
           this.cart.push({
-            id: this.currentProduct.id,
-            name: this.currentProduct.name,
-            price: this.currentProduct.price,
-            size: this.selectedSize,
-            sku: this.currentProduct.skus[this.selectedSize],
-            color: this.currentProduct.color,
-            img: this.currentProduct.images[0],
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            size: size,
+            sku: product.skus[size],
+            color: product.color,
+            img: product.images[0],
+            stockLimit: stockActual, // Guardar el límite
             qty: 1
           });
         }
         
         this.saveAndRender();
-        this.closeModal();
         this.toggleCart(true);
       },
 
-      saveAndRender() {
-        localStorage.setItem('kool_cart_v2', JSON.stringify(this.cart));
-        this.renderCart();
-      },
-
-      toggleCart(open) {
-        const sidebar = document.getElementById('cartSidebar');
-        const panel = document.getElementById('cartPanel');
-        if (open) {
-          sidebar.classList.remove('hidden');
-          setTimeout(() => panel.classList.remove('translate-x-full'), 10);
-        } else {
-          panel.classList.add('translate-x-full');
-          setTimeout(() => sidebar.classList.add('hidden'), 300);
-        }
-      },
-
-      renderCart() {
-        const list = document.getElementById('cartItems');
-        const total = this.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        const count = this.cart.reduce((s, i) => s + i.qty, 0);
-        
-        document.getElementById('cartCount').textContent = count;
-        document.getElementById('cartTotal').textContent = this.fmt(total);
-
-        if (this.cart.length === 0) {
-          list.innerHTML = `<div class="text-center py-20 text-slate-300"><i class="fa-solid fa-cart-plus text-6xl mb-4"></i><p class="font-bold">Tu carrito está vacío</p></div>`;
-          document.getElementById('checkoutForm').classList.add('hidden');
-          return;
-        }
-
-        document.getElementById('checkoutForm').classList.remove('hidden');
-        list.innerHTML = this.cart.map((i, idx) => `
-          <div class="flex gap-4 bg-white p-4 border rounded-3xl shadow-sm">
-            <img src="${i.img}" class="w-16 h-16 rounded-2xl object-cover">
-            <div class="flex-grow">
-              <div class="flex justify-between items-start">
-                <h5 class="font-bold text-slate-800 text-sm">${i.name}</h5>
-                <button onclick="KoolApp.removeFromCart(${idx})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
-              </div>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="bg-orange-50 text-orange-600 text-[10px] font-black px-2 py-0.5 rounded">Talla ${i.size}</span>
-                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">SKU ${i.sku}</span>
-              </div>
-              <div class="flex justify-between items-center mt-2">
-                <div class="flex items-center gap-3 bg-slate-100 rounded-full px-3 py-1 font-bold text-xs">
-                  <button onclick="KoolApp.changeQty(${idx},-1)"><i class="fa-solid fa-minus"></i></button>
-                  <span>${i.qty}</span>
-                  <button onclick="KoolApp.changeQty(${idx},1)"><i class="fa-solid fa-plus"></i></button>
-                </div>
-                <span class="font-black text-orange-600">${this.fmt(i.price * i.qty)}</span>
-              </div>
-            </div>
-          </div>
-        `).join('');
-      },
-
       changeQty(idx, d) {
-        this.cart[idx].qty += d;
-        if (this.cart[idx].qty <= 0) this.cart.splice(idx, 1);
+        const item = this.cart[idx];
+        const product = this.products.find(p => p.id === item.id);
+        const stockMax = product.stock[item.size];
+
+        if (d > 0 && item.qty >= stockMax) {
+            alert(`⚠️ LÍMITE DE STOCK:\nSolo quedan ${stockMax} unidades disponibles de esta talla.`);
+            return;
+        }
+
+        item.qty += d;
+        if (item.qty <= 0) this.cart.splice(idx, 1);
         this.saveAndRender();
       },
 
