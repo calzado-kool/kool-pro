@@ -103,11 +103,12 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <div class="w-full md:w-1/2 bg-slate-100 relative">
-                <img id="modal-img" src="" class="w-full h-full object-cover aspect-square" alt="Producto">
-                <div id="modal-gallery" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 p-2 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30">
+            <div class="w-full md:w-1/2 bg-slate-50 relative group">
+                <img id="modal-img" src="" class="w-full h-full object-contain aspect-square cursor-zoom-in transition-transform duration-500 hover:scale-150" alt="Producto" onclick="window.open(this.src,'_blank')">
+                <div id="modal-gallery" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 p-2 bg-white/40 backdrop-blur-xl rounded-2xl border border-white/50 shadow-2xl">
                     <!-- Gallery thumbs -->
                 </div>
+                <div class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-[10px] font-bold">Pasa el mouse para hacer zoom</div>
             </div>
 
             <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto flex flex-col">
@@ -329,11 +330,11 @@
                 const available = qty > 0;
                 return `
                     <button onclick="${available ? `selectSize('${size}')` : ''}" 
-                            class="size-btn min-w-[4.4rem] h-14 border border-slate-200 rounded-2xl font-bold transition-all flex flex-col items-center justify-center
-                            ${available ? 'hover:border-orange-500 hover:text-orange-600' : 'opacity-30 cursor-not-allowed bg-slate-100'}
-                            ${selectedSize === size ? 'active' : ''}">
-                        <span class="text-sm">${size}</span>
-                        <span class="text-[10px] font-black text-slate-400">${qty} uds</span>
+                            class="size-btn min-w-[5rem] h-20 border-2 border-slate-100 rounded-2xl font-bold transition-all flex flex-col items-center justify-center gap-1
+                            ${available ? 'hover:border-orange-500 hover:bg-orange-50' : 'opacity-20 cursor-not-allowed bg-slate-50'}
+                            ${selectedSize === size ? 'border-orange-500 bg-orange-50 ring-4 ring-orange-100' : ''}">
+                        <span class="text-xl text-slate-800">${size}</span>
+                        <span class="text-[10px] font-black ${qty < 3 ? 'text-red-500 animate-pulse' : 'text-slate-400'}">${available ? `${qty} DISPONIBLES` : 'AGOTADO'}</span>
                     </button>
                 `;
             }).join('');
