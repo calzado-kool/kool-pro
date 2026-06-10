@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781054792</title><!-- v1781054792 -->
+  <title>KOOL PRO v1781059144</title><!-- v1781059144 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -54,8 +54,11 @@
     <div class="p-5 border-b border-gray-200 flex items-center justify-between"><div><div class="text-xl font-black uppercase">Tu carrito</div><div class="badge">puedes seguir comprando</div></div><button onclick="toggleCart(false)" class="text-2xl">×</button></div>
     <div id="items" class="flex-1 overflow-auto p-5 space-y-4"></div>
     <div class="p-5 border-t border-gray-200 space-y-3">
-      <div class="flex items-center justify-between font-black text-lg"><span>Subtotal</span><span id="total">$0</span></div>
-      <div class="text-[10px] uppercase tracking-[.18em] text-gray-500 font-bold">Envío se calcula al confirmar</div>
+      <div class="space-y-1 border-b border-gray-100 pb-3 mb-3">
+        <div class="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-widest"><span>Subtotal</span><span id="subtotal">$0</span></div>
+        <div class="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-widest"><span>Envío</span><span>Por calcular</span></div>
+        <div class="flex items-center justify-between font-black text-xl pt-2 uppercase tracking-tight"><span>Total</span><span id="total">$0</span></div>
+      </div>
       <div class="mt-3 mb-2 rounded-xl border border-black/10 bg-black text-white px-4 py-3 text-[11px] md:text-xs font-black uppercase tracking-[.2em] text-center shadow-md">llena los datos para el envío de su compra</div>
       
       <button onclick="toggleCart(false)" class="w-full border-2 border-black rounded-xl p-3 font-black uppercase text-xs hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors shadow-sm">
@@ -63,8 +66,11 @@
         Seguir comprando
       </button>
 
+      <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-1">Nombre del cliente</label>
       <input id="name" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Nombre completo">
+      <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-1">WhatsApp de contacto</label>
       <input id="phone" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="WhatsApp">
+      <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 ml-1">Dirección de entrega</label>
       <textarea id="addr" class="w-full border border-gray-300 rounded-xl p-3 h-20 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Dirección"></textarea>
       <button onclick="checkout()" id="payBtn" class="btn w-full shadow-lg hover:scale-[1.01] transition-transform">Finalizar compra</button>
       <div class="text-[10px] text-gray-500 text-center font-bold uppercase tracking-[.18em]">Paga con Bold para completar tu pedido</div>
@@ -86,12 +92,23 @@
       localStorage.setItem('kool_inventory', JSON.stringify(inventory));
     }
 
+    
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      t.classList.add('opacity-100', 'top-28');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'pointer-events-none');
+        t.classList.remove('opacity-100', 'top-28');
+      }, 2000);
+    }
+
     function available(pid, size){ const p = products.find(x=>x.id===pid); return (p.stockBySize[size]||0) - cart.filter(i=>i.id===pid && i.size===size).length; }
     function render(){
       document.getElementById('grid').innerHTML = products.map(p => {
         return `<article class="card"><button onclick="zoom('${p.img}')" class="w-full block"><img src="${p.img}" alt="${p.name}" class="w-full w-full h-auto object-contain bg-gray-50 p-2"></button><div class="p-4 space-y-3"><div><div class="text-xl font-black uppercase leading-tight">${p.name}</div><div class="text-gray-500 text-sm">${p.color} · ${p.material}</div></div><div class="text-sm font-black text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block">Stock por talla</div><div class="grid grid-cols-6 gap-2">${[35,36,37,38,39,40].map(s => { const q = available(p.id,s); return `<button class="size ${selected[p.id]===s ? 'active':''}" onclick="choose('${p.id}',${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[10px] font-bold ${q<=0 ? 'text-red-500':'text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block'}">${q<=0 ? '0' : q}</div></button>`; }).join('')}</div><div class="flex items-center justify-between pt-1"><div class="flex flex-col"><span class="text-xs text-gray-400 line-through font-bold">$${p.price_old.toLocaleString('es-CO')}</span><span class="text-2xl font-black text-red-700 font-black">$${p.price.toLocaleString('es-CO')}</span></div><button onclick="add('${p.id}')" class="btn">Agregar</button></div></div></article>`;
       }).join('');
-      updateCart();
+      updateCart(); showToast();
       loadingDone = true;
       const gate = document.getElementById('loadingGate');
       if (gate) gate.innerHTML = 'Productos cargados. El módulo de venta ya está activo.';
@@ -99,11 +116,11 @@
     function choose(pid, size){ selected[pid]=size; add(pid); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
-    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); render();
-    try { updateCart(); } catch(e) {} }
-    function remove(i){ const item = cart[i]; if(item) inventory[item.id] = (inventory[item.id]||0)+1; cart.splice(i,1); saveState(); updateCart(); render();
-    try { updateCart(); } catch(e) {} }
-    function updateCart(){ document.getElementById('count').innerText = cart.length; document.getElementById('total').innerText = '$' + cart.reduce((a,b)=>a+b.price,0).toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
+    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); showToast(); render();
+    try { updateCart(); showToast(); } catch(e) {} }
+    function remove(i){ const item = cart[i]; if(item) inventory[item.id] = (inventory[item.id]||0)+1; cart.splice(i,1); saveState(); updateCart(); showToast(); render();
+    try { updateCart(); showToast(); } catch(e) {} }
+    function updateCart(){ document.getElementById('count').innerText = cart.length; const t = cart.reduce((a,b)=>a+b.price,0); document.getElementById('subtotal').innerText = '$' + t.toLocaleString('es-CO'); document.getElementById('total').innerText = '$' + t.toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
     function toggleCart(open){ 
       const d = document.getElementById('drawer'); 
       const o = document.getElementById('ov'); 
@@ -119,7 +136,7 @@
     }
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
     render();
-    try { updateCart(); } catch(e) {}
+    try { updateCart(); showToast(); } catch(e) {}
   </script>
 
   <div id="floatingAction" style="display: none;" class="fixed bottom-6 right-6 z-[40] flex flex-col items-end gap-2 pointer-events-none">
@@ -161,6 +178,11 @@
     });
   }
 </script>
+
+
+  <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[80] bg-black text-white px-6 py-3 rounded-2xl shadow-2xl text-xs font-black uppercase tracking-widest opacity-0 pointer-events-none transition-all duration-300">
+    ¡Producto añadido!
+  </div>
 
 </body>
 </html>
