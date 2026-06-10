@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781097720</title><!-- v1781097720 -->
+  <title>KOOL PRO v1781097820</title><!-- v1781097820 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -34,6 +34,16 @@
     #grid { contain: content; }
     #drawer { contain: layout paint style; }
     .product-card-wrapper { contain: content; }
+
+  
+    #adminPanel { display:none; position:sticky; top:0; z-index:80; }
+    #adminPanel.open { display:block; }
+    .admin-card { background:#0b1220; color:#e5eefc; border:1px solid rgba(255,255,255,.08); }
+    .admin-chip { background:rgba(255,255,255,.08); color:#fff; border-radius:999px; padding:.35rem .75rem; font-size:.78rem; font-weight:700; }
+    .admin-input { width:100%; background:#0f172a; color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:.8rem .9rem; outline:none; }
+    .admin-input:focus { border-color:#60a5fa; box-shadow:0 0 0 3px rgba(96,165,250,.15); }
+    .admin-btn { background:#2563eb; color:white; border-radius:12px; padding:.9rem 1rem; font-weight:800; }
+    .admin-btn.secondary { background:#1f2937; }
 
   </style>
   <link rel="manifest" href="/kool-pro/manifest.json">
@@ -111,6 +121,21 @@
         console.log('[MARKET-SCOUT] Comparando ' + productName + ' | Nuestro: ' + currentPrice + ' | Competencia: ' + competitorPrice);
       }
     };
+
+
+    function safeInjectProducts(list) {
+      const grid = document.getElementById('grid');
+      if (!grid || !Array.isArray(list)) return;
+      const unique = [];
+      const seen = new Set();
+      for (const p of list) {
+        if (!p || !p.id || seen.has(p.id)) continue;
+        seen.add(p.id);
+        unique.push(p);
+      }
+      products.splice(0, products.length, ...unique);
+      render();
+    }
 
     const SalesAI = {
       analyzeCart: function() {
@@ -299,6 +324,55 @@ function render() {
       
       // Reiniciar banner si es necesario
       if (typeof initPromoBanner === 'function') initPromoBanner();
+    }
+
+
+    function toggleAdminPanel(force) {
+      const p = document.getElementById('adminPanel');
+      if (!p) return;
+      const open = typeof force === 'boolean' ? force : !p.classList.contains('open');
+      p.classList.toggle('open', open);
+      p.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function loadSampleProduct() {
+      const f = (id) => document.getElementById(id);
+      f('adminName').value = 'Bota Urbana Edición Kool';
+      f('adminPrice').value = '159000';
+      f('adminImage').value = 'https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg';
+      f('adminColor').value = 'Negro / Blanco';
+      f('adminMaterial').value = 'Sintético Premium';
+      f('adminSizes').value = '35,36,37,38,39';
+    }
+
+    function addAdminProduct() {
+      const name = document.getElementById('adminName').value.trim();
+      const price = Number(document.getElementById('adminPrice').value);
+      const img = document.getElementById('adminImage').value.trim();
+      const color = document.getElementById('adminColor').value.trim();
+      const material = document.getElementById('adminMaterial').value.trim();
+      const sizes = document.getElementById('adminSizes').value.split(',').map(s => Number(s.trim())).filter(Boolean);
+      if (!name || !price || !img || !sizes.length) return alert('Completa nombre, precio, imagen y tallas');
+      const id = 'kool-' + Date.now();
+      const prod = {
+        id,
+        name,
+        price,
+        price_old: Math.round(price * 1.2),
+        img,
+        color,
+        material,
+        stockBySize: Object.fromEntries(sizes.map(s => [String(s), 5])),
+        description: name + ' ' + color
+      };
+      if (window.safeInjectProducts) {
+        const list = [...products, prod];
+        safeInjectProducts(list);
+      } else {
+        products.push(prod); render();
+      }
+      toggleAdminPanel(false);
+      alert('Producto agregado al catálogo sin afectar la estructura principal.');
     }
 
     // 5. BANNER Y UTILIDADES
