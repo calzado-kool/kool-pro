@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781072797</title><!-- v1781072797 -->
+  <title>KOOL PRO v1781072906</title><!-- v1781072906 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -87,6 +87,10 @@
     </div>
   </aside>
   <script>
+    let cart = [];
+    let selected = {};
+    let inventory = {};
+    let loadingDone = false;
     const products = [{"id": "kool-1781072310", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/boots_yellow.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "36": 3, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/boots_yellow.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}];
 
 let promoIndex = 0;
@@ -181,7 +185,7 @@ function available(pid, size){ const p = products.find(x=>x.id===pid); return (p
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/kool-pro/sw.js').then(reg => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
