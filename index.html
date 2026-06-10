@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781125149</title><!-- v1781125149 -->
+  <title>KOOL PRO v1781125397</title><!-- v1781125397 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -121,6 +121,96 @@
 
     const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}, {"id": "kool-mafalda-clasica-1781119254", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "material": "Material premium", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}, "description": "Mafalda clásica negra."}, {"id": "kool-new-balance-beis-1781124734", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "material": "Material premium", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}, "description": "New Balance color beis."}];
 
+    // --- KOOL IA CATALOG ENGINE v8.0 ---
+
+    function safeInjectProducts(newList) {
+      if (!Array.isArray(newList)) return;
+      const seen = new Set(products.map(p => p.id));
+      newList.forEach(p => {
+        if (p && p.id && !seen.has(p.id)) {
+          products.push(p);
+        }
+      });
+      render();
+    }
+
+    const CatalogIA = {
+      template: (p) => {
+        const id = p.id;
+        const name = p.name;
+        const price = p.price;
+        const price_old = p.price_old || Math.round(price * 1.2);
+        const img = CatalogIA.resolveImage(p);
+        const color = p.color;
+        const sizes = CatalogIA.renderSizes(p);
+        
+        return `
+          <article class="card relative group" id="product-${id}" data-kool-id="${id}">
+            <button onclick="zoom('${img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
+              <img src="${img}" alt="${name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
+            </button>
+            <div class="p-5 space-y-4">
+              <div>
+                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${color}</div>
+                <div class="text-xl font-black uppercase leading-tight">${name}</div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
+                <div class="grid grid-cols-5 gap-2">${sizes}</div>
+              </div>
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-gray-400 line-through font-bold">$${price_old.toLocaleString('es-CO')}</span>
+                  <span class="text-xl font-black text-black">$${price.toLocaleString('es-CO')}</span>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="shareProduct('${id}', '${name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                  </button>
+                  <button onclick="add('${id}')" class="btn px-6 text-[11px]">Agregar</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      },
+      
+      resolveImage: (p) => {
+        // AI Logic: Map image correctly by product identity
+        if (p.img && p.img.includes('media/')) return p.img;
+        const search = (p.id + ' ' + p.name).toLowerCase();
+        if (search.includes('nike')) return 'media/1781071726766.jpg';
+        if (search.includes('bota') && search.includes('roja')) return 'media/1780375993932.jpg';
+        if (search.includes('bota') && search.includes('blanca')) return 'media/1780411345666.jpg';
+        if (search.includes('mafalda')) return 'media/1781119242950.jpg';
+        if (search.includes('new balance')) return 'media/1781124694858.jpg';
+        return 'media/1781071726766.jpg'; // Default safe
+      },
+      
+      renderSizes: (p) => {
+        return Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+          const q = available(p.id, s);
+          const isActive = Number(selected[p.id]) === s;
+          return `<button class="size ${isActive ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q <= 0 ? 'disabled' : ''}>
+            ${s}
+            <div class="text-[9px] font-black ${q <= 0 ? 'text-red-400' : 'text-emerald-500'}">${q <= 0 ? '0' : q}</div>
+          </button>`;
+        }).join('');
+      }
+    };
+
+    function render() {
+      const grid = document.getElementById('grid');
+      if (!grid) return;
+      grid.innerHTML = products.map(p => CatalogIA.template(p)).join('');
+      updateCart();
+      loadingDone = true;
+      const gate = document.getElementById('loadingGate');
+      if (gate) gate.style.display = 'none';
+      if (typeof initPromoBanner === 'function') initPromoBanner();
+    }
+
+
     function saveState() {
       try {
         localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
@@ -207,16 +297,7 @@
       }
     }
 
-    function render() {
-      const grid = document.getElementById('grid');
-      if (!grid) return;
-      
-      grid.innerHTML = products.map(p => {
-        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
-          const q = available(p.id, s);
-          const isActive = Number(selected[p.id]) === s;
-          const stockLabel = q <= 0 ? '0' : q;
-          return `<button class="size ${isActive ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q <= 0 ? 'disabled' : ''}>
+    " onclick="choose('${p.id}', ${s})" ${q <= 0 ? 'disabled' : ''}>
             ${s}
             <div class="text-[9px] font-black ${q <= 0 ? 'text-red-400' : 'text-emerald-500'}">${stockLabel}</div>
           </button>`;
@@ -379,13 +460,7 @@
       if (open) p.scrollIntoView({behavior:'smooth', block:'start'});
     }
 
-    function safeInjectProducts(newList) {
-      if (!Array.isArray(newList)) return;
-      const seen = new Set(products.map(p => p.id));
-      newList.forEach(p => {
-        if (p && p.id && !seen.has(p.id)) {
-          products.push(p);
-        }
+    
       });
       render();
     }
