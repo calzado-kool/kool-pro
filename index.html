@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781119835</title><!-- v1781119835 -->
+  <title>KOOL PRO v1781124363</title><!-- v1781124363 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -109,7 +109,7 @@
       <input id="name" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Nombre completo">
       <input id="phone" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="WhatsApp">
       <textarea id="addr" class="w-full border border-gray-300 rounded-xl p-3 h-20 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Dirección"></textarea>
-      <button onclick="checkout()" id="payBtn" class="btn w-full shadow-lg hover:scale-[1.01] transition-transform">Finalizar compra</button>
+      <button onclick="checkoutSafe()" id="payBtn" class="btn w-full shadow-lg hover:scale-[1.01] transition-transform">Finalizar compra</button>
       <div class="text-[10px] text-gray-500 text-center font-bold uppercase tracking-[.18em]">Paga con Bold para completar tu pedido</div>
     </div>
   </aside>
@@ -275,6 +275,53 @@
       if (!d || !o) return;
       if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow = 'hidden'; }
       else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow = ''; }
+    }
+
+
+    function checkoutSafe() {
+      try {
+        if (!cart.length) return alert('El carrito está vacío');
+        const n = document.getElementById('name');
+        const ph = document.getElementById('phone');
+        const ad = document.getElementById('addr');
+        const name = n ? n.value.trim() : '';
+        const phone = ph ? ph.value.trim() : '';
+        const addr = ad ? ad.value.trim() : '';
+        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+        const total = cart.reduce((acc, i) => acc + i.price, 0);
+        const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + addr + ' | CLIENTE: ' + name + ' (' + phone + ')';
+        const payload = { amount: total, label: 'KOOL PRO', description };
+        fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json()).then(data => {
+          if (data && data.url) window.location.href = data.url;
+          else throw new Error('Sin URL de pago');
+        }).catch(err => {
+          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar'; }
+          alert('No se pudo iniciar el pago: ' + err.message);
+        });
+      } catch (e) {
+        alert('Error en checkout: ' + e.message);
+      }
+    }
+
+    function validateInventoryPhotos() {
+      const map = {
+        'kool-nike-super': 'media/1781071726766.jpg',
+        'kool-bota-roja': 'media/1780375993932.jpg',
+        'kool-bota-blanca': 'media/1780411345666.jpg'
+      };
+      try {
+        const ids = Object.keys(map);
+        ids.forEach(id => {
+          const img = document.querySelector('#product-' + id + ' img');
+          if (img && img.getAttribute('src') !== map[id]) img.setAttribute('src', map[id]);
+        });
+      } catch(e) {}
     }
 
     function toggleAdminPanel(force) {
