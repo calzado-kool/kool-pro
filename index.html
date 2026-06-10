@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781100808</title><!-- v1781100808 -->
+  <title>KOOL PRO v1781100976</title><!-- v1781100976 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -153,7 +153,7 @@
 
     let cart = [];
     let selected = {};
-    let loadingDone = false;
+    let loadingDone = false; window.__KOOL_BOOTSTRAP_ATTEMPTED = false;
     
     const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}];
 
@@ -471,11 +471,26 @@ function render() {
       }
     }
 
+    
+    function __KOOL_FORCE_BOOTSTRAP() {
+      try {
+        const gate = document.getElementById('loadingGate');
+        if (gate) gate.style.display = 'none';
+        if (typeof products !== 'undefined' && products.length && typeof render === 'function') {
+          render();
+        }
+      } catch(e) {}
+    }
+    setTimeout(__KOOL_FORCE_BOOTSTRAP, 1500);
+
     // 6. INICIO
     document.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      render();
-      setTimeout(function() { try { render(); } catch(e) {} }, 400);
+      try { loadState(); } catch(e) {}
+      try { render(); } catch(e) { console.error(e); }
+      Promise.resolve().then(function(){ try { render(); } catch(e) {} });
+      setTimeout(function() { try { render(); } catch(e) {} }, 250);
+      setTimeout(function() { try { render(); } catch(e) {} }, 1200);
+      window.__KOOL_BOOTSTRAP_ATTEMPTED = true;
     });
 </script>
 
