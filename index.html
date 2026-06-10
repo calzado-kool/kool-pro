@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781100976</title><!-- v1781100976 -->
+  <title>KOOL PRO v1781101080</title><!-- v1781101080 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -491,6 +491,8 @@ function render() {
       setTimeout(function() { try { render(); } catch(e) {} }, 250);
       setTimeout(function() { try { render(); } catch(e) {} }, 1200);
       window.__KOOL_BOOTSTRAP_ATTEMPTED = true;
+      const gate = document.getElementById('loadingGate');
+      if (gate) gate.style.display = 'none';
     });
 </script>
 
