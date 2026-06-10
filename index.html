@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781060995</title><!-- v1781060995 -->
+  <title>KOOL PRO v1781061132</title><!-- v1781061132 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -32,8 +32,15 @@
 </head>
 <body>
 
-  <div id="promoBanner" class="fixed top-0 left-0 right-0 z-[90] bg-white/90 backdrop-blur border-b border-gray-200 shadow-sm overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 py-1.5 flex items-center gap-2">
+  <button id="cartFloatingBtn" onclick="toggleCart(true)" class="fixed top-20 right-4 z-[120] bg-black text-white rounded-full shadow-2xl px-4 py-3 flex items-center gap-2 border border-white/10">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span class="text-xs font-black uppercase tracking-widest">Carrito</span>
+    <span id="countFloating" class="bg-white text-black rounded-full px-2 py-1 text-[10px] font-black">0</span>
+  </button>
+
+
+  <div id="promoBanner" class="fixed top-0 left-0 right-24 z-[30] bg-white/90 backdrop-blur border-b border-gray-200 shadow-sm overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 py-1 flex items-center gap-2">
       <div class="shrink-0 text-[10px] font-black uppercase tracking-[.2em] text-gray-500">Destacados</div>
       <a id="promoLink" href="#" class="flex items-center gap-3 min-w-0 group flex-1">
         <img id="promoImg" src="" alt="producto destacado" class="w-20 h-12 rounded-lg object-contain bg-gray-50 p-1 border border-gray-200 shadow-sm shrink-0">
@@ -60,7 +67,7 @@
       </button>
     </div>
   </header>
-  <main class="max-w-7xl mx-auto px-5 md:px-8 py-8 mt-18">
+  <main class="max-w-7xl mx-auto px-5 md:px-8 py-8 mt-16">
     <div class="mb-4 text-sm text-gray-600 font-bold">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
     <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div>
     <div id="grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
