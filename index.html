@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781053066</title><!-- v1781053066 -->
+  <title>KOOL PRO v1781054792</title><!-- v1781054792 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -54,7 +54,8 @@
     <div class="p-5 border-b border-gray-200 flex items-center justify-between"><div><div class="text-xl font-black uppercase">Tu carrito</div><div class="badge">puedes seguir comprando</div></div><button onclick="toggleCart(false)" class="text-2xl">×</button></div>
     <div id="items" class="flex-1 overflow-auto p-5 space-y-4"></div>
     <div class="p-5 border-t border-gray-200 space-y-3">
-      <div class="flex items-center justify-between font-black text-lg"><span>Total</span><span id="total">$0</span></div>
+      <div class="flex items-center justify-between font-black text-lg"><span>Subtotal</span><span id="total">$0</span></div>
+      <div class="text-[10px] uppercase tracking-[.18em] text-gray-500 font-bold">Envío se calcula al confirmar</div>
       <div class="mt-3 mb-2 rounded-xl border border-black/10 bg-black text-white px-4 py-3 text-[11px] md:text-xs font-black uppercase tracking-[.2em] text-center shadow-md">llena los datos para el envío de su compra</div>
       
       <button onclick="toggleCart(false)" class="w-full border-2 border-black rounded-xl p-3 font-black uppercase text-xs hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors shadow-sm">
@@ -66,6 +67,7 @@
       <input id="phone" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="WhatsApp">
       <textarea id="addr" class="w-full border border-gray-300 rounded-xl p-3 h-20 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Dirección"></textarea>
       <button onclick="checkout()" id="payBtn" class="btn w-full shadow-lg hover:scale-[1.01] transition-transform">Finalizar compra</button>
+      <div class="text-[10px] text-gray-500 text-center font-bold uppercase tracking-[.18em]">Paga con Bold para completar tu pedido</div>
     </div>
   </aside>
   <script>
@@ -124,7 +126,7 @@
     <div class="bg-black text-white px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl animate-bounce pointer-events-auto">
       ¡Cierra tu pedido aquí!
     </div>
-    <button onclick="toggleCart(true)" class="group pointer-events-auto flex items-center gap-2 bg-black text-white px-3 py-2 rounded-full shadow-[0_14px_30px_rgba(0,0,0,0.22)] hover:scale-105 transition-transform active:scale-95">
+    <button onclick="toggleCart(true)" class="group pointer-events-auto flex items-center gap-2 bg-black text-white px-3 py-2 rounded-full shadow-[0_14px_30px_rgba(0,0,0,0.22)] hover:scale-105 transition-transform active:scale-95 ring-1 ring-white/10">
       <span class="text-[11px] font-black uppercase tracking-widest">Terminar pedido</span>
       <div class="bg-white text-black w-9 h-9 rounded-full flex items-center justify-center">
         <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
