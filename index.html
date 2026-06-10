@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781072935</title><!-- v1781072935 -->
+  <title>KOOL PRO v1781073063</title><!-- v1781073063 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -90,7 +90,24 @@
     let cart = [];
     let selected = {};
     let inventory = {};
-    let loadingDone = false; loadState();
+    let loadingDone = false;
+
+    function saveState() {
+      try {
+        localStorage.setItem('kool_cart_v2', JSON.stringify(cart));
+        localStorage.setItem('kool_selected_v2', JSON.stringify(selected));
+      } catch(e) { console.error('Save error', e); }
+    }
+
+    function loadState() {
+      try {
+        const c = localStorage.getItem('kool_cart_v2');
+        const s = localStorage.getItem('kool_selected_v2');
+        if (c) cart = JSON.parse(c);
+        if (s) selected = JSON.parse(s);
+      } catch(e) { console.error('Load error', e); }
+    }
+
     const products = [{"id": "kool-1781072310", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/boots_yellow.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "36": 3, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/boots_yellow.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}];
 
 let promoIndex = 0;
@@ -158,9 +175,9 @@ let promoIndex = 0;
     function choose(pid, size){ selected[pid]=size; add(pid); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
-    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size });  if(typeof saveState === 'function') saveState(); updateCart(); render();
+    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size });  if(typeof saveState === 'function') saveState(); updateCart(); loadState(); render();
     try { updateCart(); } catch(e) {} }
-    function remove(i){ const item = cart[i];  cart.splice(i,1); saveState(); updateCart(); render();
+    function remove(i){ const item = cart[i];  cart.splice(i,1); saveState(); updateCart(); loadState(); render();
     try { updateCart(); } catch(e) {} }
     function updateCart(){ document.getElementById('count').innerText = cart.length; document.getElementById('total').innerText = '$' + cart.reduce((a,b)=>a+b.price,0).toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
     function toggleCart(open){ 
@@ -176,8 +193,8 @@ let promoIndex = 0;
         document.body.classList.remove('cart-open');
       } 
     }
-    async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: cart.map(i=>`[ORD:KOOL-${Date.now()} | SKU:${i.sku} | SZ:${i.size} | NAME:${i.name} | QTY:1]`).join(' ') + ` | ENVIO: ${addr} | CLIENTE: ${name} (${phone})` }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
-    render();
+    async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: cart.map(i=>`[ORD:KOOL-${Date.now()} | SKU:${i.id} | SZ:${i.size} | NAME:${i.name} | QTY:1]`).join(' ') + ` | ENVIO: ${addr} | CLIENTE: ${name} (${phone})` }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
+    loadState(); render();
     try { updateCart(); } catch(e) {}
   </script>
 
