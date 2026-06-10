@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781075055</title><!-- v1781075055 -->
+  <title>KOOL PRO v1781096147</title><!-- v1781096147 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -22,6 +22,15 @@
     
   
     body.cart-open #floatingAction { display: none !important; }
+  
+    .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card:hover { transform: translateY(-8px); shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+    .size { transition: all 0.2s ease; cursor: pointer; }
+    .size:active { transform: scale(0.9); }
+    .btn { transition: all 0.3s ease; }
+    .btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
+    #floatingAction { transition: all 0.5s ease-in-out; }
+
   </style>
   <link rel="manifest" href="/kool-pro/manifest.json">
   <meta name="theme-color" content="#111111">
@@ -89,6 +98,16 @@
   <script>
     // 1. GLOBALES
     // KOOL IA SALES CLOSER - SUB-IA GENERADA POR META-ENGINE
+    
+    const MarketScout = {
+      reportTrend: function(source, message) {
+        console.log('[MARKET-SCOUT] ' + source + ': ' + message);
+      },
+      comparePrice: function(productName, currentPrice, competitorPrice) {
+        console.log('[MARKET-SCOUT] Comparando ' + productName + ' | Nuestro: ' + currentPrice + ' | Competencia: ' + competitorPrice);
+      }
+    };
+
     const SalesAI = {
       analyzeCart: function() {
         if (cart.length > 0) {
@@ -139,14 +158,22 @@
       const p = products.find(x => x.id === pid);
       cart.push({ ...p, size });
       saveState();
-      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+      updateCart();
+      if(window.SalesAI) SalesAI.analyzeCart();
+      if(window.TrustGuardian) TrustGuardian.validateImages();
+      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
       render();
     }
 
     function remove(idx) {
       cart.splice(idx, 1);
       saveState();
-      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+      updateCart();
+      if(window.SalesAI) SalesAI.analyzeCart();
+      if(window.TrustGuardian) TrustGuardian.validateImages();
+      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
       render();
     }
 
@@ -253,7 +280,11 @@ function render() {
         `;
       }).join('');
       
-      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+      updateCart();
+      if(window.SalesAI) SalesAI.analyzeCart();
+      if(window.TrustGuardian) TrustGuardian.validateImages();
+      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
+        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
       loadingDone = true;
       const gate = document.getElementById('loadingGate');
       if (gate) gate.style.display = 'none';
@@ -381,7 +412,7 @@ function render() {
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=1781096147').then(reg => {
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
