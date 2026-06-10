@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781074617</title><!-- v1781074617 -->
+  <title>KOOL PRO v1781075055</title><!-- v1781075055 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -88,6 +88,21 @@
   </aside>
   <script>
     // 1. GLOBALES
+    // KOOL IA SALES CLOSER - SUB-IA GENERADA POR META-ENGINE
+    const SalesAI = {
+      analyzeCart: function() {
+        if (cart.length > 0) {
+          console.log('[SALES-AI] 📈 Cliente con intención de compra detectada.');
+          const floating = document.getElementById('floatingAction');
+          if (floating) floating.style.display = 'flex';
+        }
+      },
+      suggestUpsell: function(productId) {
+        const p = products.find(x => x.id === productId);
+        console.log('[SALES-AI] ⚡ Sugiriendo complemento para ' + p.name);
+      }
+    };
+
     let cart = [];
     let selected = {};
     let loadingDone = false;
@@ -124,14 +139,14 @@
       const p = products.find(x => x.id === pid);
       cart.push({ ...p, size });
       saveState();
-      updateCart();
+      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
       render();
     }
 
     function remove(idx) {
       cart.splice(idx, 1);
       saveState();
-      updateCart();
+      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
       render();
     }
 
@@ -238,7 +253,7 @@ function render() {
         `;
       }).join('');
       
-      updateCart();
+      updateCart(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
       loadingDone = true;
       const gate = document.getElementById('loadingGate');
       if (gate) gate.style.display = 'none';
