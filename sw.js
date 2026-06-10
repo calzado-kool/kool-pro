@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kool-pro-1781062017' + new Date().getTime();
+const CACHE_NAME = 'kool-pro-1781062205' + new Date().getTime();
 const ASSETS = [
   '/kool-pro/',
   '/kool-pro/index.html',
