@@ -174,9 +174,10 @@
     function closeZoom() { const z = document.getElementById('zoom'); if (z) { z.classList.add('hidden'); z.classList.remove('flex'); } }
     function toggleCart(open) { const d = document.getElementById('drawer'); const o = document.getElementById('ov'); if (!d || !o) return; if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; } else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; } }
     function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
-    function checkoutBridge() {
+        function checkoutBridge() {
+      console.log("CheckoutBridge triggered");
       try {
-        if (!cart.length) return alert('El carrito está vacío');
+        if (!cart || !cart.length) return alert('El carrito está vacío');
         const nameEl = document.getElementById('name');
         const phoneEl = document.getElementById('phone');
         const addrEl = document.getElementById('addr');
@@ -185,11 +186,13 @@
         const addr = addrEl ? addrEl.value.trim() : '';
         if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
 
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+
         const total = cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
         const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + addr + ' | CLIENTE: ' + name + ' (' + phone + ')';
 
-        const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+        console.log("Sending payload:", { amount: total, label: 'KOOL PRO', description });
 
         fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
@@ -197,16 +200,20 @@
           body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
         })
         .then(async (r) => {
+          console.log("Response status:", r.status);
           const data = await r.json();
+          console.log("Response data:", data);
           if (!r.ok) throw new Error(data?.message || 'Error del servidor de pago');
           if (!data || !data.url) throw new Error('Sin URL de pago');
           window.location.href = data.url;
         })
         .catch((err) => {
+          console.error("Fetch error:", err);
           if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
           alert('No se pudo iniciar el pago: ' + err.message);
         });
       } catch (e) {
+        console.error("Bridge catch:", e);
         const btn = document.getElementById('payBtn');
         if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
         alert('Error en checkout: ' + e.message);
