@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781096147</title><!-- v1781096147 -->
+  <title>KOOL PRO v1781097720</title><!-- v1781097720 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -30,6 +30,10 @@
     .btn { transition: all 0.3s ease; }
     .btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
     #floatingAction { transition: all 0.5s ease-in-out; }
+    #appShell { contain: layout paint style; }
+    #grid { contain: content; }
+    #drawer { contain: layout paint style; }
+    .product-card-wrapper { contain: content; }
 
   </style>
   <link rel="manifest" href="/kool-pro/manifest.json">
@@ -248,6 +252,7 @@ function render() {
             <div class="text-[9px] font-black ${q <= 0 ? 'text-red-400' : 'text-emerald-500'}">${stockLabel}</div>
           </button>`;
         }).join('');
+      grid.innerHTML = fragment;
 
         return `
           <article class="card relative group" id="product-${p.id}">
@@ -279,6 +284,7 @@ function render() {
           </article>
         `;
       }).join('');
+      grid.innerHTML = fragment;
       
       updateCart();
       if(window.SalesAI) SalesAI.analyzeCart();
@@ -288,6 +294,8 @@ function render() {
       loadingDone = true;
       const gate = document.getElementById('loadingGate');
       if (gate) gate.style.display = 'none';
+      const shell = document.getElementById('appShell');
+      if (shell) shell.setAttribute('data-stable-shell','true');
       
       // Reiniciar banner si es necesario
       if (typeof initPromoBanner === 'function') initPromoBanner();
