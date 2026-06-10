@@ -185,43 +185,45 @@
         const btn = document.getElementById('payBtn');
         if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
 
-        const total = cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
-        const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + addr + ' | CLIENTE: ' + name + ' (' + phone + ')';
+        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
+        // Shorten description to stay within safe limits
+        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+        
         const payload = { amount: total, label: 'KOOL PRO', description };
+
         const endpoints = [
-          'https://bold-bridge-7qge.vercel.app/api/checkout',
-          'https://bold-bridge-7qge.vercel.app/api/checkout?source=kool-pro'
+          'https://bold-bridge-7qge.vercel.app/api/checkout'
         ];
 
-        const tryEndpoint = (idx) => {
-          if (idx >= endpoints.length) {
-            if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-            alert('No se pudo iniciar el pago. Intenta de nuevo en unos segundos.');
-            return;
+        fetch(endpoints[0], {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(async (r) => {
+          if (!r.ok) {
+            const errData = await r.json().catch(() => ({}));
+            throw new Error(errData.message || 'Error ' + r.status);
           }
-          fetch(endpoints[idx], {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-          .then(async (r) => {
-            let data = {};
-            try { data = await r.json(); } catch(e) {}
-            if (!r.ok) throw new Error((data && data.message) ? data.message : 'Error del servidor de pago');
-            if (data && data.url) {
-              window.location.href = data.url;
-              return;
-            }
-            throw new Error('Sin URL de pago');
-          })
-          .catch(() => tryEndpoint(idx + 1));
-        };
-
-        tryEndpoint(0);
+          return r.json();
+        })
+        .then(data => {
+          if (data && data.url) {
+            window.location.href = data.url;
+          } else {
+            throw new Error('Respuesta inválida del servidor');
+          }
+        })
+        .catch((err) => {
+          console.error('Checkout error:', err);
+          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+          alert('Error de conexión: ' + err.message + '. Por favor, intenta de nuevo o verifica tu conexión.');
+        });
       } catch (e) {
-        const btn = document.getElementById('payBtn');
         if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-        alert('Error en checkout: ' + e.message);
+        alert('Error inesperado: ' + e.message);
       }
     }
     function validateInventoryPhotos() {
