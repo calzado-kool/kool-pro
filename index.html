@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781125515</title><!-- v1781125515 -->
+  <title>KOOL PRO STABLE</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -16,312 +16,217 @@
     .drawer.open{transform:translateX(0)}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
     .overlay.on{display:block}
-    .badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:#6b7280}
-  
-    
-    
-  
-    body.cart-open #floatingAction { display: none !important; }
-  
-    .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card:hover { transform: translateY(-8px); shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-    .size { transition: all 0.2s ease; cursor: pointer; }
-    .size:active { transform: scale(0.9); }
-    .btn { transition: all 0.3s ease; }
-    .btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
-    #floatingAction { transition: all 0.5s ease-in-out; }
-    #appShell { contain: layout paint style; }
-    #grid { contain: content; }
-    #drawer { contain: layout paint style; }
-    .product-card-wrapper { contain: content; }
-
-  
-    #adminPanel { display:none; position:sticky; top:0; z-index:80; }
-    #adminPanel.open { display:block; }
-    .admin-card { background:#0b1220; color:#e5eefc; border:1px solid rgba(255,255,255,.08); }
-    .admin-chip { background:rgba(255,255,255,.08); color:#fff; border-radius:999px; padding:.35rem .75rem; font-size:.78rem; font-weight:700; }
-    .admin-input { width:100%; background:#0f172a; color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:.8rem .9rem; outline:none; }
-    .admin-input:focus { border-color:#60a5fa; box-shadow:0 0 0 3px rgba(96,165,250,.15); }
-    .admin-btn { background:#2563eb; color:white; border-radius:12px; padding:.9rem 1rem; font-weight:800; }
-    .admin-btn.secondary { background:#1f2937; }
-
-  
-    .scrollbar-none::-webkit-scrollbar{display:none}
-    .scrollbar-none{-ms-overflow-style:none;scrollbar-width:none}
-
   </style>
-  <link rel="manifest" href="/kool-pro/manifest.json">
-  <meta name="theme-color" content="#111111">
-
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
 </head>
 <body>
-  <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
-  <div id="zoom" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/80 p-4" onclick="closeZoom()"><img id="zoomImg" class="max-h-[92vh] max-w-[96vw] object-contain rounded-2xl bg-white shadow-2xl" alt="zoom"></div>
-  <header class="sticky top-0 z-40 bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
-      <div>
-        <div class="text-3xl md:text-4xl font-black uppercase tracking-[.25em] border-b-4 border-black pb-1 inline-block mb-1">KOOL PRO</div>
-        <div class="text-[9px] uppercase tracking-[.4em] text-gray-400 font-bold ml-1">Premium Footwear IA</div>
-      </div>
-      <button onclick="toggleCart(true)" class="relative px-4 py-2 rounded-xl border border-gray-200 font-black">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span id="count" class="ml-2">0</span>
-      </button>
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div>
+      <div class="text-2xl font-black">KOOL PRO</div>
+      <div class="text-sm text-gray-500">Premium Footwear IA</div>
     </div>
-  </header>
-  <main class="max-w-7xl mx-auto px-5 md:px-8 py-8">
-    <div class="mb-4 text-sm text-gray-600 font-bold">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
-    
-    <!-- Promo Banner -->
-    <div id="promoBanner" class="mb-6 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden p-4">
-      <div class="flex items-center gap-3">
-        <div class="shrink-0 text-[10px] font-black uppercase tracking-[.2em] text-gray-400">ULTIMO EN TENDENCIA</div>
-        <a id="promoLink" href="#" class="flex items-center gap-3 min-w-0 group flex-1">
-          <img id="promoImg" src="" alt="producto destacado" class="w-20 h-12 rounded-lg object-contain bg-gray-50 p-1 border border-gray-100 shadow-sm shrink-0">
-          <div class="min-w-0">
-            <div id="promoName" class="text-lg font-black truncate uppercase tracking-tight">Cargando...</div>
-            <div id="promoMeta" class="text-xs text-gray-500 truncate font-bold">Toca para ver el producto</div>
-          </div>
-          <div class="ml-auto bg-black text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:scale-105 transition-transform">CORRE POR EL <span class="inline-block animate-bounce ml-1">⚡️😁</span></div>
-        </a>
-      </div>
-    </div>
+    <button onclick="toggleCart(true)" class="btn">🛒 <span id="count">0</span></button>
+  </div>
 
-    <div id="loadingGate" class="mb-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm font-bold text-gray-700">Cargando productos... el módulo de venta se activará cuando termine la carga.</div>
-    <div id="grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+  <main class="max-w-6xl mx-auto px-4 pb-40">
+    <div class="text-sm text-gray-500 mb-4">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
+    <div id="grid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
   </main>
-  <aside id="drawer" class="drawer">
-    <div class="p-5 border-b border-gray-200 flex items-center justify-between"><div><div class="text-xl font-black uppercase">Tu carrito</div><div class="badge">puedes seguir comprando</div></div><button onclick="toggleCart(false)" class="text-2xl">×</button></div>
-    <div id="items" class="flex-1 overflow-auto p-5 space-y-4"></div>
-    <div class="p-5 border-t border-gray-200 space-y-3">
-      <div class="flex items-center justify-between font-black text-lg"><span>Subtotal</span><span id="total">$0</span></div>
-      <div class="text-[10px] uppercase tracking-[.18em] text-gray-500 font-bold">Envío se calcula al confirmar</div>
-      <div class="mt-3 mb-2 rounded-xl border border-black/10 bg-black text-white px-4 py-3 text-[11px] md:text-xs font-black uppercase tracking-[.2em] text-center shadow-md">llena los datos para el envío de su compra</div>
-      
-      <button onclick="toggleCart(false)" class="w-full border-2 border-black rounded-xl p-3 font-black uppercase text-xs hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors shadow-sm">
-        <i class="fa-solid fa-plus"></i>
-        Seguir comprando
-      </button>
 
-      <input id="name" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Nombre completo">
-      <input id="phone" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="WhatsApp">
-      <textarea id="addr" class="w-full border border-gray-300 rounded-xl p-3 h-20 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Dirección"></textarea>
-      <button onclick="checkoutBridge()" id="payBtn" class="btn w-full shadow-lg hover:scale-[1.01] transition-transform">Finalizar compra</button>
-      <div class="text-[10px] text-gray-500 text-center font-bold uppercase tracking-[.18em]">Paga con Bold para completar tu pedido</div>
+  <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
+  <aside id="drawer" class="drawer p-4">
+    <div class="flex items-center justify-between mb-4">
+      <div class="font-black">Tu carrito</div>
+      <button onclick="toggleCart(false)">×</button>
+    </div>
+    <div id="items" class="flex-1 overflow-auto space-y-4"></div>
+    <div class="border-t pt-4 space-y-3">
+      <div class="flex items-center justify-between"><span>Subtotal</span><span id="total">$0</span></div>
+      <input id="name" class="w-full border rounded-2xl px-4 py-3" placeholder="Nombre completo" />
+      <input id="phone" class="w-full border rounded-2xl px-4 py-3" placeholder="WhatsApp" />
+      <input id="addr" class="w-full border rounded-2xl px-4 py-3" placeholder="Dirección" />
+      <button id="payBtn" onclick="checkoutBridge()" class="btn w-full">Finalizar compra</button>
+      <div class="text-xs text-gray-500">Paga con Bold para completar tu pedido</div>
     </div>
   </aside>
+
   <script>
-  let cart = [];
-  let selected = {};
-  let loadingDone = false;
+    let cart = [];
+    let selected = {};
 
-  const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}, {"id": "kool-mafalda-clasica-1781119254", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "material": "Material premium", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}, "description": "Mafalda clásica negra."}, {"id": "kool-new-balance-beis-1781124734", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "material": "Material premium", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}, "description": "New Balance color beis."}];
+    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}, {"id": "kool-mafalda-clasica-1781119254", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "material": "Material premium", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}, "description": "Mafalda clásica negra."}, {"id": "kool-new-balance-beis-1781124734", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "material": "Material premium", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}, "description": "New Balance color beis."}];
 
-  function saveState() {
-    try {
-      localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
-      localStorage.setItem('kool_selected_v3', JSON.stringify(selected));
-    } catch(e) {}
-  }
-  function loadState() {
-    try {
-      const c = localStorage.getItem('kool_cart_v3');
-      const s = localStorage.getItem('kool_selected_v3');
-      if (c) cart = JSON.parse(c);
-      if (s) selected = JSON.parse(s);
-    } catch(e) {}
-  }
-
-  function productImageFor(p) {
-    const id = String(p.id || '').toLowerCase();
-    const name = String(p.name || '').toLowerCase();
-    if (name.includes('nike')) return 'media/1781071726766.jpg';
-    if (name.includes('bota urbana roja') || id.includes('bota-roja')) return 'media/1780375993932.jpg';
-    if (name.includes('bota urbana blanca') || id.includes('bota-blanca')) return 'media/1780411345666.jpg';
-    if (name.includes('mafalda')) return 'media/1781119242950.jpg';
-    if (name.includes('new balance')) return 'media/1781124694858.jpg';
-    return p.img || 'media/1781071726766.jpg';
-  }
-
-  function available(pid, size) {
-    const p = products.find(x => x.id === pid);
-    if (!p) return 0;
-    const stock = p.stockBySize[String(size)] || 0;
-    const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-    return stock - inCart;
-  }
-
-  function choose(pid, size) {
-    selected[pid] = size;
-    render();
-  }
-
-  function add(pid) {
-    const size = selected[pid];
-    if (!size) return alert('Selecciona una talla primero');
-    if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
-    const p = products.find(x => x.id === pid);
-    if (!p) return;
-    cart.push({ ...p, size });
-    saveState();
-    render();
-  }
-
-  function remove(idx) {
-    cart.splice(idx, 1);
-    saveState();
-    render();
-  }
-
-  function updateCart() {
-    const countEl = document.getElementById('count');
-    const totalEl = document.getElementById('total');
-    const itemsEl = document.getElementById('items');
-    if (!countEl || !totalEl || !itemsEl) return;
-    countEl.innerText = cart.length;
-    const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
-    totalEl.innerText = '$' + total.toLocaleString('es-CO');
-    if (cart.length === 0) {
-      itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
-    } else {
-      itemsEl.innerHTML = cart.map((i, idx) => `
-        <div class="flex gap-4 border-b border-gray-100 pb-4">
-          <img src="${productImageFor(i)}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
-          <div class="flex-1 space-y-1">
-            <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
-            <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
-            <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
-          </div>
-          <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">×</button>
-        </div>
-      `).join('');
+    function saveState() {
+      try {
+        localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
+        localStorage.setItem('kool_selected_v3', JSON.stringify(selected));
+      } catch(e) {}
     }
-  }
+    function loadState() {
+      try {
+        const c = localStorage.getItem('kool_cart_v3');
+        const s = localStorage.getItem('kool_selected_v3');
+        if (c) cart = JSON.parse(c);
+        if (s) selected = JSON.parse(s);
+      } catch(e) {}
+    }
 
-  function render() {
-    const grid = document.getElementById('grid');
-    if (!grid) return;
-    grid.innerHTML = products.map(p => {
-      const img = productImageFor(p);
-      const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
-        const q = available(p.id, s);
-        const active = Number(selected[p.id]) === s;
-        return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div></button>`;
+    function productImageFor(p) {
+      const name = String(p.name || '').toLowerCase();
+      if (name.includes('nike')) return 'media/1781071726766.jpg';
+      if (name.includes('bota urbana roja') || name.includes('rojo')) return 'media/1780375993932.jpg';
+      if (name.includes('bota urbana blanca') || name.includes('blanco')) return 'media/1780411345666.jpg';
+      if (name.includes('mafalda')) return 'media/1781119242950.jpg';
+      if (name.includes('new balance')) return 'media/1781124694858.jpg';
+      return p.img || 'media/1781071726766.jpg';
+    }
+
+    function available(pid, size) {
+      const p = products.find(x => x.id === pid);
+      if (!p) return 0;
+      const stock = p.stockBySize[String(size)] || 0;
+      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
+      return stock - inCart;
+    }
+
+    function choose(pid, size) { selected[pid] = size; render(); }
+    function add(pid) {
+      const size = selected[pid];
+      if (!size) return alert('Selecciona una talla primero');
+      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
+      const p = products.find(x => x.id === pid);
+      cart.push({ ...p, size });
+      saveState();
+      render();
+    }
+    function remove(idx) { cart.splice(idx, 1); saveState(); render(); }
+
+    function updateCart() {
+      document.getElementById('count').innerText = cart.length;
+      document.getElementById('total').innerText = '$' + cart.reduce((a, b) => a + (Number(b.price) || 0), 0).toLocaleString('es-CO');
+      const itemsEl = document.getElementById('items');
+      if (!itemsEl) return;
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
+      } else {
+        itemsEl.innerHTML = cart.map((i, idx) => `
+          <div class="flex gap-4 border-b border-gray-100 pb-4">
+            <img src="${productImageFor(i)}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
+            <div class="flex-1 space-y-1">
+              <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
+              <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
+              <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
+            </div>
+            <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">×</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function render() {
+      const grid = document.getElementById('grid');
+      if (!grid) return;
+      grid.innerHTML = products.map(p => {
+        const img = productImageFor(p);
+        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+          const q = available(p.id, s);
+          const active = Number(selected[p.id]) === s;
+          return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div></button>`;
+        }).join('');
+        return `
+          <article class="card relative group" id="product-${p.id}">
+            <button onclick="zoom('${img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
+              <img src="${img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
+            </button>
+            <div class="p-5 space-y-4">
+              <div>
+                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
+                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
+                <div class="grid grid-cols-5 gap-2">${sizes}</div>
+              </div>
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-gray-400 line-through font-bold">$${Number(p.price_old || 0).toLocaleString('es-CO')}</span>
+                  <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"></button>
+                  <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
       }).join('');
-      return `
-        <article class="card relative group" id="product-${p.id}">
-          <button onclick="zoom('${img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-            <img src="${img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
-          </button>
-          <div class="p-5 space-y-4">
-            <div>
-              <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
-              <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
-            </div>
-            <div class="space-y-2">
-              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
-              <div class="grid grid-cols-5 gap-2">${sizes}</div>
-            </div>
-            <div class="flex items-center justify-between pt-2">
-              <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400 line-through font-bold">$${Number(p.price_old || 0).toLocaleString('es-CO')}</span>
-                <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"></button>
-                <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
-              </div>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join('');
-    updateCart();
-    loadingDone = true;
-    const gate = document.getElementById('loadingGate');
-    if (gate) gate.style.display = 'none';
-    if (typeof validateInventoryPhotos === 'function') validateInventoryPhotos();
-  }
-
-  function zoom(src) {
-    const z = document.getElementById('zoom');
-    const zi = document.getElementById('zoomImg');
-    if (!z || !zi) return;
-    zi.src = src;
-    z.classList.remove('hidden');
-    z.classList.add('flex');
-  }
-  function closeZoom() {
-    const z = document.getElementById('zoom');
-    if (z) { z.classList.add('hidden'); z.classList.remove('flex'); }
-  }
-  function toggleCart(open) {
-    const d = document.getElementById('drawer');
-    const o = document.getElementById('ov');
-    if (!d || !o) return;
-    if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow = 'hidden'; }
-    else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow = ''; }
-  }
-
-  function checkoutBridge() {
-    try {
-      if (!cart.length) return alert('El carrito está vacío');
-      const name = document.getElementById('name')?.value.trim() || '';
-      const phone = document.getElementById('phone')?.value.trim() || '';
-      const addr = document.getElementById('addr')?.value.trim() || '';
-      if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
-      const btn = document.getElementById('payBtn');
-      if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
-      const total = cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
-      const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + addr + ' | CLIENTE: ' + name + ' (' + phone + ')';
-      fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
-      }).then(r => r.json()).then(data => {
-        if (data && data.url) window.location.href = data.url;
-        else throw new Error('Sin URL de pago');
-      }).catch(err => {
-        if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-        alert('No se pudo iniciar el pago: ' + err.message);
-      });
-    } catch (e) {
-      alert('Error en checkout: ' + e.message);
+      updateCart();
     }
-  }
 
-  function validateInventoryPhotos() {
-    try {
-      document.querySelectorAll('[id^="product-"] img').forEach(img => {
-        const card = img.closest('[id^="product-"]');
-        if (!card) return;
-        const text = (card.innerText || '').toLowerCase();
-        if (text.includes('nike')) img.src = 'media/1781071726766.jpg';
-        else if (text.includes('rojo')) img.src = 'media/1780375993932.jpg';
-        else if (text.includes('blanco')) img.src = 'media/1780411345666.jpg';
-        else if (text.includes('mafalda')) img.src = 'media/1781119242950.jpg';
-        else if (text.includes('new balance')) img.src = 'media/1781124694858.jpg';
-      });
-    } catch(e) {}
-  }
+    function zoom(src) {
+      const z = document.getElementById('zoom');
+      const zi = document.getElementById('zoomImg');
+      if (!z || !zi) return;
+      zi.src = src;
+      z.classList.remove('hidden');
+      z.classList.add('flex');
+    }
+    function closeZoom() { const z = document.getElementById('zoom'); if (z) { z.classList.add('hidden'); z.classList.remove('flex'); } }
+    function toggleCart(open) { const d = document.getElementById('drawer'); const o = document.getElementById('ov'); if (!d || !o) return; if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; } else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; } }
+    function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
+    function checkoutBridge() {
+      try {
+        if (!cart.length) return alert('El carrito está vacío');
+        const nameEl = document.getElementById('name');
+        const phoneEl = document.getElementById('phone');
+        const addrEl = document.getElementById('addr');
+        const name = nameEl ? nameEl.value.trim() : '';
+        const phone = phoneEl ? phoneEl.value.trim() : '';
+        const addr = addrEl ? addrEl.value.trim() : '';
+        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
 
-  function safeInjectProducts(newList) {
-    if (!Array.isArray(newList)) return;
-    const seen = new Set(products.map(p => p.id));
-    newList.forEach(p => {
-      if (p && p.id && !seen.has(p.id)) products.push(p);
-    });
-    render();
-  }
+        const total = cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
+        const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + addr + ' | CLIENTE: ' + name + ' (' + phone + ')';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    loadState();
-    render();
-  });
-</script>
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
 
-</body>
+        fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
+        })
+        .then(async (r) => {
+          const data = await r.json();
+          if (!r.ok) throw new Error(data?.message || 'Error del servidor de pago');
+          if (!data || !data.url) throw new Error('Sin URL de pago');
+          window.location.href = data.url;
+        })
+        .catch((err) => {
+          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+          alert('No se pudo iniciar el pago: ' + err.message);
+        });
+      } catch (e) {
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+        alert('Error en checkout: ' + e.message);
+      }
+    }
+    function validateInventoryPhotos() {
+      try {
+        document.querySelectorAll('[id^="product-"] img').forEach(img => {
+          const card = img.closest('[id^="product-"]');
+          if (!card) return;
+          const text = (card.innerText || '').toLowerCase();
+          if (text.includes('nike')) img.src = 'media/1781071726766.jpg';
+          else if (text.includes('rojo')) img.src = 'media/1780375993932.jpg';
+          else if (text.includes('blanco')) img.src = 'media/1780411345666.jpg';
+          else if (text.includes('mafalda')) img.src = 'media/1781119242950.jpg';
+          else if (text.includes('new balance')) img.src = 'media/1781124694858.jpg';
+        });
+      } catch(e) {}
+    }
+    document.addEventListener('DOMContentLoaded', () => { loadState(); render(); })
+  </script>
+  </body>
 </html>
