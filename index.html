@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781073634</title><!-- v1781073634 -->
+  <title>KOOL PRO v1781074085</title><!-- v1781074085 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -120,6 +120,7 @@
     }
 
     function add(pid) {
+      if (!Array.isArray(products) || !products.length) return alert('Catálogo aún no listo');
       if (!loadingDone) return;
       const size = selected[pid];
       if (!size) return alert('Por favor selecciona una talla primero');
@@ -139,6 +140,7 @@
     }
 
     function choose(pid, size) {
+      if (!products.find(x => x.id === pid)) return;
       selected[pid] = size;
       render(); // Para marcar la talla como activa visualmente
     }
@@ -173,7 +175,26 @@
       }
     }
 
-    function render() {
+    
+    window.rebuildCatalogSafely = function(newProducts) {
+      try {
+        if (Array.isArray(newProducts) && newProducts.length) {
+          const unique = [];
+          const seen = new Set();
+          for (const p of newProducts) {
+            if (!p || !p.id || seen.has(p.id)) continue;
+            seen.add(p.id);
+            unique.push(p);
+          }
+          localStorage.setItem('kool_products_v4', JSON.stringify(unique));
+          location.reload();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+function render() {
       const grid = document.getElementById('grid');
       if (!grid) return;
 
@@ -193,7 +214,7 @@
         return `
           <article class="card relative group" id="product-${p.id}">
             <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/1781071726766.jpg'">
             </button>
             <div class="p-5 space-y-4">
               <div>
@@ -243,7 +264,7 @@
       const update = () => {
         const pr = products[promoIndex % products.length];
         if (!pr) return;
-        pImg.src = pr.img;
+        pImg.src = pr.img || 'https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/1781071726766.jpg';
         pName.textContent = pr.name;
         pMeta.textContent = pr.color + ' · $' + pr.price.toLocaleString('es-CO');
         pLink.href = '#product-' + pr.id;
