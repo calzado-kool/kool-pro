@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781101080</title><!-- v1781101080 -->
+  <title>KOOL PRO v1781101166</title><!-- v1781101166 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -110,18 +110,59 @@
     </div>
   </aside>
   <script>
-    // 1. GLOBALES
-    // KOOL IA SALES CLOSER - SUB-IA GENERADA POR META-ENGINE
-    
-    const MarketScout = {
-      reportTrend: function(source, message) {
-        console.log('[MARKET-SCOUT] ' + source + ': ' + message);
-      },
-      comparePrice: function(productName, currentPrice, competitorPrice) {
-        console.log('[MARKET-SCOUT] Comparando ' + productName + ' | Nuestro: ' + currentPrice + ' | Competencia: ' + competitorPrice);
-      }
-    };
+    // KOOL IA CLEAN ENGINE v6.0
+    let cart = [];
+    let selected = {};
+    let loadingDone = false;
 
+    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}];
+
+    function saveState() {
+      try {
+        localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
+        localStorage.setItem('kool_selected_v3', JSON.stringify(selected));
+      } catch(e) {}
+    }
+    function loadState() {
+      try {
+        const c = localStorage.getItem('kool_cart_v3');
+        const s = localStorage.getItem('kool_selected_v3');
+        if (c) cart = JSON.parse(c);
+        if (s) selected = JSON.parse(s);
+      } catch(e) {}
+    }
+
+    function available(pid, size) {
+      const p = products.find(x => x.id === pid);
+      if (!p) return 0;
+      const stock = p.stockBySize[String(size)] || 0;
+      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
+      return stock - inCart;
+    }
+
+    function add(pid) {
+      if (!Array.isArray(products) || !products.length) return;
+      const size = selected[pid];
+      if (!size) return alert('Selecciona una talla primero');
+      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
+      const p = products.find(x => x.id === pid);
+      cart.push({ ...p, size });
+      saveState();
+      render();
+    }
+
+    function remove(idx) {
+      cart.splice(idx, 1);
+      saveState();
+      render();
+    }
+
+    function choose(pid, size) {
+      const p = products.find(x => x.id === pid);
+      if (!p) return;
+      selected[pid] = size;
+      render();
+    }
 
     function safeInjectProducts(list) {
       const grid = document.getElementById('grid');
@@ -137,98 +178,20 @@
       render();
     }
 
-    const SalesAI = {
-      analyzeCart: function() {
-        if (cart.length > 0) {
-          console.log('[SALES-AI] 📈 Cliente con intención de compra detectada.');
-          const floating = document.getElementById('floatingAction');
-          if (floating) floating.style.display = 'flex';
-        }
-      },
-      suggestUpsell: function(productId) {
-        const p = products.find(x => x.id === productId);
-        console.log('[SALES-AI] ⚡ Sugiriendo complemento para ' + p.name);
-      }
-    };
-
-    let cart = [];
-    let selected = {};
-    let loadingDone = false; window.__KOOL_BOOTSTRAP_ATTEMPTED = false;
-    
-    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."}];
-
-    // 2. PERSISTENCIA
-    function saveState() {
-      localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
-      localStorage.setItem('kool_selected_v3', JSON.stringify(selected));
-    }
-    function loadState() {
-      const c = localStorage.getItem('kool_cart_v3');
-      const s = localStorage.getItem('kool_selected_v3');
-      if (c) cart = JSON.parse(c);
-      if (s) selected = JSON.parse(s);
-    }
-
-    // 3. LÓGICA DE NEGOCIO
-    function available(pid, size) {
-      const p = products.find(x => x.id === pid);
-      if (!p) return 0;
-      const stock = p.stockBySize[String(size)] || 0;
-      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-      return stock - inCart;
-    }
-
-    function add(pid) {
-      if (!Array.isArray(products) || !products.length) return alert('Catálogo aún no listo');
-      if (!loadingDone) return;
-      const size = selected[pid];
-      if (!size) return alert('Por favor selecciona una talla primero');
-      if (available(pid, size) <= 0) return alert('No hay stock disponible en esa talla');
-      const p = products.find(x => x.id === pid);
-      cart.push({ ...p, size });
-      saveState();
-      updateCart();
-      if(window.SalesAI) SalesAI.analyzeCart();
-      if(window.TrustGuardian) TrustGuardian.validateImages();
-      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
-        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
-      render();
-    }
-
-    function remove(idx) {
-      cart.splice(idx, 1);
-      saveState();
-      updateCart();
-      if(window.SalesAI) SalesAI.analyzeCart();
-      if(window.TrustGuardian) TrustGuardian.validateImages();
-      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
-        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
-      render();
-    }
-
-    function choose(pid, size) {
-      if (!products.find(x => x.id === pid)) return;
-      selected[pid] = size;
-      render(); // Para marcar la talla como activa visualmente
-    }
-
-    // 4. INTERFAZ
     function updateCart() {
       const countEl = document.getElementById('count');
       const totalEl = document.getElementById('total');
       const itemsEl = document.getElementById('items');
       if (!countEl || !totalEl || !itemsEl) return;
-
       countEl.innerText = cart.length;
       const total = cart.reduce((a, b) => a + b.price, 0);
       totalEl.innerText = '$' + total.toLocaleString('es-CO');
-
       if (cart.length === 0) {
         itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
       } else {
         itemsEl.innerHTML = cart.map((i, idx) => `
           <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl">
+            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg'">
             <div class="flex-1 space-y-1">
               <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
               <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
@@ -242,140 +205,26 @@
       }
     }
 
-    
-    window.rebuildCatalogSafely = function(newProducts) {
-      try {
-        if (Array.isArray(newProducts) && newProducts.length) {
-          const unique = [];
-          const seen = new Set();
-          for (const p of newProducts) {
-            if (!p || !p.id || seen.has(p.id)) continue;
-            seen.add(p.id);
-            unique.push(p);
-          }
-          localStorage.setItem('kool_products_v4', JSON.stringify(unique));
-          location.reload();
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-function render() {
+    function render() {
       const grid = document.getElementById('grid');
       if (!grid) return;
-
       grid.innerHTML = products.map(p => {
         const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
           const q = available(p.id, s);
           const isActive = Number(selected[p.id]) === s;
-          const classAttr = isActive ? 'active' : '';
-          const disabledAttr = q <= 0 ? 'disabled' : '';
           const stockLabel = q <= 0 ? '0' : q;
-          return `<button class="size ${classAttr}" onclick="choose('${p.id}', ${s})" ${disabledAttr}>
-            ${s}
-            <div class="text-[9px] font-black ${q <= 0 ? 'text-red-400' : 'text-emerald-500'}">${stockLabel}</div>
-          </button>`;
+          return '<button class="size ' + (isActive ? 'active' : '') + '" onclick="choose(\'' + p.id + '\', ' + s + ')" ' + (q <= 0 ? 'disabled' : '') + '>' + s + '<div class="text-[9px] font-black ' + (q <= 0 ? 'text-red-400' : 'text-emerald-500') + '">' + stockLabel + '</div></button>';
         }).join('');
-      grid.innerHTML = fragment;
-
-        return `
-          <article class="card relative group" id="product-${p.id}">
-            <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/1781071726766.jpg'">
-            </button>
-            <div class="p-5 space-y-4">
-              <div>
-                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
-                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
-              </div>
-              <div class="space-y-2">
-                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
-                <div class="grid grid-cols-5 gap-2">${sizes}</div>
-              </div>
-              <div class="flex items-center justify-between pt-2">
-                <div class="flex flex-col">
-                  <span class="text-[10px] text-gray-400 line-through font-bold">$${p.price_old.toLocaleString('es-CO')}</span>
-                  <span class="text-xl font-black text-black">$${p.price.toLocaleString('es-CO')}</span>
-                </div>
-                <div class="flex gap-2">
-                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                  </button>
-                  <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
+        return '<article class="card relative group" id="product-' + p.id + '"><button onclick="zoom(\'' + p.img + '\')" class="w-full aspect-square overflow-hidden bg-gray-50 relative"><img src="' + p.img + '" alt="' + p.name + '" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src=\'https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg\'"></button><div class="p-5 space-y-4"><div><div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">' + p.color + '</div><div class="text-xl font-black uppercase leading-tight">' + p.name + '</div></div><div class="space-y-2"><div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div><div class="grid grid-cols-5 gap-2">' + sizes + '</div></div><div class="flex items-center justify-between pt-2"><div class="flex flex-col"><span class="text-[10px] text-gray-400 line-through font-bold">$' + p.price_old.toLocaleString('es-CO') + '</span><span class="text-xl font-black text-black">$' + p.price.toLocaleString('es-CO') + '</span></div><div class="flex gap-2"><button onclick="shareProduct(\'' + p.id + '\', \'' + p.name + '\')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"><i class="fa-brands fa-whatsapp text-lg"></i></button><button onclick="add(\'' + p.id + '\')" class="btn px-6 text-[11px]">Agregar</button></div></div></div></article>';
       }).join('');
-      grid.innerHTML = fragment;
-      
       updateCart();
-      if(window.SalesAI) SalesAI.analyzeCart();
-      if(window.TrustGuardian) TrustGuardian.validateImages();
-      if(window.SelfHealing) SelfHealing.checkIntegrity(); if(typeof SalesAI !== "undefined") SalesAI.analyzeCart();
-        if(typeof MarketScout !== "undefined") MarketScout.reportTrend("CATALOG", "Catálogo cargado con " + products.length + " productos.");
       loadingDone = true;
       const gate = document.getElementById('loadingGate');
       if (gate) gate.style.display = 'none';
-      const shell = document.getElementById('appShell');
-      if (shell) shell.setAttribute('data-stable-shell','true');
-      
-      // Reiniciar banner si es necesario
-      if (typeof initPromoBanner === 'function') initPromoBanner();
+      initPromoBanner();
     }
 
-
-    function toggleAdminPanel(force) {
-      const p = document.getElementById('adminPanel');
-      if (!p) return;
-      const open = typeof force === 'boolean' ? force : !p.classList.contains('open');
-      p.classList.toggle('open', open);
-      p.scrollIntoView({behavior:'smooth', block:'start'});
-    }
-
-    function loadSampleProduct() {
-      const f = (id) => document.getElementById(id);
-      f('adminName').value = 'Bota Urbana Edición Kool';
-      f('adminPrice').value = '159000';
-      f('adminImage').value = 'https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg';
-      f('adminColor').value = 'Negro / Blanco';
-      f('adminMaterial').value = 'Sintético Premium';
-      f('adminSizes').value = '35,36,37,38,39';
-    }
-
-    function addAdminProduct() {
-      const name = document.getElementById('adminName').value.trim();
-      const price = Number(document.getElementById('adminPrice').value);
-      const img = document.getElementById('adminImage').value.trim();
-      const color = document.getElementById('adminColor').value.trim();
-      const material = document.getElementById('adminMaterial').value.trim();
-      const sizes = document.getElementById('adminSizes').value.split(',').map(s => Number(s.trim())).filter(Boolean);
-      if (!name || !price || !img || !sizes.length) return alert('Completa nombre, precio, imagen y tallas');
-      const id = 'kool-' + Date.now();
-      const prod = {
-        id,
-        name,
-        price,
-        price_old: Math.round(price * 1.2),
-        img,
-        color,
-        material,
-        stockBySize: Object.fromEntries(sizes.map(s => [String(s), 5])),
-        description: name + ' ' + color
-      };
-      if (window.safeInjectProducts) {
-        const list = [...products, prod];
-        safeInjectProducts(list);
-      } else {
-        products.push(prod); render();
-      }
-      toggleAdminPanel(false);
-      alert('Producto agregado al catálogo sin afectar la estructura principal.');
-    }
-
-    // 5. BANNER Y UTILIDADES
+    // Banner
     let promoIndex = 0;
     let promoTimer = null;
     function initPromoBanner() {
@@ -384,28 +233,23 @@ function render() {
       const pName = document.getElementById('promoName');
       const pMeta = document.getElementById('promoMeta');
       if (!pLink || !products.length) return;
-
       const update = () => {
         const pr = products[promoIndex % products.length];
         if (!pr) return;
-        pImg.src = pr.img || 'https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/1781071726766.jpg';
+        pImg.src = pr.img;
         pName.textContent = pr.name;
         pMeta.textContent = pr.color + ' · $' + pr.price.toLocaleString('es-CO');
         pLink.href = '#product-' + pr.id;
       };
-
       update();
       if (promoTimer) clearInterval(promoTimer);
-      promoTimer = setInterval(() => {
-        promoIndex++;
-        update();
-      }, 4000);
+      promoTimer = setInterval(() => { promoIndex++; update(); }, 4000);
     }
 
     function shareProduct(pid, name) {
       const url = window.location.origin + window.location.pathname + '#product-' + pid;
-      const text = `¡Mira estos zapatos en KOOL PRO! 🔥\n\n*${name}*\n\nVer aquí: ${url}`;
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+      const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
     }
 
     function zoom(src) {
@@ -416,83 +260,76 @@ function render() {
       z.classList.remove('hidden');
       z.classList.add('flex');
     }
-
     function closeZoom() {
       const z = document.getElementById('zoom');
-      if (z) {
-        z.classList.add('hidden');
-        z.classList.remove('flex');
-      }
+      if (z) { z.classList.add('hidden'); z.classList.remove('flex'); }
     }
 
     function toggleCart(open) {
       const d = document.getElementById('drawer');
       const o = document.getElementById('ov');
       if (!d || !o) return;
-      if (open) {
-        d.classList.add('open');
-        o.classList.add('on');
-        document.body.style.overflow = 'hidden';
-      } else {
-        d.classList.remove('open');
-        o.classList.remove('on');
-        document.body.style.overflow = '';
-      }
+      if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow = 'hidden'; }
+      else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow = ''; }
+    }
+
+    function toggleAdminPanel(force) {
+      const p = document.getElementById('adminPanel');
+      if (!p) return;
+      const open = typeof force === 'boolean' ? force : !p.classList.contains('open');
+      p.classList.toggle('open', open);
+      if (open) p.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    function loadSampleProduct() {
+      document.getElementById('adminName').value = 'Bota Urbana Edición Kool';
+      document.getElementById('adminPrice').value = '159000';
+      document.getElementById('adminImage').value = 'https://calzado-kool.github.io/kool-pro/media/1780411345666.jpg';
+      document.getElementById('adminColor').value = 'Negro / Blanco';
+      document.getElementById('adminMaterial').value = 'Sintético Premium';
+      document.getElementById('adminSizes').value = '35,36,37,38,39';
+    }
+    function addAdminProduct() {
+      const name = document.getElementById('adminName').value.trim();
+      const price = Number(document.getElementById('adminPrice').value);
+      const img = document.getElementById('adminImage').value.trim();
+      const color = document.getElementById('adminColor').value.trim();
+      const material = document.getElementById('adminMaterial').value.trim();
+      const sizes = document.getElementById('adminSizes').value.split(',').map(s => Number(s.trim())).filter(Boolean);
+      if (!name || !price || !img || !sizes.length) return alert('Completa nombre, precio, imagen y tallas');
+      const id = 'kool-' + Date.now();
+      const prod = { id, name, price, price_old: Math.round(price * 1.2), img, color, material, stockBySize: Object.fromEntries(sizes.map(s => [String(s), 5])), description: name + ' ' + color };
+      safeInjectProducts([...products, prod]);
+      toggleAdminPanel(false);
+      alert('Producto agregado al catálogo.');
     }
 
     async function checkout() {
       if (!cart.length) return alert('El carrito está vacío');
       const n = document.getElementById('name').value.trim();
-      const p = document.getElementById('phone').value.trim();
+      const ph = document.getElementById('phone').value.trim();
       const a = document.getElementById('addr').value.trim();
-      if (!n || !p || !a) return alert('Por favor completa todos los campos de envío');
-      
+      if (!n || !ph || !a) return alert('Completa todos los campos de envío');
       const btn = document.getElementById('payBtn');
       btn.disabled = true;
       btn.innerText = 'PROCESANDO...';
-
       try {
-        const total = cart.reduce((acc, item) => acc + item.price, 0);
-        const description = cart.map(i => `[ORD:KOOL-${Date.now()} | ID:${i.id} | SZ:${i.size} | NAME:${i.name}]`).join(' ') + ` | ENVIO: ${a} | CLIENTE: ${n} (${p})`;
-        
-        const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
-        });
-        
+        const total = cart.reduce((acc, i) => acc + i.price, 0);
+        const description = cart.map(i => '[ID:' + i.id + ' SZ:' + i.size + ' NAME:' + i.name + ']').join(' ') + ' | ENVIO: ' + a + ' | CLIENTE: ' + n + ' (' + ph + ')';
+        const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({amount: total, label: 'KOOL PRO', description}) });
         const data = await res.json();
         if (data.url) window.location.href = data.url;
-        else throw new Error('Error al generar link de pago');
-      } catch (e) {
+        else throw new Error('Sin URL de pago');
+      } catch(e) {
         alert('Error: ' + e.message);
         btn.disabled = false;
         btn.innerText = 'Finalizar compra';
       }
     }
 
-    
-    function __KOOL_FORCE_BOOTSTRAP() {
-      try {
-        const gate = document.getElementById('loadingGate');
-        if (gate) gate.style.display = 'none';
-        if (typeof products !== 'undefined' && products.length && typeof render === 'function') {
-          render();
-        }
-      } catch(e) {}
-    }
-    setTimeout(__KOOL_FORCE_BOOTSTRAP, 1500);
-
-    // 6. INICIO
     document.addEventListener('DOMContentLoaded', () => {
       try { loadState(); } catch(e) {}
       try { render(); } catch(e) { console.error(e); }
-      Promise.resolve().then(function(){ try { render(); } catch(e) {} });
-      setTimeout(function() { try { render(); } catch(e) {} }, 250);
-      setTimeout(function() { try { render(); } catch(e) {} }, 1200);
-      window.__KOOL_BOOTSTRAP_ATTEMPTED = true;
-      const gate = document.getElementById('loadingGate');
-      if (gate) gate.style.display = 'none';
+      setTimeout(function() { try { render(); } catch(e) {} }, 300);
     });
 </script>
 
