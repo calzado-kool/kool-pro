@@ -373,5 +373,24 @@
   }
 </script>
 
+
+<script>
+window.__KOOL_TEST__ = {
+  boot: function(){
+    return {
+      hasGrid: !!document.getElementById('grid'),
+      hasPromoLink: !!document.getElementById('promoLink'),
+      hasCart: !!document.getElementById('drawer'),
+      scripts: document.getElementsByTagName('script').length,
+      products: (typeof products !== 'undefined') ? products.length : -1,
+      renderType: typeof render,
+      addType: typeof add,
+      chooseType: typeof choose,
+      initPromoBannerType: typeof initPromoBanner
+    };
+  }
+}
+</script>
+
 </body>
 </html>
