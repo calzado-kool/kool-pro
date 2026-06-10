@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781048866</title><!-- v1781048866 -->
+  <title>KOOL PRO v1781053066</title><!-- v1781053066 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -57,9 +57,9 @@
       <div class="flex items-center justify-between font-black text-lg"><span>Total</span><span id="total">$0</span></div>
       <div class="mt-3 mb-2 rounded-xl border border-black/10 bg-black text-white px-4 py-3 text-[11px] md:text-xs font-black uppercase tracking-[.2em] text-center shadow-md">llena los datos para el envío de su compra</div>
       
-      <button onclick="toggleCart(false)" class="w-full border-2 border-black rounded-xl p-3 font-black uppercase text-xs hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors">
+      <button onclick="toggleCart(false)" class="w-full border-2 border-black rounded-xl p-3 font-black uppercase text-xs hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors shadow-sm">
         <i class="fa-solid fa-plus"></i>
-        ¿Deseas agregar otro producto? Ver catálogo
+        Seguir comprando
       </button>
 
       <input id="name" class="w-full border border-gray-300 rounded-xl p-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20" placeholder="Nombre completo">
@@ -97,8 +97,10 @@
     function choose(pid, size){ selected[pid]=size; add(pid); }
     function zoom(src){ document.getElementById('zoomImg').src=src; document.getElementById('zoom').classList.remove('hidden'); document.getElementById('zoom').classList.add('flex'); }
     function closeZoom(){ document.getElementById('zoom').classList.add('hidden'); document.getElementById('zoom').classList.remove('flex'); }
-    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); render(); }
-    function remove(i){ const item = cart[i]; if(item) inventory[item.id] = (inventory[item.id]||0)+1; cart.splice(i,1); saveState(); updateCart(); render(); }
+    function add(pid){ if (!loadingDone) return alert('Espera a que terminen de cargar todos los productos'); const size = selected[pid] || 35; if (available(pid,size) <= 0) return alert('No hay stock en esa talla'); const p = products.find(x=>x.id===pid); cart.push({ ...p, size }); inventory[p.id] = (inventory[p.id]||0) - 1; if(typeof saveState === 'function') saveState(); updateCart(); render();
+    try { updateCart(); } catch(e) {} }
+    function remove(i){ const item = cart[i]; if(item) inventory[item.id] = (inventory[item.id]||0)+1; cart.splice(i,1); saveState(); updateCart(); render();
+    try { updateCart(); } catch(e) {} }
     function updateCart(){ document.getElementById('count').innerText = cart.length; document.getElementById('total').innerText = '$' + cart.reduce((a,b)=>a+b.price,0).toLocaleString('es-CO'); document.getElementById('items').innerHTML = cart.length ? cart.map((i,idx)=>`<div class="flex gap-3 border-b pb-4"><img src="${i.img}" class="w-16 h-16 object-cover rounded-lg"><div class="flex-1"><div class="font-black uppercase text-xs">${i.name}</div><div class="text-xs text-gray-500">Talla: ${i.size}</div><div class="text-xs text-emerald-600 font-black bg-emerald-50 px-2 py-0.5 rounded-full inline-block font-bold">Quedan en esa talla: ${available(i.id, i.size)}</div><div class="font-black">$${i.price.toLocaleString('es-CO')}</div></div><button onclick="remove(${idx})" class="text-gray-400 text-xl">×</button></div>`).join('') : '<div class="text-gray-400 py-10 text-center">Carrito vacío</div>' }
     function toggleCart(open){ 
       const d = document.getElementById('drawer'); 
@@ -115,6 +117,7 @@
     }
     async function checkout(){ if(!loadingDone) return alert('Espera a que carguen todos los productos'); if(!cart.length) return alert('Agrega productos primero'); const name=document.getElementById('name').value.trim(); const phone=document.getElementById('phone').value.trim(); const addr=document.getElementById('addr').value.trim(); if(!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección'); const btn=document.getElementById('payBtn'); btn.disabled=true; btn.innerText='PROCESANDO...'; try { const total = cart.reduce((a,b)=>a+b.price,0); const desc = cart.map(i=>`${i.name} (T:${i.size})`).join(', '); const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount: total, label:'KOOL PRO', description: desc + ' | ' + addr }) }); const data = await res.json(); if(data.url) location.href = data.url; else throw new Error('No URL'); } catch(e){ alert('No se pudo iniciar el pago'); btn.disabled=false; btn.innerText='Finalizar compra'; } }
     render();
+    try { updateCart(); } catch(e) {}
   </script>
 
   <div id="floatingAction" style="display: none;" class="fixed bottom-6 right-6 z-[40] flex flex-col items-end gap-2 pointer-events-none">
