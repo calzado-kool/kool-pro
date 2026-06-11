@@ -75,15 +75,37 @@
       } catch(e) {}
     }
 
+
+    const PHOTO_REGISTRY = {
+      'nike súper': 'media/1781071726766.jpg',
+      'bota urbana roja': 'media/1780375993932.jpg',
+      'bota urbana blanca': 'media/1780411345666.jpg',
+      'mafalda clásica': 'media/1781119242950.jpg',
+      'new balance': 'media/1781124694858.jpg',
+      'botín sofía': 'media/1781135115955.jpg',
+      'alcon food salah': 'media/1781135775589.jpg'
+    };
+
+    function productKey(p) {
+      return String((p && (p.name || p.id)) || '').toLowerCase().trim();
+    }
+
+    function bindPhotoToProduct(p) {
+      const key = productKey(p);
+      if (PHOTO_REGISTRY[key]) return PHOTO_REGISTRY[key];
+      // fallback by heuristics
+      if (key.includes('nike')) return 'media/1781071726766.jpg';
+      if (key.includes('roja')) return 'media/1780375993932.jpg';
+      if (key.includes('blanca')) return 'media/1780411345666.jpg';
+      if (key.includes('mafalda')) return 'media/1781119242950.jpg';
+      if (key.includes('new balance')) return 'media/1781124694858.jpg';
+      if (key.includes('sofía') || key.includes('sofia')) return 'media/1781135115955.jpg';
+      if (key.includes('alcon food salah')) return 'media/1781135775589.jpg';
+      return p && p.img ? p.img : 'media/1781071726766.jpg';
+    }
+
     function productImageFor(p) {
-      const name = String(p.name || '').toLowerCase();
-      if (name.includes('nike')) return 'media/1781071726766.jpg';
-      if (name.includes('bota urbana roja') || name.includes('rojo')) return 'media/1780375993932.jpg';
-      if (name.includes('bota urbana blanca') || name.includes('blanco')) return 'media/1780411345666.jpg';
-      if (name.includes('mafalda')) return 'media/1781119242950.jpg';
-      if (name.includes('new balance')) return 'media/1781124694858.jpg';
-      if (name.includes('sofia')) return 'media/1781135115955.jpg';
-      return p.img || 'media/1781071726766.jpg';
+      return bindPhotoToProduct(p);
     }
 
     function available(pid, size) {
@@ -116,7 +138,7 @@
       } else {
         itemsEl.innerHTML = cart.map((i, idx) => `
           <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${productImageFor(i)}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
+            <img src="${bindPhotoToProduct(i)}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
             <div class="flex-1 space-y-1">
               <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
               <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
@@ -132,7 +154,7 @@
       const grid = document.getElementById('grid');
       if (!grid) return;
       grid.innerHTML = products.map(p => {
-        const img = productImageFor(p);
+        const img = bindPhotoToProduct(p);
         const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
           const q = available(p.id, s);
           const active = Number(selected[p.id]) === s;
@@ -240,12 +262,15 @@
         document.querySelectorAll('[id^="product-"] img').forEach(img => {
           const card = img.closest('[id^="product-"]');
           if (!card) return;
-          const text = (card.innerText || '').toLowerCase();
-          if (text.includes('nike')) img.src = 'media/1781071726766.jpg';
-          else if (text.includes('rojo')) img.src = 'media/1780375993932.jpg';
-          else if (text.includes('blanco')) img.src = 'media/1780411345666.jpg';
-          else if (text.includes('mafalda')) img.src = 'media/1781119242950.jpg';
-          else if (text.includes('new balance')) img.src = 'media/1781124694858.jpg';
+          const titleEl = card.querySelector('.text-xl.font-black.uppercase.leading-tight');
+          const name = titleEl ? titleEl.innerText.toLowerCase() : (card.innerText || '').toLowerCase();
+          if (name.includes('nike')) img.src = 'media/1781071726766.jpg';
+          else if (name.includes('bota urbana roja')) img.src = 'media/1780375993932.jpg';
+          else if (name.includes('bota urbana blanca')) img.src = 'media/1780411345666.jpg';
+          else if (name.includes('mafalda clásica')) img.src = 'media/1781119242950.jpg';
+          else if (name.includes('new balance')) img.src = 'media/1781124694858.jpg';
+          else if (name.includes('botín sofía') || name.includes('botin sofia')) img.src = 'media/1781135115955.jpg';
+          else if (name.includes('alcon food salah')) img.src = 'media/1781135775589.jpg';
         });
       } catch(e) {}
     }
