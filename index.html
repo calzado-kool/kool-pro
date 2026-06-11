@@ -50,231 +50,179 @@
   </aside>
 
   <script>
-    let cart = [];
-    let selected = {};
+  let cart = [];
+  let selected = {};
 
-    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "material": "Material Premium", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Zapatilla Nike Súper Gris Verde."},
-    {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "material": "Cuero Sintético", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Bota urbana clásica roja."},
-    {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "material": "Cuero Sintético", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Elegancia blanca."},
-    {"id": "kool-mafalda-clasica-1781119254", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "material": "Material premium", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}, "description": "Mafalda clásica negra."},
-    {"id": "kool-new-balance-beis-1781124734", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "material": "Material premium", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}, "description": "New Balance color beis."},
-    {"id": "kool-sofia-blanco-1781135212", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781135115955.jpg", "color": "Blanco Pastel", "material": "Sintético Premium", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}, "description": "Botín Sofía color blanco pastel."}, {"id": "kool-alcon-food-salah-1781135916", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "material": "Cuero", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}, "description": "Alcon Food Salah de cuero."}];
+  const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781135115955.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}}];
 
-    function saveState() {
-      try {
-        localStorage.setItem('kool_cart_v3', JSON.stringify(cart));
-        localStorage.setItem('kool_selected_v3', JSON.stringify(selected));
-      } catch(e) {}
-    }
-    function loadState() {
-      try {
-        const c = localStorage.getItem('kool_cart_v3');
-        const s = localStorage.getItem('kool_selected_v3');
-        if (c) cart = JSON.parse(c);
-        if (s) selected = JSON.parse(s);
-      } catch(e) {}
-    }
+  function saveState() {
+    try {
+      localStorage.setItem('kool_cart_v4', JSON.stringify(cart));
+      localStorage.setItem('kool_selected_v4', JSON.stringify(selected));
+    } catch(e) {}
+  }
+  function loadState() {
+    try {
+      const c = localStorage.getItem('kool_cart_v4');
+      const s = localStorage.getItem('kool_selected_v4');
+      if (c) cart = JSON.parse(c);
+      if (s) selected = JSON.parse(s);
+    } catch(e) {}
+  }
 
+  function available(pid, size) {
+    const p = products.find(x => x.id === pid);
+    if (!p) return 0;
+    const stock = p.stockBySize[String(size)] || 0;
+    const inCart = cart.filter(i => i.id === pid && i.size === size).length;
+    return stock - inCart;
+  }
 
-    const PHOTO_REGISTRY = {
-      'nike súper': 'media/1781071726766.jpg',
-      'bota urbana roja': 'media/1780375993932.jpg',
-      'bota urbana blanca': 'media/1780411345666.jpg',
-      'mafalda clásica': 'media/1781119242950.jpg',
-      'new balance': 'media/1781124694858.jpg',
-      'botín sofía': 'media/1781135115955.jpg',
-      'alcon food salah': 'media/1781135775589.jpg'
-    };
+  function choose(pid, size) {
+    selected[pid] = size;
+    render();
+  }
 
-    function productKey(p) {
-      return String((p && (p.name || p.id)) || '').toLowerCase().trim();
-    }
+  function add(pid) {
+    const size = selected[pid];
+    if (!size) return alert('Selecciona una talla primero');
+    if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
+    const p = products.find(x => x.id === pid);
+    if (!p) return;
+    cart.push({ ...p, size });
+    saveState();
+    render();
+  }
 
-    function bindPhotoToProduct(p) {
-      const key = productKey(p);
-      if (PHOTO_REGISTRY[key]) return PHOTO_REGISTRY[key];
-      // fallback by heuristics
-      if (key.includes('nike')) return 'media/1781071726766.jpg';
-      if (key.includes('roja')) return 'media/1780375993932.jpg';
-      if (key.includes('blanca')) return 'media/1780411345666.jpg';
-      if (key.includes('mafalda')) return 'media/1781119242950.jpg';
-      if (key.includes('new balance')) return 'media/1781124694858.jpg';
-      if (key.includes('sofía') || key.includes('sofia')) return 'media/1781135115955.jpg';
-      if (key.includes('alcon food salah')) return 'media/1781135775589.jpg';
-      return p && p.img ? p.img : 'media/1781071726766.jpg';
-    }
+  function remove(idx) {
+    cart.splice(idx, 1);
+    saveState();
+    render();
+  }
 
-    function productImageFor(p) {
-      return bindPhotoToProduct(p);
-    }
-
-    function available(pid, size) {
-      const p = products.find(x => x.id === pid);
-      if (!p) return 0;
-      const stock = p.stockBySize[String(size)] || 0;
-      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-      return stock - inCart;
-    }
-
-    function choose(pid, size) { selected[pid] = size; render(); }
-    function add(pid) {
-      const size = selected[pid];
-      if (!size) return alert('Selecciona una talla primero');
-      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
-      const p = products.find(x => x.id === pid);
-      cart.push({ ...p, size });
-      saveState();
-      render();
-    }
-    function remove(idx) { cart.splice(idx, 1); saveState(); render(); }
-
-    function updateCart() {
-      document.getElementById('count').innerText = cart.length;
-      document.getElementById('total').innerText = '$' + cart.reduce((a, b) => a + (Number(b.price) || 0), 0).toLocaleString('es-CO');
-      const itemsEl = document.getElementById('items');
-      if (!itemsEl) return;
-      if (cart.length === 0) {
-        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
-      } else {
-        itemsEl.innerHTML = cart.map((i, idx) => `
-          <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${bindPhotoToProduct(i)}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
-            <div class="flex-1 space-y-1">
-              <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
-              <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
-              <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
-            </div>
-            <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">×</button>
-          </div>
-        `).join('');
-      }
-    }
-
-    function render() {
-      const grid = document.getElementById('grid');
-      if (!grid) return;
-      grid.innerHTML = products.map(p => {
-        const img = bindPhotoToProduct(p);
-        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
-          const q = available(p.id, s);
-          const active = Number(selected[p.id]) === s;
-          return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div></button>`;
-        }).join('');
-        return `
-          <article class="card relative group" id="product-${p.id}">
-            <button onclick="zoom('${img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
-            </button>
-            <div class="p-5 space-y-4">
-              <div>
-                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
-                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
-              </div>
-              <div class="space-y-2">
-                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
-                <div class="grid grid-cols-5 gap-2">${sizes}</div>
-              </div>
-              <div class="flex items-center justify-between pt-2">
-                <div class="flex flex-col">
-                  <span class="text-[10px] text-gray-400 line-through font-bold">$${Number(p.price_old || 0).toLocaleString('es-CO')}</span>
-                  <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
-                </div>
-                <div class="flex gap-2">
-                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"></button>
-                  <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-      updateCart();
-    }
-
-    function zoom(src) {
-      const z = document.getElementById('zoom');
-      const zi = document.getElementById('zoomImg');
-      if (!z || !zi) return;
-      zi.src = src;
-      z.classList.remove('hidden');
-      z.classList.add('flex');
-    }
-    function closeZoom() { const z = document.getElementById('zoom'); if (z) { z.classList.add('hidden'); z.classList.remove('flex'); } }
-    function toggleCart(open) { const d = document.getElementById('drawer'); const o = document.getElementById('ov'); if (!d || !o) return; if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; } else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; } }
-    function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
+  function updateCart() {
+    const countEl = document.getElementById('count');
+    const totalEl = document.getElementById('total');
+    const itemsEl = document.getElementById('items');
+    if (!countEl || !totalEl || !itemsEl) return;
     
-    function getPaymentEndpoint() {
-      // Primary endpoint can be changed in one place only.
-      return 'https://bold-bridge-7qge.vercel.app/api/checkout';
+    countEl.innerText = cart.length;
+    const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
+    totalEl.innerText = '$' + total.toLocaleString('es-CO');
+    
+    if (cart.length === 0) {
+      itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
+    } else {
+      itemsEl.innerHTML = cart.map((i, idx) => `
+        <div class="flex gap-4 border-b border-gray-100 pb-4">
+          <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
+          <div class="flex-1 space-y-1">
+            <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
+            <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
+            <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
+          </div>
+          <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">×</button>
+        </div>
+      `).join('');
     }
+  }
 
-    function checkoutBridge() {
-      try {
-        if (!cart.length) return alert('El carrito está vacío');
-        const name = document.getElementById('name')?.value.trim() || '';
-        const phone = document.getElementById('phone')?.value.trim() || '';
-        const addr = document.getElementById('addr')?.value.trim() || '';
-        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+  function render() {
+    const grid = document.getElementById('grid');
+    if (!grid) return;
+    
+    grid.innerHTML = products.map(p => {
+      const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+        const q = available(p.id, s);
+        const active = Number(selected[p.id]) === s;
+        return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div></button>`;
+      }).join('');
 
-        const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+      return `
+        <article class="card relative group" id="product-${p.id}">
+          <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
+            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
+          </button>
+          <div class="p-5 space-y-4">
+            <div>
+              <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
+              <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
+            </div>
+            <div class="space-y-2">
+              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
+              <div class="grid grid-cols-5 gap-2">${sizes}</div>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400 line-through font-bold">$${(Number(p.price) * 1.2).toLocaleString('es-CO')}</span>
+                <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"></button>
+                <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+    updateCart();
+  }
 
-        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
-        const payload = { amount: total, label: 'KOOL PRO', description };
-        const endpoint = getPaymentEndpoint();
+  function zoom(src) {
+    const z = document.getElementById('zoom');
+    const zi = document.getElementById('zoomImg');
+    if (!z || !zi) return;
+    zi.src = src;
+    z.classList.remove('hidden');
+    z.classList.add('flex');
+  }
+  function closeZoom() { const z = document.getElementById('zoom'); if (z) { z.classList.add('hidden'); z.classList.remove('flex'); } }
+  function toggleCart(open) { const d = document.getElementById('drawer'); const o = document.getElementById('ov'); if (!d || !o) return; if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; } else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; } }
+  function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
 
-        fetch(endpoint, {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
-        .then(async (r) => {
-          let data = null;
-          try { data = await r.json(); } catch(e) {}
-          if (!r.ok) throw new Error((data && data.message) ? data.message : ('Error ' + r.status));
-          if (!data || !data.url) throw new Error('Respuesta inválida del servidor');
-          window.location.href = data.url;
-        })
-        .catch((err) => {
-          console.error('Checkout error:', err);
-          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-          alert('Error de conexión: ' + err.message + '.');
-        });
-      } catch (e) {
-        const btn = document.getElementById('payBtn');
+  function checkoutBridge() {
+    try {
+      if (!cart.length) return alert('El carrito está vacío');
+      const name = document.getElementById('name')?.value.trim() || '';
+      const phone = document.getElementById('phone')?.value.trim() || '';
+      const addr = document.getElementById('addr')?.value.trim() || '';
+      if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+
+      const btn = document.getElementById('payBtn');
+      if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+
+      const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
+      const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+      const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+      
+      fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
+      })
+      .then(async (r) => {
+        if (!r.ok) {
+          const errData = await r.json().catch(() => ({}));
+          throw new Error(errData.message || 'Error ' + r.status);
+        }
+        return r.json();
+      })
+      .then(data => {
+        if (data && data.url) window.location.href = data.url;
+        else throw new Error('Respuesta inválida del servidor');
+      })
+      .catch((err) => {
         if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-        alert('Error inesperado: ' + e.message);
-      }
+        alert('Error de conexión: ' + err.message);
+      });
+    } catch (e) {
+      alert('Error inesperado: ' + e.message);
     }
+  }
 
-    function safeInjectProducts(newList) {
-      if (!Array.isArray(newList)) return;
-      const seen = new Set(products.map(p => p.id));
-      newList.forEach(p => { if (p && p.id && !seen.has(p.id)) products.push(p); });
-      render();
-    }
-
-    function validateInventoryPhotos() {
-      try {
-        document.querySelectorAll('[id^="product-"] img').forEach(img => {
-          const card = img.closest('[id^="product-"]');
-          if (!card) return;
-          const titleEl = card.querySelector('.text-xl.font-black.uppercase.leading-tight');
-          const name = titleEl ? titleEl.innerText.toLowerCase() : (card.innerText || '').toLowerCase();
-          if (name.includes('nike')) img.src = 'media/1781071726766.jpg';
-          else if (name.includes('bota urbana roja')) img.src = 'media/1780375993932.jpg';
-          else if (name.includes('bota urbana blanca')) img.src = 'media/1780411345666.jpg';
-          else if (name.includes('mafalda clásica')) img.src = 'media/1781119242950.jpg';
-          else if (name.includes('new balance')) img.src = 'media/1781124694858.jpg';
-          else if (name.includes('botín sofía') || name.includes('botin sofia')) img.src = 'media/1781135115955.jpg';
-          else if (name.includes('alcon food salah')) img.src = 'media/1781135775589.jpg';
-        });
-      } catch(e) {}
-    }
-    document.addEventListener('DOMContentLoaded', () => { loadState(); render(); })
-  </script>
+  document.addEventListener('DOMContentLoaded', () => { loadState(); render(); });
+</script>
   </body>
 </html>
