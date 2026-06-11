@@ -182,47 +182,58 @@
   function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
 
   function checkoutBridge() {
-    try {
-      if (!cart.length) return alert('El carrito está vacío');
-      const name = document.getElementById('name')?.value.trim() || '';
-      const phone = document.getElementById('phone')?.value.trim() || '';
-      const addr = document.getElementById('addr')?.value.trim() || '';
-      if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+      try {
+        if (!cart.length) return alert('El carrito está vacío');
+        const name = document.getElementById('name')?.value.trim() || '';
+        const phone = document.getElementById('phone')?.value.trim() || '';
+        const addr = document.getElementById('addr')?.value.trim() || '';
+        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
 
-      const btn = document.getElementById('payBtn');
-      if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
 
-      const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-      const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-      const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
-      
-      fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
-      })
-      .then(async (r) => {
-        if (!r.ok) {
-          const errData = await r.json().catch(() => ({}));
-          throw new Error(errData.message || 'Error ' + r.status);
-        }
-        return r.json();
-      })
-      .then(data => {
-        if (data && data.url) window.location.href = data.url;
-        else throw new Error('Respuesta inválida del servidor');
-      })
-      .catch((err) => {
+        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
+        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+        const payload = { amount: total, label: 'KOOL PRO', description };
+
+        fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(async (r) => {
+          let data = null;
+          try { data = await r.json(); } catch(e) {}
+          if (!r.ok) throw new Error((data && data.message) ? data.message : ('Error ' + r.status));
+          if (!data || !data.url) throw new Error('Respuesta inválida del servidor');
+          
+          // Try open a secure new tab first to avoid mobile navigation blocks
+          const win = window.open(data.url, '_blank', 'noopener,noreferrer');
+          if (!win) {
+            // If popup blocked, navigate current tab as fallback
+            window.location.href = data.url;
+          }
+        })
+        .catch((err) => {
+          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+          alert('Error de conexión: ' + err.message);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            const btn2 = document.getElementById('payBtn');
+            if (btn2) { btn2.disabled = false; btn2.innerText = 'Finalizar compra'; }
+          }, 1200);
+        });
+      } catch (e) {
+        const btn = document.getElementById('payBtn');
         if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
-        alert('Error de conexión: ' + err.message);
-      });
-    } catch (e) {
-      alert('Error inesperado: ' + e.message);
+        alert('Error inesperado: ' + e.message);
+      }
     }
-  }
 
-  document.addEventListener('DOMContentLoaded', () => { loadState(); render(); });
+  document.addEventListener('DOMContentLoaded', () => { loadState(); render(); })'DOMContentLoaded', () => { loadState(); render(); });
 </script>
   </body>
 </html>
