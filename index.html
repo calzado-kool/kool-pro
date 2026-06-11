@@ -3,185 +3,295 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO STABLE</title>
+  <title>KOOL PRO v1781139837</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111}
-    .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff}
-    .btn{background:#111;color:#fff;font-weight:900;text-transform:uppercase;padding:.9rem 1rem;border-radius:12px}
-    .size{border:1px solid #d1d5db;border-radius:10px;padding:.55rem;text-align:center;font-weight:800}
+    body{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111;margin:0;padding:0}
+    .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff;transition:transform 0.3s ease}
+    .card:hover{transform:translateY(-5px)}
+    .btn{background:#111;color:#fff;font-weight:900;text-transform:uppercase;padding:.9rem 1rem;border-radius:12px;cursor:pointer;border:none}
+    .btn:disabled{background:#ccc;cursor:not-allowed}
+    .size{border:1px solid #d1d5db;border-radius:10px;padding:.55rem;text-align:center;font-weight:800;background:none;cursor:pointer}
     .size.active{background:#111;color:#fff;border-color:#111}
     .drawer{position:fixed;inset:0 0 0 auto;width:420px;max-width:100vw;background:#fff;box-shadow:-20px 0 40px rgba(0,0,0,.15);transform:translateX(100%);transition:.25s;z-index:60;display:flex;flex-direction:column}
     .drawer.open{transform:translateX(0)}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
     .overlay.on{display:block}
+    #zoom{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
   </style>
 </head>
 <body>
-  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
     <div>
-      <div class="text-2xl font-black">KOOL PRO</div>
-      <div class="text-sm text-gray-500">Premium Footwear IA</div>
+      <div class="text-3xl font-black tracking-tighter">KOOL PRO</div>
+      <div class="text-xs uppercase tracking-widest font-bold text-orange-500">Premium Footwear IA</div>
     </div>
-    <button onclick="toggleCart(true)" class="btn">🛒 <span id="count">0</span></button>
+    <button onclick="toggleCart(true)" class="btn flex items-center gap-2">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span id="count">0</span>
+    </button>
   </div>
 
   <main class="max-w-6xl mx-auto px-4 pb-40">
-    <div class="text-sm text-gray-500 mb-4">Cada producto muestra foto, stock por talla y evita vender por encima de lo disponible.</div>
-    <div id="grid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 mb-8 text-sm text-gray-500 font-medium">
+      Selecciona tu talla y agrega al carrito. Paga seguro con Bold.
+    </div>
+    <div id="grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Productos se cargan aquí -->
+    </div>
   </main>
 
+  <!-- Zoom Modal -->
+  <div id="zoom" onclick="closeZoom()">
+    <img id="zoomImg" src="" class="max-w-full max-h-full object-contain rounded-lg">
+  </div>
+
+  <!-- Carrito Drawer -->
   <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
-  <aside id="drawer" class="drawer p-4">
-    <div class="flex items-center justify-between mb-4">
-      <div class="font-black">Tu carrito</div>
-      <button onclick="toggleCart(false)">×</button>
+  <aside id="drawer" class="drawer">
+    <div class="p-6 border-b flex items-center justify-between">
+      <div class="text-xl font-black uppercase">Tu Carrito</div>
+      <button onclick="toggleCart(false)" class="text-2xl">&times;</button>
     </div>
-    <div id="items" class="flex-1 overflow-auto space-y-4"></div>
-    <div class="border-t pt-4 space-y-3">
-      <div class="flex items-center justify-between"><span>Subtotal</span><span id="total">$0</span></div>
-      <input id="name" class="w-full border rounded-2xl px-4 py-3" placeholder="Nombre completo" />
-      <input id="phone" class="w-full border rounded-2xl px-4 py-3" placeholder="WhatsApp" />
-      <input id="addr" class="w-full border rounded-2xl px-4 py-3" placeholder="Dirección" />
-      <button id="payBtn" onclick="checkoutBridge()" class="btn w-full">Finalizar compra</button>
-      <div class="text-xs text-gray-500">Paga con Bold para completar tu pedido</div>
+    <div id="items" class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Items del carrito -->
+    </div>
+    <div class="p-6 border-t bg-gray-50 space-y-4">
+      <div class="flex items-center justify-between text-lg font-black">
+        <span>TOTAL</span>
+        <span id="total">$0</span>
+      </div>
+      <div class="space-y-2">
+        <input id="name" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Nombre completo" />
+        <input id="phone" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="WhatsApp" />
+        <input id="addr" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Dirección de envío" />
+      </div>
+      <button id="payBtn" onclick="checkoutBridge()" class="btn w-full py-4 text-sm">Finalizar compra</button>
+      <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-wider">Pago seguro procesado por Bold</p>
     </div>
   </aside>
 
   <script>
-  let cart = [];
-  let selected = {};
+    let cart = [];
+    let selected = {};
 
-  const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781135115955.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}}];
+    const products = [
+      {
+        "id": "kool-nike-super",
+        "name": "Nike Súper",
+        "price": 199000,
+        "price_old": 239000,
+        "img": "media/1781071726766.jpg",
+        "color": "Gris Verde",
+        "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}
+      },
+      {
+        "id": "kool-bota-roja",
+        "name": "Bota Urbana Roja",
+        "price": 145000,
+        "price_old": 175000,
+        "img": "media/1780375993932.jpg",
+        "color": "Rojo",
+        "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}
+      },
+      {
+        "id": "kool-bota-blanca",
+        "name": "Bota Urbana Blanca",
+        "price": 145000,
+        "price_old": 175000,
+        "img": "media/1780411345666.jpg",
+        "color": "Blanco",
+        "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}
+      },
+      {
+        "id": "kool-mafalda-clasica",
+        "name": "Mafalda clásica",
+        "price": 115000,
+        "price_old": 139000,
+        "img": "media/1781119242950.jpg",
+        "color": "Negro",
+        "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}
+      },
+      {
+        "id": "kool-new-balance",
+        "name": "New Balance",
+        "price": 130000,
+        "price_old": 155000,
+        "img": "media/1781124694858.jpg",
+        "color": "Beis",
+        "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}
+      },
+      {
+        "id": "kool-sofia-blanco",
+        "name": "Botín Sofía",
+        "price": 147000,
+        "price_old": 175000,
+        "img": "media/1781135115955.jpg",
+        "color": "Blanco Pastel",
+        "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}
+      },
+      {
+        "id": "kool-alcon-food-salah",
+        "name": "Alcon Food Salah",
+        "price": 140000,
+        "price_old": 165000,
+        "img": "media/1781135775589.jpg",
+        "color": "Blanco / Morado / Fucsia",
+        "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}
+      }
+    ];
 
-  function saveState() {
-    try {
-      localStorage.setItem('kool_cart_v4', JSON.stringify(cart));
-      localStorage.setItem('kool_selected_v4', JSON.stringify(selected));
-    } catch(e) {}
-  }
-  function loadState() {
-    try {
-      const c = localStorage.getItem('kool_cart_v4');
-      const s = localStorage.getItem('kool_selected_v4');
-      if (c) cart = JSON.parse(c);
-      if (s) selected = JSON.parse(s);
-    } catch(e) {}
-  }
-
-  function available(pid, size) {
-    const p = products.find(x => x.id === pid);
-    if (!p) return 0;
-    const stock = p.stockBySize[String(size)] || 0;
-    const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-    return stock - inCart;
-  }
-
-  function choose(pid, size) {
-    selected[pid] = size;
-    render();
-  }
-
-  function add(pid) {
-    const size = selected[pid];
-    if (!size) return alert('Selecciona una talla primero');
-    if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
-    const p = products.find(x => x.id === pid);
-    if (!p) return;
-    cart.push({ ...p, size });
-    saveState();
-    render();
-  }
-
-  function remove(idx) {
-    cart.splice(idx, 1);
-    saveState();
-    render();
-  }
-
-  function updateCart() {
-    const countEl = document.getElementById('count');
-    const totalEl = document.getElementById('total');
-    const itemsEl = document.getElementById('items');
-    if (!countEl || !totalEl || !itemsEl) return;
-    
-    countEl.innerText = cart.length;
-    const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
-    totalEl.innerText = '$' + total.toLocaleString('es-CO');
-    
-    if (cart.length === 0) {
-      itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
-    } else {
-      itemsEl.innerHTML = cart.map((i, idx) => `
-        <div class="flex gap-4 border-b border-gray-100 pb-4">
-          <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
-          <div class="flex-1 space-y-1">
-            <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
-            <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
-            <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
-          </div>
-          <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">×</button>
-        </div>
-      `).join('');
+    function saveState() {
+      try {
+        localStorage.setItem('kool_cart_v5', JSON.stringify(cart));
+        localStorage.setItem('kool_selected_v5', JSON.stringify(selected));
+      } catch(e) {}
     }
-  }
+    function loadState() {
+      try {
+        const c = localStorage.getItem('kool_cart_v5');
+        const s = localStorage.getItem('kool_selected_v5');
+        if (c) cart = JSON.parse(c);
+        if (s) selected = JSON.parse(s);
+      } catch(e) {}
+    }
 
-  function render() {
-    const grid = document.getElementById('grid');
-    if (!grid) return;
-    
-    grid.innerHTML = products.map(p => {
-      const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
-        const q = available(p.id, s);
-        const active = Number(selected[p.id]) === s;
-        return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>${s}<div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div></button>`;
-      }).join('');
+    function available(pid, size) {
+      const p = products.find(x => x.id === pid);
+      if (!p) return 0;
+      const stock = p.stockBySize[String(size)] || 0;
+      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
+      return stock - inCart;
+    }
 
-      return `
-        <article class="card relative group" id="product-${p.id}">
-          <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
-          </button>
-          <div class="p-5 space-y-4">
-            <div>
-              <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
-              <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
+    function choose(pid, size) {
+      selected[pid] = size;
+      render();
+    }
+
+    function add(pid) {
+      const size = selected[pid];
+      if (!size) return alert('Selecciona una talla primero');
+      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
+      const p = products.find(x => x.id === pid);
+      if (!p) return;
+      cart.push({ ...p, size });
+      saveState();
+      render();
+    }
+
+    function remove(idx) {
+      cart.splice(idx, 1);
+      saveState();
+      render();
+    }
+
+    function updateCart() {
+      const countEl = document.getElementById('count');
+      const totalEl = document.getElementById('total');
+      const itemsEl = document.getElementById('items');
+      if (!countEl || !totalEl || !itemsEl) return;
+      
+      countEl.innerText = cart.length;
+      const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      totalEl.innerText = '$' + total.toLocaleString('es-CO');
+      
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
+      } else {
+        itemsEl.innerHTML = cart.map((i, idx) => `
+          <div class="flex gap-4 border-b border-gray-100 pb-4">
+            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
+            <div class="flex-1 space-y-1">
+              <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
+              <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
+              <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
             </div>
-            <div class="space-y-2">
-              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
-              <div class="grid grid-cols-5 gap-2">${sizes}</div>
-            </div>
-            <div class="flex items-center justify-between pt-2">
-              <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400 line-through font-bold">$${(Number(p.price) * 1.2).toLocaleString('es-CO')}</span>
-                <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400"></button>
-                <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
-              </div>
-            </div>
+            <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
           </div>
-        </article>
-      `;
-    }).join('');
-    updateCart();
-  }
+        `).join('');
+      }
+    }
 
-  function zoom(src) {
-    const z = document.getElementById('zoom');
-    const zi = document.getElementById('zoomImg');
-    if (!z || !zi) return;
-    zi.src = src;
-    z.classList.remove('hidden');
-    z.classList.add('flex');
-  }
-  function closeZoom() { const z = document.getElementById('zoom'); if (z) { z.classList.add('hidden'); z.classList.remove('flex'); } }
-  function toggleCart(open) { const d = document.getElementById('drawer'); const o = document.getElementById('ov'); if (!d || !o) return; if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; } else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; } }
-  function shareProduct(pid, name) { const url = window.location.origin + window.location.pathname + '#product-' + pid; const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank'); }
+    function render() {
+      const grid = document.getElementById('grid');
+      if (!grid) return;
+      
+      grid.innerHTML = products.map(p => {
+        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+          const q = available(p.id, s);
+          const active = Number(selected[p.id]) === s;
+          return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>
+            ${s}
+            <div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div>
+          </button>`;
+        }).join('');
 
-  function checkoutBridge() {
+        return `
+          <article class="card relative group" id="product-${p.id}">
+            <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
+            </button>
+            <div class="p-6 space-y-4">
+              <div>
+                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
+                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
+                <div class="grid grid-cols-5 gap-2">${sizes}</div>
+              </div>
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-gray-400 line-through font-bold">$${(Number(p.price) * 1.2).toLocaleString('es-CO')}</span>
+                  <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                  </button>
+                  <button onclick="add('${p.id}')" class="btn px-6 text-[11px]">Agregar</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+      updateCart();
+    }
+
+    function zoom(src) {
+      const z = document.getElementById('zoom');
+      const zi = document.getElementById('zoomImg');
+      if (!z || !zi) return;
+      zi.src = src;
+      z.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeZoom() {
+      const z = document.getElementById('zoom');
+      if (z) z.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function toggleCart(open) {
+      const d = document.getElementById('drawer');
+      const o = document.getElementById('ov');
+      if (!d || !o) return;
+      if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; }
+      else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; }
+    }
+
+    function shareProduct(pid, name) {
+      const url = window.location.origin + window.location.pathname + '#product-' + pid;
+      const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
+    }
+
+    function checkoutBridge() {
       try {
         if (!cart.length) return alert('El carrito está vacío');
         const name = document.getElementById('name')?.value.trim() || '';
@@ -195,25 +305,25 @@
         const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
         const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
         const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
-        const payload = { amount: total, label: 'KOOL PRO', description };
-
+        
         fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
         })
         .then(async (r) => {
-          let data = null;
-          try { data = await r.json(); } catch(e) {}
-          if (!r.ok) throw new Error((data && data.message) ? data.message : ('Error ' + r.status));
-          if (!data || !data.url) throw new Error('Respuesta inválida del servidor');
-          
-          // Try open a secure new tab first to avoid mobile navigation blocks
-          const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-          if (!win) {
-            // If popup blocked, navigate current tab as fallback
+          if (!r.ok) {
+            const errData = await r.json().catch(() => ({}));
+            throw new Error(errData.message || 'Error ' + r.status);
+          }
+          return r.json();
+        })
+        .then(data => {
+          if (data && data.url) {
             window.location.href = data.url;
+          } else {
+            throw new Error('Respuesta inválida del servidor');
           }
         })
         .catch((err) => {
@@ -224,16 +334,17 @@
           setTimeout(() => {
             const btn2 = document.getElementById('payBtn');
             if (btn2) { btn2.disabled = false; btn2.innerText = 'Finalizar compra'; }
-          }, 1200);
+          }, 2000);
         });
       } catch (e) {
-        const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
         alert('Error inesperado: ' + e.message);
       }
     }
 
-  document.addEventListener('DOMContentLoaded', () => { loadState(); render(); })'DOMContentLoaded', () => { loadState(); render(); });
-</script>
-  </body>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      render();
+    });
+  </script>
+</body>
 </html>
