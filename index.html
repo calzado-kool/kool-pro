@@ -268,9 +268,6 @@
     
     let boldPaymentUrl = null;
 
-    
-    let boldPaymentUrl = null;
-
     async function checkoutBridge() {
       console.log("Checkout step triggered");
       try {
@@ -302,7 +299,7 @@
            window.open(waUrl, '_blank');
            
            // Cambiar botón para el paso final
-           btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
+           btn.innerText = '2. IR A PAGAR $' + total.toLocaleString('es-CO');
            btn.style.background = '#059669'; 
            return;
         }
@@ -329,7 +326,7 @@
         if (data && data.url) {
           boldPaymentUrl = data.url;
           btn.disabled = false;
-          btn.innerText = 'PASO 1: ENVIAR PEDIDO A WHATSAPP';
+          btn.innerText = '1. ENVIAR PEDIDO A WHATSAPP';
           btn.style.background = '#2563eb'; 
         } else {
           throw new Error('Sin URL de pago');
