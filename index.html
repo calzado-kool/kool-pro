@@ -279,6 +279,11 @@
         const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
         const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
         const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+
+        // Enviar resumen al grupo de WhatsApp de ventas en línea
+        const whatsappGroupJid = '120363422450007498@g.us';
+        const whatsappText = `Nuevo pedido KOOL PRO:%0A${itemsInfo}%0ATotal: $${total.toLocaleString('es-CO')}%0ACliente: ${name}%0AWhatsApp: ${phone}%0ADirección: ${addr}`;
+        window.open(`https://wa.me/?text=${whatsappText}`, '_blank');
         
         fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
