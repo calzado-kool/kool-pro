@@ -1,0 +1,17 @@
+[
+  {
+    "id": "kool-natalia-black",
+    "name": "Natalia",
+    "price": 2000,
+    "price_old": 185000,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/natalia_black_boot_1781281548.jpg",
+    "color": "Botín cuero negro",
+    "stockBySize": {
+      "35": 10,
+      "36": 8,
+      "37": 9,
+      "39": 3,
+      "40": 1
+    }
+  }
+]
