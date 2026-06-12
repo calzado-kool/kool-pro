@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO MASTER v1781296557</title>
+  <title>KOOL PRO MASTER v1781297099</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -240,10 +240,30 @@
         }
         
         if (btn.innerText.includes('WHATSAPP')) {
-           const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+           // Bloque de Fotos y Detalles
+           const orderDetails = cart.map(i => {
+             return `👟 *${i.name}*
+   📏 Talla: ${i.size}
+   🎨 Color: ${i.color}
+   🖼️ Foto: ${i.img}`;
+           }).join('
+
+');
+
            const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${n}%0A📱 *WhatsApp:* ${p}%0A📍 *Dirección:* ${a}`;
-           window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${whatsappText}`, '_blank');
+           const whatsappText = `🚀 *NUEVO PEDIDO KOOL PRO*
+
+${orderDetails}
+
+💰 *TOTAL A PAGAR:* $${total.toLocaleString('es-CO')}
+
+👤 *DATOS DEL CLIENTE:*
+👤 Nombre: ${n}
+📱 WhatsApp: ${p}
+📍 Dirección: ${a}`;
+           
+           window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${encodeURIComponent(whatsappText)}`, '_blank');
+           
            btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
            btn.style.background = '#059669'; 
            return;
