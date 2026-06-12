@@ -1,164 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calzado Kool - Catálogo Oficial</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; }
-        .btn-buy { background: linear-gradient(90deg, #ff8c00, #ff4500); color: white; width: 100%; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; margin-top: 8px; }
-        #modal { transition: transform 0.3s ease-out; }
-        .size-btn.selected { border-color: #ea580c; background-color: #fff7ed; color: #ea580c; }
-        .size-btn.out-of-stock { opacity: 0.3; pointer-events: none; text-decoration: line-through; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KOOL PRO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111;margin:0;padding:0}
+    .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff;transition:transform 0.3s ease}
+    .card:hover{transform:translateY(-5px)}
+    .btn{background:#111;color:#fff;font-weight:900;text-transform:uppercase;padding:.9rem 1rem;border-radius:12px;cursor:pointer;border:none}
+    .btn:disabled{background:#ccc;cursor:not-allowed}
+    .size{border:1px solid #d1d5db;border-radius:10px;padding:.55rem;text-align:center;font-weight:800;background:none;cursor:pointer}
+    .size.active{background:#111;color:#fff;border-color:#111}
+    .drawer{position:fixed;inset:0 0 0 auto;width:420px;max-width:100vw;background:#fff;box-shadow:-20px 0 40px rgba(0,0,0,.15);transform:translateX(100%);transition:.25s;z-index:60;display:flex;flex-direction:column}
+    .drawer.open{transform:translateX(0)}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
+    .overlay.on{display:block}
+    #zoom{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+    
+    /* Elegant Floating Cart Button */
+    .fab-cart {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 72px;
+      height: 72px;
+      background: #111;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+      z-index: 55;
+      cursor: pointer;
+      transition: 0.3s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .fab-cart:active { transform: scale(0.9); }
+    .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #ef4444;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #111;
+    }
+  </style>
 </head>
-<body class="pb-20">
-
-    <!-- Navbar -->
-    <nav class="bg-white px-4 py-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
-        <h1 class="text-xl font-black italic tracking-tighter uppercase">Calzado <span class="text-orange-600">Kool</span></h1>
-        <div class="flex gap-4">
-            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-            <div class="relative">
-                <i class="fa-solid fa-cart-shopping text-gray-800"></i>
-                <span class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">1</span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Promo Banner -->
-    <div class="px-4 mt-4">
-        <div class="bg-black rounded-2xl p-6 text-white flex justify-between items-center overflow-hidden relative">
-            <div>
-                <p class="text-xs font-bold uppercase opacity-80">Edición Especial</p>
-                <h2 class="text-2xl font-black uppercase leading-tight">Botas <br>Premium</h2>
-            </div>
-            <i class="fa-solid fa-gem text-5xl opacity-20 absolute -right-2"></i>
-        </div>
+<body>
+  <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between border-b border-gray-50 mb-4">
+    <div>
+      <div class="text-3xl font-black tracking-tighter">KOOL PRO</div>
+      <div class="text-xs uppercase tracking-widest font-bold text-orange-500">Premium Footwear IA</div>
     </div>
+  </div>
 
-    <!-- Product Grid -->
-    <div class="product-grid">
-        <!-- PRODUCTO REAL: BOTAS AMARILLAS -->
-        <div class="card" onclick="openModal('Bota Classic Amarilla', 160000, 'img/boots_yellow.jpg', ['34', '35', '37', '38', '39', '41', '42'])">
-            <div class="relative">
-                <img src="img/boots_yellow.jpg" class="h-48 w-full object-cover">
-                <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-lg text-[10px] font-black text-gray-900 shadow-sm">NUEVO</div>
-            </div>
-            <div class="p-3">
-                <p class="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Outdoor Series</p>
-                <h4 class="text-sm font-bold text-gray-800 truncate">Bota Classic Amarilla</h4>
-                <p class="text-lg font-black text-gray-900 mt-1">$160.000</p>
-                <button class="btn-buy mt-2">Lo quiero</button>
-            </div>
-        </div>
+  <main class="max-w-6xl mx-auto px-4 pb-40">
+    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 mb-8 text-sm text-gray-500 font-medium">
+      Selecciona tu talla y agrega al carrito. Paga seguro con Bold.
     </div>
-
-    <!-- Modal Checkout -->
-    <div id="modalOverlay" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
-        <div id="modal" class="bg-white w-full rounded-t-3xl p-6 transform translate-y-full transition-transform max-h-[90vh] overflow-y-auto">
-            <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
-            
-            <div class="flex gap-4 mb-6">
-                <img id="mImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100 shadow-sm">
-                <div>
-                    <h2 id="mTitle" class="text-xl font-extrabold text-gray-900 leading-tight"></h2>
-                    <p id="mPrice" class="text-orange-600 font-black text-lg"></p>
-                    <p class="text-[10px] text-green-600 font-bold mt-1 uppercase"><i class="fa-solid fa-check"></i> Disponible para envío inmediato</p>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Selecciona tu Talla</label>
-                    <div id="mSizes" class="flex gap-2 flex-wrap"></div>
-                </div>
-
-                <div class="bg-gray-50 rounded-2xl p-4 space-y-3">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Datos de Entrega</p>
-                    <input type="text" id="cName" placeholder="Nombre completo" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="cId" placeholder="Cédula / NIT" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                        <input type="text" id="cPhone" placeholder="Celular" class="bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                    </div>
-                    <input type="text" id="cAddr" placeholder="Dirección, Ciudad y Barrio" class="w-full bg-white rounded-xl px-4 py-3 text-sm border border-gray-100 focus:ring-2 focus:ring-orange-600 outline-none">
-                </div>
-                
-                <button onclick="sendOrder()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-orange-200 mt-4 active:scale-95 transition-all">
-                    PAGAR $160.000
-                </button>
-                <button onclick="closeModal()" class="w-full text-gray-400 text-[10px] font-black py-2 uppercase tracking-widest">Seguir viendo</button>
-            </div>
-        </div>
+    <div id="grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Productos se cargan aquí -->
     </div>
+  </main>
 
-    <script>
-        let product = null;
-        let size = null;
+  <!-- Floating Cart Button -->
+  <div id="cartBtn" class="fab-cart" onclick="toggleCart(true)">
+    <i class="fa-solid fa-bag-shopping text-2xl"></i>
+    <div id="count" class="badge">0</div>
+  </div>
 
-        function openModal(name, price, img, sizes) {
-            product = { name, price, img };
-            document.getElementById('mTitle').innerText = name;
-            document.getElementById('mPrice').innerText = '$' + price.toLocaleString('es-CO');
-            document.getElementById('mImg').src = img;
-            
-            const sCont = document.getElementById('mSizes');
-            sCont.innerHTML = '';
-            sizes.forEach(s => {
-                const btn = document.createElement('button');
-                btn.className = 'size-btn w-12 h-12 border-2 rounded-xl text-sm font-bold transition-all flex items-center justify-center';
-                btn.innerText = s;
-                btn.onclick = () => {
-                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600'));
-                    btn.classList.add('selected', 'border-orange-600', 'bg-orange-50', 'text-orange-600');
-                    size = s;
-                };
-                sCont.appendChild(btn);
-            });
+  <!-- Zoom Modal -->
+  <div id="zoom" onclick="closeZoom()">
+    <img id="zoomImg" src="" class="max-w-full max-h-full object-contain rounded-lg">
+  </div>
 
-            document.getElementById('modalOverlay').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('modal').style.transform = 'translateY(0)';
-            }, 10);
-        }
+  <!-- Carrito Drawer -->
+  <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
+  <aside id="drawer" class="drawer">
+    <div class="p-6 border-b flex items-center justify-between">
+      <div class="text-xl font-black uppercase">Tu Carrito</div>
+      <button onclick="toggleCart(false)" class="text-2xl">&times;</button>
+    </div>
+    <div id="items" class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Items del carrito -->
+    </div>
+    <div class="p-6 border-t bg-gray-50 space-y-4">
+      <div class="flex items-center justify-between text-lg font-black">
+        <span>TOTAL</span>
+        <span id="total">$0</span>
+      </div>
+      <div class="space-y-2">
+        <input id="name" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Nombre completo" />
+        <input id="phone" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="WhatsApp" />
+        <input id="addr" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Dirección de envío" />
+      </div>
+      <button id="payBtn" onclick="checkoutBridge()" class="btn w-full py-4 text-sm">Finalizar compra</button>
+      <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-wider">Pago seguro procesado por Bold</p>
+    </div>
+  </aside>
 
-        function closeModal() {
-            document.getElementById('modal').style.transform = 'translateY(100%)';
-            setTimeout(() => {
-                document.getElementById('modalOverlay').classList.add('hidden');
-            }, 300);
-        }
+  <script>
+    let cart = [];
+    let selected = {};
 
-        function sendOrder() {
-            const name = document.getElementById('cName').value;
-            const id = document.getElementById('cId').value;
-            const phone = document.getElementById('cPhone').value;
-            const addr = document.getElementById('cAddr').value;
+    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1780375993932.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1780411345666.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781119242950.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781135115955.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}}, {"id": "kool-alcol-new", "name": "Alcol", "price": 140000, "price_old": 165000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781182888441.jpg", "color": "Blanco / Verde Menta", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3, "40": 3, "41": 3, "42": 3, "43": 3, "44": 3, "45": 3, "46": 3, "47": 3, "48": 3}}, {"id": "kool-alcon-1781184378", "name": "Alcon", "price": 139000, "price_old": 159000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781185032931.jpg", "color": "Blanco / Verde / Negro", "material": "Cuero", "stockBySize": {"34": 1, "35": 10, "39": 1, "43": 3, "45": 20}, "description": "Alcon blanco con verde y negro. Confirmado."}, {"id": "kool-botin-herminda-1781225361", "name": "Botín Herminda", "price": 147000, "price_old": 175000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781225282077.jpg", "color": "Miel / Café", "stockBySize": {"34": 1, "37": 3, "38": 1, "40": 4, "42": 1}}, {"id": "kool-zapatilla-1781225580", "name": "Zapatilla Premium", "price": 195000, "price_old": 235000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781225515104.jpg", "color": "Blanco / Azul / Rojo", "stockBySize": {"34": 1, "42": 1, "48": 1}}, {"id": "kool-ultraliviano-eva-1781237227", "name": "Ultraliviano Eva", "price": 179900, "price_old": 199900, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781237098965.jpg", "color": "Negro / Gris", "stockBySize": {"31": 1, "33": 15, "49": 4}}, {"id": "test-1781240326", "name": "Test Sneaker 326", "price": 120326, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/test_1781240326.jpg", "color": "Color 6", "stockBySize": {"36": 2, "37": 2, "38": 2, "39": 2, "40": 2, "41": 2, "42": 2, "43": 2}}];
 
-            if(!size) return alert('Por favor elige una talla');
-            if(!name || !id || !phone || !addr) return alert('Por favor completa todos los datos');
+    function saveState() {
+      try {
+        localStorage.setItem('kool_cart_v5', JSON.stringify(cart));
+        localStorage.setItem('kool_selected_v5', JSON.stringify(selected));
+      } catch(e) {}
+    }
+    function loadState() {
+      try {
+        const c = localStorage.getItem('kool_cart_v5');
+        const s = localStorage.getItem('kool_selected_v5');
+        if (c) cart = JSON.parse(c);
+        if (s) selected = JSON.parse(s);
+      } catch(e) {}
+    }
 
-            const text = `🚀 *NUEVO PEDIDO WEB*
-👟 *Bota Classic Amarilla*
-📏 Talla: ${size}
-👤 Cliente: ${name}
-🆔 CC: ${id}
-📱 Cel: ${phone}
-📍 Dirección: ${addr}
----
-✅ *Procediendo al pago seguro...*`;
+    function available(pid, size) {
+      const p = products.find(x => x.id === pid);
+      if (!p) return 0;
+      const stock = p.stockBySize[String(size)] || 0;
+      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
+      return stock - inCart;
+    }
 
-            const wa = `https://wa.me/573057778133?text=${encodeURIComponent(text)}`;
-            const bold = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+    function choose(pid, size) {
+      selected[pid] = size;
+      render();
+    }
 
-            window.open(wa, '_blank');
-            window.location.href = bold;
-        }
-    </script>
+    function add(pid) {
+      const size = selected[pid];
+      if (!size) return alert('Selecciona una talla primero');
+      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
+      const p = products.find(x => x.id === pid);
+      if (!p) return;
+      cart.push({ ...p, size });
+      saveState();
+      render();
+    }
+
+    function remove(idx) {
+      cart.splice(idx, 1);
+      saveState();
+      render();
+    }
+
+    function updateCart() {
+      const countEl = document.getElementById('count');
+      const totalEl = document.getElementById('total');
+      const itemsEl = document.getElementById('items');
+      if (!countEl || !totalEl || !itemsEl) return;
+      
+      countEl.innerText = cart.length;
+      const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
+      totalEl.innerText = '$' + total.toLocaleString('es-CO');
+      
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
+      } else {
+        itemsEl.innerHTML = cart.map((i, idx) => `
+          <div class="flex gap-4 border-b border-gray-100 pb-4">
+            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781071726766.jpg'">
+            <div class="flex-1 space-y-1">
+              <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
+              <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
+              <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
+            </div>
+            <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function render() {
+      const grid = document.getElementById('grid');
+      if (!grid) return;
+      
+      grid.innerHTML = products.map(p => {
+        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+          const q = available(p.id, s);
+          const active = Number(selected[p.id]) === s;
+          return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>
+            ${s}
+            <div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div>
+          </button>`;
+        }).join('');
+
+        return `
+          <article class="card relative group" id="product-${p.id}">
+            <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://raw.githubusercontent.com/calzado-kool/kool-pro/master/media/1781071726766.jpg'">
+            </button>
+            <div class="p-6 space-y-4">
+              <div>
+                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
+                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
+                <div class="grid grid-cols-5 gap-2">${sizes}</div>
+              </div>
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-gray-400 line-through font-bold">$${(Number(p.price) * 1.2).toLocaleString('es-CO')}</span>
+                  <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                  </button>
+                  <button onclick="add('${p.id}')" id="add-${p.id}" class="btn px-6 text-[11px]">Agregar</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+      updateCart();
+    }
+
+    function zoom(src) {
+      const z = document.getElementById('zoom');
+      const zi = document.getElementById('zoomImg');
+      if (!z || !zi) return;
+      zi.src = src;
+      z.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeZoom() {
+      const z = document.getElementById('zoom');
+      if (z) z.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function toggleCart(open) {
+      const d = document.getElementById('drawer');
+      const o = document.getElementById('ov');
+      if (!d || !o) return;
+      if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; }
+      else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; }
+    }
+
+    function shareProduct(pid, name) {
+      const url = window.location.origin + window.location.pathname + '#product-' + pid;
+      const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
+    }
+
+    function checkoutBridge() {
+      try {
+        if (!cart.length) return alert('El carrito está vacío');
+        const name = document.getElementById('name')?.value.trim() || '';
+        const phone = document.getElementById('phone')?.value.trim() || '';
+        const addr = document.getElementById('addr')?.value.trim() || '';
+        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+
+        const btn = document.getElementById('payBtn');
+        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO...'; }
+
+        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
+        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+
+        const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
+        
+        // Use window.location.href for the WhatsApp redirect to ensure it triggers before navigation
+        const waUrl = `https://api.whatsapp.com/send?phone=573057778133&text=${whatsappText}`;
+        
+        fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
+        })
+        .then(async (r) => {
+          if (!r.ok) {
+            const errData = await r.json().catch(() => ({}));
+            throw new Error(errData.message || 'Error ' + r.status);
+          }
+          return r.json();
+        })
+        .then(data => {
+          // Trigger WA before moving to Bold
+          // window.open(waUrl, '_blank');
+          window.location.href = waUrl;
+          if (data && data.url) {
+            setTimeout(() => { window.open(data.url, '_blank'); }, 1000);
+          } else {
+            throw new Error('Respuesta inválida del servidor');
+          }
+        })
+        .catch((err) => {
+          if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+          alert('Error de conexión: ' + err.message);
+        });
+      } catch (e) {
+        alert('Error inesperado: ' + e.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      render();
+    });
+  </script>
 </body>
 </html>
