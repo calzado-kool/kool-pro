@@ -12,5 +12,19 @@
       "45": 4,
       "55": 2
     }
+  },
+  {
+    "id": "kool-botin-miel-1781283244",
+    "name": "Botín Colección Miel",
+    "price": 159900,
+    "price_old": 185000,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/nuevo_botin_1153.jpg",
+    "color": "Miel / Café",
+    "stockBySize": {
+      "37": 5,
+      "38": 5,
+      "39": 5,
+      "40": 5
+    }
   }
 ]
