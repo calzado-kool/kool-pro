@@ -28,5 +28,21 @@
       "40": 3
     },
     "image_version": 1781284172
+  },
+  {
+    "id": "kool-running-1781294794",
+    "name": "running",
+    "price": 1500,
+    "price_old": 1700,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/running_1781294793.jpg",
+    "color": "Negro / Gris",
+    "stockBySize": {
+      "38": 3,
+      "39": 10,
+      "40": 9,
+      "41": 7,
+      "42": 2
+    },
+    "image_version": 1781294794
   }
 ]
