@@ -278,9 +278,10 @@
 
         const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
         const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+        const productDetails = cart.map(i => `- ${i.name} (Talla: ${i.size}) | https://calzado-kool.github.io/kool-pro/${i.img}`).join('%0A');
         const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
 
-        const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
+        const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:*%0A${productDetails}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
         
         // Use window.location.href for the WhatsApp redirect to ensure it triggers before navigation
         const waUrl = `https://api.whatsapp.com/send?phone=573057778133&text=${whatsappText}`;
