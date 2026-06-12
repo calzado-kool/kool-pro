@@ -299,6 +299,7 @@
           return r.json();
         })
         .then(data => {
+          console.log("TEST_CHECKOUT_SUCCESS: BOLD_BRIDGE_RESPONDED", data);
           // Trigger WA before moving to Bold
           // window.open(waUrl, '_blank');
           window.location.href = waUrl;
