@@ -315,8 +315,14 @@
           body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
         });
 
-        if (!response.ok) throw new Error('Error en pasarela');
+        console.log('Bold API Response status:', response.status);
+        if (!response.ok) {
+           const errText = await response.text();
+           console.error('Bold API Error details:', errText);
+           throw new Error('Error en pasarela: ' + response.status);
+        }
         const data = await response.json();
+        console.log('Bold API Success data:', data);
         
         if (data && data.url) {
           boldPaymentUrl = data.url;
