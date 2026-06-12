@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781225928</title>
+  <title>KOOL PRO</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -19,18 +19,50 @@
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
     .overlay.on{display:block}
     #zoom{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+    
+    /* Elegant Floating Cart Button */
+    .fab-cart {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 72px;
+      height: 72px;
+      background: #111;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+      z-index: 55;
+      cursor: pointer;
+      transition: 0.3s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .fab-cart:active { transform: scale(0.9); }
+    .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #ef4444;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #111;
+    }
   </style>
 </head>
 <body>
-  <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between border-b border-gray-50 mb-4">
     <div>
       <div class="text-3xl font-black tracking-tighter">KOOL PRO</div>
       <div class="text-xs uppercase tracking-widest font-bold text-orange-500">Premium Footwear IA</div>
     </div>
-    <button onclick="toggleCart(true)" class="btn flex items-center gap-2">
-      <i class="fa-solid fa-bag-shopping"></i>
-      <span id="count">0</span>
-    </button>
   </div>
 
   <main class="max-w-6xl mx-auto px-4 pb-40">
@@ -41,6 +73,12 @@
       <!-- Productos se cargan aquí -->
     </div>
   </main>
+
+  <!-- Floating Cart Button -->
+  <div class="fab-cart" onclick="toggleCart(true)">
+    <i class="fa-solid fa-bag-shopping text-2xl"></i>
+    <div id="count" class="badge">0</div>
+  </div>
 
   <!-- Zoom Modal -->
   <div id="zoom" onclick="closeZoom()">
