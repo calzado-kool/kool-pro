@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO - MASTER v2.0</title>
+  <title>KOOL PRO MASTER v1781283002</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -85,12 +85,23 @@
 
     // Cargar Catálogo desde el archivo maestro (Base de Datos)
     async function init() {
+      console.log("Iniciando carga de catálogo...");
+      const grid = document.getElementById('grid');
       try {
         const res = await fetch('https://raw.githubusercontent.com/calzado-kool/kool-pro/main/catalog.json?v=' + Date.now());
+        if (!res.ok) throw new Error("No se pudo descargar el catálogo (" + res.status + ")");
         products = await res.json();
+        console.log("Catálogo cargado:", products.length, "productos.");
         loadState();
         render();
+        if (products.length === 0) {
+           grid.innerHTML = '<div class="col-span-full py-20 text-center text-gray-400 font-bold">EL CATÁLOGO ESTÁ VACÍO POR AHORA</div>';
+        }
       } catch (e) {
+        console.error("Error crítico:", e);
+        if (grid) grid.innerHTML = '<div class="col-span-full py-20 text-center text-red-500 font-bold">ERROR AL CARGAR PRODUCTOS: ' + e.message + '<br><button onclick="location.reload()" class="mt-4 btn">REINTENTAR</button></div>';
+      }
+    } catch (e) {
         console.error("Error cargando catálogo maestro", e);
       }
     }
@@ -100,7 +111,7 @@
       if (!grid) return;
       grid.innerHTML = products.map(p => {
         const priceOld = p.price_old || Math.round(p.price * 1.25);
-        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
+        const sizes = Object.keys(p.stockBySize || {}).map(Number).sort((a,b)=>a-b).map(s => {
           const q = available(p.id, s);
           const isActive = Number(selected[p.id]) === s;
           return `<button class="size ${isActive ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q <= 0 ? 'disabled' : ''}>
