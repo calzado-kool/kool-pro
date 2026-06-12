@@ -29,5 +29,18 @@
       "42": 2
     },
     "image_version": 1781294794
+  },
+  {
+    "id": "kool-hosting-1781295954",
+    "name": "Hosting",
+    "price": 199900,
+    "price_old": 225000,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/hosting_negro_1525.jpg",
+    "color": "Negro",
+    "stockBySize": {
+      "38": 1,
+      "55": 1
+    },
+    "image_version": 1781295954
   }
 ]
