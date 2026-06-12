@@ -28,5 +28,20 @@
       "40": 5
     },
     "image_version": 1781283693
+  },
+  {
+    "id": "kool-dustin-1781284172",
+    "name": "Дустин",
+    "price": 145000,
+    "price_old": 170000,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/dustin_1781284172.jpg",
+    "color": "Nueva colección",
+    "stockBySize": {
+      "34": 4,
+      "35": 2,
+      "37": 3,
+      "40": 3
+    },
+    "image_version": 1781284172
   }
 ]
