@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO MASTER v1781297295</title>
+  <title>KOOL PRO MASTER v1781297363</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -79,13 +79,10 @@
 
   
   
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => {
-        for(let r of regs) r.unregister();
-      });
-    }
+  
 
+
+  <script>
     const GROUP_JID = '120363408397099423@g.us';
     let products = [{"id": "kool-botin-miel-1781283244", "name": "Botín Sofía", "price": 159900, "price_old": 185000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/botin_coleccion_miel_1159.jpg", "color": "Miel / Café", "stockBySize": {"37": 5, "38": 5, "39": 5, "40": 5}, "image_version": 1781283693}, {"id": "kool-running-1781294794", "name": "running", "price": 1500, "price_old": 1700, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/running_1781294793.jpg", "color": "Negro / Gris", "stockBySize": {"38": 3, "39": 10, "40": 9, "41": 7, "42": 2}, "image_version": 1781294794}, {"id": "kool-hosting-1781295954", "name": "Hosting", "price": 199900, "price_old": 225000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/hosting_negro_1525.jpg", "color": "Negro", "stockBySize": {"38": 1, "55": 1, "43": 2}, "image_version": 1781296529}];
     let cart = [];
@@ -95,28 +92,21 @@
     async function refreshCatalog() {
       try {
         const res = await fetch('https://raw.githubusercontent.com/calzado-kool/kool-pro/main/catalog.json?v=' + Date.now());
-        if (res.ok) {
-          products = await res.json();
-        }
-      } catch (e) {
-        console.warn('catalog refresh failed', e);
-      }
+        if (res.ok) products = await res.json();
+      } catch (e) { console.warn('refresh failed', e); }
     }
 
     function render() {
-      console.log("Renderizando catálogo...");
       const grid = document.getElementById('grid');
       if (!grid) return;
-      
       if (products.length === 0) {
         grid.innerHTML = '<div class="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest">El catálogo está vacío</div>';
         return;
       }
-
       grid.innerHTML = products.map(p => {
         const priceOld = p.price_old || Math.round(p.price * 1.25);
         const sizes = Object.keys(p.stockBySize || {}).map(Number).sort((a,b)=>a-b).map(s => {
-          const q = available(p.id, s);
+          const q = (p.stockBySize[String(s)] || 0) - cart.filter(i => i.id === p.id && i.size === s).length;
           const isActive = Number(selected[p.id]) === s;
           return `<button class="size ${isActive ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q <= 0 ? 'disabled' : ''}>
             ${s}
@@ -127,7 +117,7 @@
         return `
           <article class="card relative group" id="product-${p.id}">
             <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}?v=1781283354" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
+              <img src="${p.img}?v=${p.image_version || 1781297363}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
             </button>
             <div class="p-6 space-y-4 flex-1 flex flex-col">
               <div>
@@ -157,46 +147,38 @@
       updateCart();
     }
 
-    function available(pid, size) {
-      const p = products.find(x => x.id === pid);
-      if (!p) return 0;
-      const stock = p.stockBySize[String(size)] || 0;
-      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-      return stock - inCart;
-    }
-
     function choose(pid, size) { selected[pid] = size; render(); }
     function add(pid) {
-      const size = selected[pid];
-      if (!size) return alert('Selecciona una talla primero');
-      if (available(pid, size) <= 0) return alert('Sin stock disponible');
+      const s = selected[pid];
+      if (!s) return alert('Selecciona una talla');
       const p = products.find(x => x.id === pid);
-      if (!p) return;
-      cart.push({ ...p, size });
-      saveState();
+      cart.push({ ...p, size: s });
+      localStorage.setItem('kool_cart_final', JSON.stringify(cart));
       render();
     }
-    function remove(idx) { cart.splice(idx, 1); saveState(); render(); }
+    function remove(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('kool_cart_final', JSON.stringify(cart));
+      render();
+    }
 
     function updateCart() {
       const countEl = document.getElementById('count');
       const totalEl = document.getElementById('total');
       const itemsEl = document.getElementById('items');
       if (!countEl || !totalEl || !itemsEl) return;
-      
       countEl.innerText = cart.length;
       const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
       totalEl.innerText = '$' + total.toLocaleString('es-CO');
-      
       if (cart.length === 0) {
-        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center font-bold uppercase tracking-widest text-sm">Carrito vacío</div>';
+        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center font-bold">CARRITO VACÍO</div>';
       } else {
         itemsEl.innerHTML = cart.map((i, idx) => `
           <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${i.img}?v=1781283354" class="w-16 h-16 object-contain bg-gray-50 rounded-lg">
+            <img src="${i.img}?v=${i.image_version || 1781297363}" class="w-16 h-16 object-contain bg-gray-50 rounded-lg">
             <div class="flex-1">
               <div class="font-black uppercase text-[10px]">${i.name}</div>
-              <div class="text-[9px] font-bold text-gray-400">TALLA: ${i.size} | ${i.color}</div>
+              <div class="text-[9px] font-bold text-gray-400">T: ${i.size} | ${i.color}</div>
               <div class="font-black text-xs">$${i.price.toLocaleString('es-CO')}</div>
             </div>
             <button onclick="remove(${idx})" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
@@ -205,107 +187,65 @@
       }
     }
 
-    function saveState() { localStorage.setItem('kool_cart_master', JSON.stringify(cart)); }
-    function loadState() {
-      try {
-        const c = localStorage.getItem('kool_cart_master');
-        if (c) cart = JSON.parse(c);
-      } catch(e) {}
-    }
-
     function toggleCart(open) {
       document.getElementById('drawer').classList.toggle('open', open);
       document.getElementById('ov').classList.toggle('on', open);
     }
 
     function zoom(src) {
-      const z = document.getElementById('zoom');
-      const zi = document.getElementById('zoomImg');
-      zi.src = src;
-      z.style.display = 'flex';
+      document.getElementById('zoomImg').src = src;
+      document.getElementById('zoom').style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
-    function closeZoom() { document.getElementById('zoom').style.display = 'none'; document.body.style.overflow = 'auto'; }
+    function closeZoom() {
+      document.getElementById('zoom').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
 
     function shareProduct(pid, name) {
-      const text = `🛍️ Hola! Me interesa este calzado: ${name} %0Ahttps://calzado-kool.github.io/kool-pro/#product-${pid}`;
+      const text = `🛍️ Hola! Me interesa: ${name} %0Ahttps://calzado-kool.github.io/kool-pro/#product-${pid}`;
       window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${text}`);
     }
 
     async function checkoutBridge() {
+      const btn = document.getElementById('payBtn');
       try {
-        if (!cart.length) return alert('El carrito está vacío');
+        if (!cart.length) return alert('Vacío');
         const n = document.getElementById('name').value.trim();
         const p = document.getElementById('phone').value.trim();
         const a = document.getElementById('addr').value.trim();
-        if (!n || !p || !a) return alert('Por favor completa todos los datos de envío');
-
-        const btn = document.getElementById('payBtn');
-        if (btn.innerText.includes('PAGAR')) {
-           if (boldPaymentUrl) window.location.href = boldPaymentUrl;
-           return;
-        }
+        if (!n || !p || !a) return alert('Faltan datos');
         
-        if (btn.innerText.includes('WHATSAPP')) {
-           // Bloque de Fotos y Detalles
-           const orderDetails = cart.map(i => {
-             return `👟 *${i.name}*
-   📏 Talla: ${i.size}
-   🎨 Color: ${i.color}
-   🖼️ Foto: ${i.img}`;
-           }).join('
-
-');
-
-           const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🚀 *NUEVO PEDIDO KOOL PRO*
-
-${orderDetails}
-
-💰 *TOTAL A PAGAR:* $${total.toLocaleString('es-CO')}
-
-👤 *DATOS DEL CLIENTE:*
-👤 Nombre: ${n}
-📱 WhatsApp: ${p}
-📍 Dirección: ${a}`;
-           
-           window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${encodeURIComponent(whatsappText)}`, '_blank');
-           
-           btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
-           btn.style.background = '#059669'; 
-           return;
+        if (btn.innerText.includes('PAGAR')) {
+          if (boldPaymentUrl) window.location.href = boldPaymentUrl;
+          return;
         }
-
+        if (btn.innerText.includes('WHATSAPP')) {
+          const info = cart.map(i => `👟 *${i.name}*\n   📏 Talla: ${i.size}\n   🎨 Color: ${i.color}\n   🖼️ Foto: ${i.img}`).join('\n\n');
+          const total = cart.reduce((s, i) => s + (Number(i.price) || 0), 0);
+          const msg = `🚀 *NUEVO PEDIDO KOOL PRO*\n\n${info}\n\n💰 *TOTAL:* $${total.toLocaleString('es-CO')}\n\n👤 *CLIENTE:*\n👤 ${n}\n📱 ${p}\n📍 ${a}`;
+          window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${encodeURIComponent(msg)}`, '_blank');
+          btn.innerText = 'PASO 2: IR A PAGAR'; btn.style.background = '#059669'; return;
+        }
         btn.disabled = true; btn.innerText = 'PROCESANDO...';
         const total = cart.reduce((s, i) => s + (Number(i.price) || 0), 0);
-        const info = cart.map(i => `${i.name}(T:${i.size})`).join(', ');
-        const desc = `${info} | ${a} | ${n} (${p})`;
-        
+        const desc = cart.map(i => `${i.name}(T:${i.size})`).join(', ') + ' | ' + a;
         const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount: total, label: 'KOOL PRO', description: desc })
         });
-
         const data = await res.json();
         if (data && data.url) {
-          boldPaymentUrl = data.url;
-          btn.disabled = false; btn.innerText = 'PASO 1: ENVIAR A WHATSAPP';
-          btn.style.background = '#2563eb'; 
-        } else {
-          throw new Error('Error al generar link de pago');
+          boldPaymentUrl = data.url; btn.disabled = false; btn.innerText = 'PASO 1: ENVIAR A WHATSAPP'; btn.style.background = '#2563eb';
         }
-      } catch (e) {
-        alert('Error: ' + e.message);
-        const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; btn.style.background = ''; }
-      }
+      } catch (e) { alert('Error'); btn.disabled = false; btn.innerText = 'Finalizar compra'; }
     }
 
-    // Inicialización Limpia
     window.onload = async () => {
+      const c = localStorage.getItem('kool_cart_final');
+      if (c) cart = JSON.parse(c);
       await refreshCatalog();
-      loadState();
       render();
     };
   </script>
