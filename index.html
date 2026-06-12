@@ -114,7 +114,7 @@
     let cart = [];
     let selected = {};
 
-    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}}, {"id": "test-auto", "name": "Test Sneaker 130", "price": 110130, "img": "media/test_1781260130.jpg", "color": "Color 0", "stockBySize": {"36": 1, "37": 1, "38": 1, "39": 1, "40": 1, "41": 1, "42": 1, "43": 1}}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781135115955.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}}, {"id": "kool-alcol-new", "name": "Alcol", "price": 140000, "price_old": 165000, "img": "media/1781182888441.jpg", "color": "Blanco / Verde Menta", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3, "40": 3, "41": 3, "42": 3, "43": 3, "44": 3, "45": 3, "46": 3, "47": 3, "48": 3}}];
+    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1780375993932.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1780411345666.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119242950.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781135115955.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}}, {"id": "kool-alcol-new", "name": "Alcol", "price": 140000, "price_old": 165000, "img": "media/1781182888441.jpg", "color": "Blanco / Verde Menta", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3, "40": 3, "41": 3, "42": 3, "43": 3, "44": 3, "45": 3, "46": 3, "47": 3, "48": 3}}, {"id": "test-1781261028", "name": "Test Sneaker 28", "price": 111028, "img": "media/test_1781261028.jpg", "color": "Color 8", "stockBySize": {"36": 4, "37": 4, "38": 4, "39": 4, "40": 4, "41": 4, "42": 4, "43": 4}}];
 
     function saveState() {
       try {
@@ -265,6 +265,9 @@
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
     }
 
+    
+    let boldPaymentUrl = null;
+
     async function checkoutBridge() {
       try {
         if (!cart.length) return alert('El carrito está vacío');
@@ -274,7 +277,32 @@
         if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
 
         const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = true; btn.innerText = 'PROCESANDO PAGO...'; }
+
+        // PASO 3: Redirección final al pago
+        if (btn.innerText.includes('PAGAR')) {
+           if (boldPaymentUrl) window.location.href = boldPaymentUrl;
+           return;
+        }
+        
+        // PASO 2: Envío del reporte a WhatsApp
+        if (btn.innerText.includes('WHATSAPP')) {
+           const productPhotos = cart.map(i => `🖼️ ${i.name}: https://calzado-kool.github.io/kool-pro/${i.img}`).join('%0A');
+           const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+           const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
+           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A🖼️ *Fotos:*%0A${productPhotos}%0A💰 *Total:* ${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
+           
+           // Abrir WhatsApp directo al grupo
+           window.open(`https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`, '_blank');
+           
+           // Cambiar botón para el paso final
+           btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
+           btn.style.background = '#059669'; // Verde
+           return;
+        }
+
+        // PASO 1: Generar orden en Bold
+        btn.disabled = true;
+        btn.innerText = 'PROCESANDO...';
 
         const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
         const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
@@ -287,37 +315,22 @@
           body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
         });
 
-        if (!response.ok) throw new Error('Error en pasarela: ' + response.status);
+        if (!response.ok) throw new Error('Error en pasarela');
         const data = await response.json();
         
         if (data && data.url) {
-          const itemsWa = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-          const productImages = cart.map(i => `${window.location.origin}/kool-pro/${i.img}`).join('%0A');
-          const whatsappText = `🛍️ *PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsWa}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A👤 *Cliente:* ${name}%0A📍 *Dirección:* ${addr}%0A🖼️ *Fotos:* %0A${productImages}`;
-          const waUrl = `https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`;
-
-          // Change the button state as per instructions
-          const btn = document.getElementById('payBtn');
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = `
-              <div class="flex flex-col gap-2">
-                <button onclick="window.open('${waUrl}', '_blank')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">1. ENVIAR PEDIDO A WHATSAPP</button>
-                <button onclick="window.location.href='${data.url}'" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">2. IR A PAGAR</button>
-              </div>
-            `;
-            // Remove the ID or change it to prevent re-execution of this function
-            btn.id = 'paymentButtons';
-            // Also stop the immediate redirect
-            // window.location.href = data.url; 
-          }
+          boldPaymentUrl = data.url;
+          btn.disabled = false;
+          btn.innerText = 'PASO 1: ENVIAR PEDIDO A WHATSAPP';
+          btn.style.background = '#2563eb'; // Azul
         } else {
           throw new Error('Sin URL de pago');
         }
       } catch (e) {
         alert('Error: ' + e.message);
         const btn = document.getElementById('payBtn');
-        if (btn) { btn.disabled = false; btn.innerText = 'Finalizar compra'; }
+        btn.disabled = false;
+        btn.innerText = 'Finalizar compra';
       }
     }
 
