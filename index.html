@@ -283,7 +283,7 @@
         const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
         
         // Use window.location.href for the WhatsApp redirect to ensure it triggers before navigation
-        const waUrl = `https://api.whatsapp.com/send?phone=573057778133&text=${whatsappText}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`;
         
         fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
