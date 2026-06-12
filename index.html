@@ -282,9 +282,10 @@
         
         if (btn.innerText.includes('WHATSAPP')) {
            const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
+           const imageLinks = cart.map(i => window.location.origin + window.location.pathname.replace('index.html', '') + i.img).join('%0A');
            const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
-           const waUrl = `https://api.whatsapp.com/send?phone=573057778133&text=${whatsappText}`;
+           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A🖼️ *Fotos:*%0A${imageLinks}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
+           const waUrl = `https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`;
            window.open(waUrl, '_blank');
            btn.innerText = '2. IR A PAGAR';
            btn.style.background = '#10b981';
@@ -304,8 +305,14 @@
           body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
         });
 
-        if (!response.ok) throw new Error('Error en pasarela');
+        console.log('Bold API Response:', response.status);
+        if (!response.ok) {
+           const errText = await response.text();
+           console.error('Bold API Error:', errText);
+           throw new Error('Error en pasarela: ' + response.status);
+        }
         const data = await response.json();
+        console.log('Bold API Data:', data);
         
         if (data && data.url) {
           window.boldUrl = data.url;
