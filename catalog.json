@@ -39,8 +39,9 @@
     "color": "Negro",
     "stockBySize": {
       "38": 1,
-      "55": 1
+      "55": 1,
+      "43": 2
     },
-    "image_version": 1781295954
+    "image_version": 1781296529
   }
 ]
