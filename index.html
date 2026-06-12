@@ -283,8 +283,9 @@
         if (btn.innerText.includes('WHATSAPP')) {
            const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
            const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
-           const waUrl = `https://api.whatsapp.com/send?phone=573057778133&text=${whatsappText}`;
+           const itemImages = cart.map(i => window.location.origin + window.location.pathname.replace('index.html','') + i.img).join('%0A');
+           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* $${total.toLocaleString('es-CO')}%0A%0A🖼️ *Imágenes:*%0A${itemImages}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
+           const waUrl = `https://api.whatsapp.com/send?chat_id=120363408397099423@g.us&text=${whatsappText}`;
            window.open(waUrl, '_blank');
            btn.innerText = '2. IR A PAGAR';
            btn.style.background = '#10b981';
