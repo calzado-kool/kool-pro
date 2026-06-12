@@ -1,354 +1,168 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781270929</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111;margin:0;padding:0}
-    .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff;transition:transform 0.3s ease;display:flex;flex-direction:column;height:100%}
-    .card:hover{transform:translateY(-5px)}
-    .btn{background:#111;color:#fff;font-weight:900;text-transform:uppercase;padding:.9rem 1rem;border-radius:12px;cursor:pointer;border:none}
-    .btn:disabled{background:#ccc;cursor:not-allowed}
-    .size{border:1px solid #d1d5db;border-radius:10px;padding:.55rem;text-align:center;font-weight:800;background:none;cursor:pointer}
-    .size.active{background:#111;color:#fff;border-color:#111}
-    .drawer{position:fixed;inset:0 0 0 auto;width:420px;max-width:100vw;background:#fff;box-shadow:-20px 0 40px rgba(0,0,0,.15);transform:translateX(100%);transition:.25s;z-index:60;display:flex;flex-direction:column}
-    .drawer.open{transform:translateX(0)}
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50}
-    .overlay.on{display:block}
-    #zoom{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
-    
-    /* Elegant Floating Cart Button */
-    .fab-cart {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 72px;
-      height: 72px;
-      background: #111;
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
-      z-index: 55;
-      cursor: pointer;
-      transition: 0.3s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .fab-cart:active { transform: scale(0.9); }
-    .badge {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #ef4444;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 900;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid #111;
-    }
-  
-    .motion-glow{position:relative;overflow:hidden}
-    .motion-glow::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.22) 40%,transparent 55%);transform:translateX(-120%);animation:shimmer 2.2s infinite}
-    @keyframes shimmer{to{transform:translateX(120%)}}
-    
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calzado Kool - Pro Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .product-card { transition: transform 0.2s; }
+        .product-card:active { transform: scale(0.98); }
+        .btn-gradient { background: linear-gradient(90deg, #ff8c00, #ff4500); }
+    </style>
 </head>
-<body>
-  <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between border-b border-gray-50 mb-4">
-    <div>
-      <div class="text-3xl font-black tracking-tighter">KOOL PRO</div>
-      <div class="text-xs uppercase tracking-widest font-bold text-orange-500">Premium Footwear IA</div>
-    </div>
-  </div>
+<body class="pb-24">
+    <!-- Header -->
+    <header class="sticky top-0 bg-white shadow-sm z-50 px-4 py-3 flex items-center justify-between">
+        <h1 class="text-xl font-extrabold tracking-tighter text-gray-900">CALZADO <span class="text-orange-600">KOOL</span></h1>
+        <div class="flex gap-4 text-gray-500">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+    </header>
 
-  <main class="max-w-6xl mx-auto px-4 pb-40">
-    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 mb-8 text-sm text-gray-500 font-medium">
-      Selecciona tu talla y agrega al carrito. Paga seguro con Bold.
-    </div>
-    <div id="grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      <!-- Productos se cargan aquí -->
-    </div>
-  </main>
-
-  <!-- Floating Cart Button -->
-  <div class="fab-cart" onclick="toggleCart(true)">
-    <i class="fa-solid fa-bag-shopping text-2xl"></i>
-    <div id="count" class="badge">0</div>
-  </div>
-
-  <!-- Zoom Modal -->
-  <div id="zoom" onclick="closeZoom()">
-    <img id="zoomImg" src="" class="max-w-full max-h-full object-contain rounded-lg">
-  </div>
-
-  <!-- Carrito Drawer -->
-  <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
-  <aside id="drawer" class="drawer">
-    <div class="p-6 border-b flex items-center justify-between">
-      <div class="text-xl font-black uppercase">Tu Carrito</div>
-      <button onclick="toggleCart(false)" class="text-2xl">&times;</button>
-    </div>
-    <div id="items" class="flex-1 overflow-y-auto p-6 space-y-6">
-      <!-- Items del carrito -->
-    </div>
-    <div class="p-6 border-t bg-gray-50 space-y-4">
-      <div class="flex items-center justify-between text-lg font-black">
-        <span>TOTAL</span>
-        <span id="total">$0</span>
-      </div>
-      <div class="space-y-2">
-        <input id="name" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Nombre completo" />
-        <input id="phone" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="WhatsApp" />
-        <input id="addr" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Dirección de envío" />
-      </div>
-      <button id="payBtn" onclick="checkoutBridge()" style="border: 2px solid red !important; pointer-events: auto !important;" class="btn w-full py-4 text-sm">Finalizar compra</button>
-      <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-wider">Pago seguro procesado por Bold</p>
-    </div>
-  </aside>
-
-  <script>
-    let cart = [];
-    let selected = {};
-
-    const products = [{"id": "kool-nike-super", "name": "Nike Súper", "price": 199000, "price_old": 239000, "img": "media/1781071726766.jpg", "color": "Gris Verde", "stockBySize": {"39": 2, "40": 2, "41": 2, "42": 1, "43": 3, "44": 1}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-bota-roja", "name": "Bota Urbana Roja", "price": 145000, "price_old": 175000, "img": "media/1781119242950.jpg", "color": "Rojo", "stockBySize": {"35": 2, "37": 3, "38": 2, "39": 1}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-bota-blanca", "name": "Bota Urbana Blanca", "price": 145000, "price_old": 175000, "img": "media/1781263966629.jpg", "color": "Blanco", "stockBySize": {"34": 1, "35": 1, "36": 3, "37": 1, "38": 1}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-mafalda-clasica", "name": "Mafalda clásica", "price": 115000, "price_old": 139000, "img": "media/1781119407915.jpg", "color": "Negro", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-new-balance", "name": "New Balance", "price": 130000, "price_old": 155000, "img": "media/1781124694858.jpg", "color": "Beis", "stockBySize": {"34": 2, "35": 2, "36": 4, "37": 3, "38": 2, "41": 1, "42": 2, "43": 3}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-sofia-blanco", "name": "Botín Sofía", "price": 147000, "price_old": 175000, "img": "media/1781269605054.jpg", "color": "Blanco Pastel", "stockBySize": {"34": 1, "35": 2, "36": 3, "37": 3, "38": 4, "39": 1, "42": 1}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-alcon-food-salah", "name": "Alcon Food Salah", "price": 140000, "price_old": 165000, "img": "media/1781135775589.jpg", "color": "Blanco / Morado / Fucsia", "stockBySize": {"36": 2, "37": 3, "38": 1, "40": 5, "41": 4}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "kool-alcol-new", "name": "Alcol", "price": 140000, "price_old": 165000, "img": "media/1781182888441.jpg", "color": "Blanco / Verde Menta", "stockBySize": {"34": 3, "35": 3, "36": 3, "37": 3, "38": 3, "39": 3, "40": 3, "41": 3, "42": 3, "43": 3, "44": 3, "45": 3, "46": 3, "47": 3, "48": 3}, "description": "Calzado premium con diseño ergonómico y materiales de alta resistencia."}, {"id": "test-1781270929", "name": "Test Sneaker 929", "price": 120929, "img": "media/test_1781270929.jpg", "color": "Color 9", "stockBySize": {"36": 5, "37": 5, "38": 5, "39": 5, "40": 5, "41": 5, "42": 5, "43": 5}}];
-
-    function saveState() {
-      try {
-        localStorage.setItem('kool_cart_v5', JSON.stringify(cart));
-        localStorage.setItem('kool_selected_v5', JSON.stringify(selected));
-      } catch(e) {}
-    }
-    function loadState() {
-      try {
-        const c = localStorage.getItem('kool_cart_v5');
-        const s = localStorage.getItem('kool_selected_v5');
-        if (c) cart = JSON.parse(c);
-        if (s) selected = JSON.parse(s);
-      } catch(e) {}
-    }
-
-    function available(pid, size) {
-      const p = products.find(x => x.id === pid);
-      if (!p) return 0;
-      const stock = p.stockBySize[String(size)] || 0;
-      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-      return stock - inCart;
-    }
-
-    function choose(pid, size) {
-      selected[pid] = size;
-      render();
-    }
-
-    function add(pid) {
-      const size = selected[pid];
-      if (!size) return alert('Selecciona una talla primero');
-      if (available(pid, size) <= 0) return alert('Sin stock en esa talla');
-      const p = products.find(x => x.id === pid);
-      if (!p) return;
-      cart.push({ ...p, size });
-      saveState();
-      render();
-    }
-
-    function remove(idx) {
-      cart.splice(idx, 1);
-      saveState();
-      render();
-    }
-
-    function updateCart() {
-      const countEl = document.getElementById('count');
-      const totalEl = document.getElementById('total');
-      const itemsEl = document.getElementById('items');
-      if (!countEl || !totalEl || !itemsEl) return;
-      
-      countEl.innerText = cart.length;
-      const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
-      totalEl.innerText = '$' + total.toLocaleString('es-CO');
-      
-      if (cart.length === 0) {
-        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold uppercase tracking-widest">Carrito vacío</div>';
-      } else {
-        itemsEl.innerHTML = cart.map((i, idx) => `
-          <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
-            <div class="flex-1 space-y-1">
-              <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
-              <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
-              <div class="font-black text-sm">$${Number(i.price || 0).toLocaleString('es-CO')}</div>
+    <!-- Banner -->
+    <div class="px-4 py-4">
+        <div class="bg-black rounded-2xl p-6 text-white relative overflow-hidden h-40 flex flex-col justify-center">
+            <h2 class="text-2xl font-bold z-10">Nueva Colección</h2>
+            <p class="text-gray-400 z-10">Premium Sneakers 2026</p>
+            <button class="mt-2 bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-bold w-fit z-10">Ver más</button>
+            <div class="absolute -right-4 -bottom-4 opacity-20 transform -rotate-12">
+                <i class="fa-solid fa-shoe-prints text-9xl"></i>
             </div>
-            <button onclick="remove(${idx})" class="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 transition-colors">
-              <i class="fa-solid fa-trash-can text-sm"></i>
-            </button>
-          </div>
-        `).join('');
-      }
-    }
+        </div>
+    </div>
 
-    function render() {
-      const grid = document.getElementById('grid');
-      if (!grid) return;
-      
-      grid.innerHTML = products.map(p => {
-        const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
-          const q = available(p.id, s);
-          const active = Number(selected[p.id]) === s;
-          return `<button class="size ${active ? 'active' : ''}" onclick="choose('${p.id}', ${s})" ${q<=0 ? 'disabled' : ''}>
-            ${s}
-            <div class="text-[9px] font-black ${q<=0 ? 'text-red-400' : 'text-emerald-500'}">${q<=0 ? '0' : q}</div>
-          </button>`;
-        }).join('');
-
-        return `
-          <article class="card relative group ${p.id === 'kool-animado-1781263969' ? 'motion-glow' : ''}" id="product-${p.id}">
-            <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
-            </button>
-            <div class="p-6 space-y-4 flex-1 flex flex-col">
-              <div>
-                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">${p.color}</div>
-                <div class="text-xl font-black uppercase leading-tight">${p.name}</div>
-              </div>
-              <div class="space-y-2">
-                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600">Stock disponible</div>
-                <div class="grid grid-cols-5 gap-2">${sizes}</div>
-              </div>
-              <div class="flex items-center justify-between pt-2">
-                <div class="flex flex-col">
-                  <span class="text-[10px] text-gray-400 line-through font-bold">$${(Number(p.price) * 1.2).toLocaleString('es-CO')}</span>
-                  <span class="text-xl font-black text-black">$${Number(p.price || 0).toLocaleString('es-CO')}</span>
-                </div>
-                <div class="flex gap-2 mt-auto pt-4">
-                  <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                  </button>
-                  <button onclick="add('${p.id}')" id="add-${p.id}" style="border: 2px solid red !important; pointer-events: auto !important;" class="btn px-6 text-[11px]">Agregar</button>
-                </div>
-              </div>
+    <!-- Product Grid -->
+    <div class="px-4 grid grid-cols-2 gap-4">
+        <!-- Product 1 -->
+        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon White', 145000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')">
+            <div class="relative h-40 bg-gray-50">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" class="w-full h-full object-cover">
+                <div class="absolute top-2 left-2 bg-black text-white text-[10px] font-bold px-2 py-1 rounded">-25%</div>
             </div>
-          </article>
-        `;
-      }).join('');
-      updateCart();
-    }
+            <div class="p-3">
+                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon White Premium</h3>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-lg font-bold text-orange-600">$145k</span>
+                    <span class="text-xs text-gray-400 line-through">$195k</span>
+                </div>
+            </div>
+        </div>
 
-    function zoom(src) {
-      const z = document.getElementById('zoom');
-      const zi = document.getElementById('zoomImg');
-      if (!z || !zi) return;
-      zi.src = src;
-      z.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-    function closeZoom() {
-      const z = document.getElementById('zoom');
-      if (z) z.style.display = 'none';
-      document.body.style.overflow = '';
-    }
+        <!-- Product 2 -->
+        <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" onclick="openCheckout('Carbon Red', 185000, 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500')">
+            <div class="relative h-40 bg-gray-50">
+                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500" class="w-full h-full object-cover">
+                <div class="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded">HOT</div>
+            </div>
+            <div class="p-3">
+                <h3 class="text-sm font-semibold text-gray-800 truncate">Carbon Red Sport</h3>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-lg font-bold text-orange-600">$185k</span>
+                    <span class="text-xs text-gray-400 line-through">$220k</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    function toggleCart(open) {
-      const d = document.getElementById('drawer');
-      const o = document.getElementById('ov');
-      if (!d || !o) return;
-      if (open) { d.classList.add('open'); o.classList.add('on'); document.body.style.overflow='hidden'; }
-      else { d.classList.remove('open'); o.classList.remove('on'); document.body.style.overflow=''; }
-    }
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-end">
+        <div class="bg-white w-full rounded-t-3xl p-6 animate-slide-up">
+            <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+            
+            <div class="flex gap-4 mb-6">
+                <img id="modalImg" class="w-24 h-24 rounded-xl object-cover bg-gray-100">
+                <div>
+                    <h2 id="modalTitle" class="text-xl font-bold text-gray-900"></h2>
+                    <p id="modalPrice" class="text-orange-600 font-bold text-lg"></p>
+                    <p class="text-xs text-gray-500">Envío gratis a todo el país</p>
+                </div>
+            </div>
 
-    function shareProduct(pid, name) {
-      const url = window.location.origin + window.location.pathname + '#product-' + pid;
-      const text = '¡Mira estos zapatos en KOOL PRO! ' + name + ' Ver aquí: ' + url;
-      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
-    }
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Talla</label>
+                    <div class="flex gap-2" id="sizeSelector">
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold border-orange-600 bg-orange-50 text-orange-600">36</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">37</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">38</button>
+                        <button onclick="selectSize(this)" class="w-10 h-10 border rounded-lg text-sm font-bold">39</button>
+                    </div>
+                </div>
 
-    
-    
-    let boldPaymentUrl = null;
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="custName" placeholder="Nombre completo" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                    <input type="text" id="custId" placeholder="Cédula" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                </div>
+                <input type="text" id="custAddr" placeholder="Dirección de envío" class="w-full border-b py-2 text-sm focus:border-orange-600 outline-none">
+                
+                <button onclick="confirmPurchase()" class="w-full btn-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-orange-200 mt-4">
+                    Confirmar y Pagar
+                </button>
+                <button onclick="closeCheckout()" class="w-full text-gray-400 text-sm font-medium py-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-    async function checkoutBridge() {
-      console.log("Checkout step triggered");
-      try {
-        if (!cart.length) return alert('El carrito está vacío');
-        const name = document.getElementById('name')?.value.trim() || '';
-        const phone = document.getElementById('phone')?.value.trim() || '';
-        const addr = document.getElementById('addr')?.value.trim() || '';
-        if (!name || !phone || !addr) return alert('Completa nombre, WhatsApp y dirección');
+    <script>
+        let currentProduct = null;
+        let selectedSize = '36';
 
-        const btn = document.getElementById('payBtn');
-
-        // PASO 3: Redirección final al pago de Bold
-        if (btn.innerText.includes('PAGAR')) {
-           console.log("Redirecting to Bold...");
-           if (boldPaymentUrl) window.location.href = boldPaymentUrl;
-           return;
+        function openCheckout(name, price, img) {
+            currentProduct = { name, price, img };
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalPrice').innerText = '$' + (price/1000).toFixed(0) + '.000';
+            document.getElementById('modalImg').src = img;
+            document.getElementById('checkoutModal').classList.remove('hidden');
         }
-        
-        // PASO 2: Envío del reporte a WhatsApp (SOLO AL GRUPO)
-        if (btn.innerText.includes('WHATSAPP')) {
-           console.log("Sending to WhatsApp group...");
-           const productPhotos = cart.map(i => `🖼️ ${i.name}: https://calzado-kool.github.io/kool-pro/${i.img}`).join('%0A');
-           const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-           const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A🖼️ *Fotos:*%0A${productPhotos}%0A💰 *Total:* ${total.toLocaleString('es-CO')}%0A%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
-           
-           const waUrl = `https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`;
-           window.open(waUrl, '_blank');
-           
-           btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
-           btn.style.background = '#059669'; 
-           return;
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.add('hidden');
         }
 
-        // PASO 1: Generar orden
-        btn.disabled = true;
-        btn.innerText = 'PROCESANDO...';
-        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
-        
-        const response = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
-        });
-
-        if (!response.ok) throw new Error('Error en pasarela');
-        const data = await response.json();
-        
-        if (data && data.url) {
-          boldPaymentUrl = data.url;
-          btn.disabled = false;
-          btn.innerText = 'PASO 2: ENVIAR REPORTE WHATSAPP';
-          btn.style.background = '#2563eb'; 
-        } else {
-          throw new Error('Sin URL de pago');
+        function selectSize(btn) {
+            document.querySelectorAll('#sizeSelector button').forEach(b => {
+                b.classList.remove('border-orange-600', 'bg-orange-50', 'text-orange-600');
+            });
+            btn.classList.add('border-orange-600', 'bg-orange-50', 'text-orange-600');
+            selectedSize = btn.innerText;
         }
-      } catch (e) {
-        console.error("Checkout Error:", e);
-        alert('Error: ' + e.message);
-        const btn = document.getElementById('payBtn');
-        if (btn) {
-           btn.disabled = false;
-           btn.innerText = 'Finalizar compra';
-           btn.style.background = ''; 
-        }
-      }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      render();
-    });
-  </script>
+        function confirmPurchase() {
+            const name = document.getElementById('custName').value;
+            const addr = document.getElementById('custAddr').value;
+            const id = document.getElementById('custId').value;
+
+            if(!name || !addr || !id) {
+                alert('Por favor completa todos los datos de envío');
+                return;
+            }
+
+            const msg = `Hola! Quiero comprar:
+👟 *${currentProduct.name}*
+📏 Talla: ${selectedSize}
+👤 Cliente: ${name}
+🆔 CC: ${id}
+📍 Dir: ${addr}`;
+
+            const waUrl = `https://wa.me/573057778133?text=${encodeURIComponent(msg)}`;
+            const boldUrl = "https://checkout.bold.co/payment/LNK_C41NH1MPJA";
+
+            window.open(waUrl, '_blank');
+            window.location.href = boldUrl;
+        }
+    </script>
+
+    <style>
+        @keyframes slide-up {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slide-up 0.3s ease-out; }
+    </style>
 </body>
 </html>
