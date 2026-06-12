@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO - NATALIA FINAL v1781281744</title>
+  <title>KOOL PRO - MASTER v2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -25,29 +25,36 @@
 </head>
 <body>
 
+  <!-- HEADER -->
   <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-30">
     <div class="flex flex-col">
       <div class="text-2xl font-black tracking-tighter">KOOL PRO</div>
-      <div class="text-xs uppercase tracking-widest font-bold text-emerald-500">Catálogo Actualizado</div>
+      <div class="text-xs uppercase tracking-widest font-bold text-orange-600">Premium Footwear IA</div>
     </div>
   </div>
 
+  <!-- CATALOG GRID -->
   <main class="max-w-6xl mx-auto px-4 pb-40">
     <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 mb-8 text-sm text-gray-500 font-medium mt-6">
       Bienvenido. Selecciona tu talla y agrega al carrito. Paga seguro con Bold.
     </div>
-    <div id="grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"></div>
+    <div id="grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Los productos se cargan dinámicamente desde catalog.json -->
+    </div>
   </main>
 
+  <!-- FLOATING CART BUTTON -->
   <div id="cartBtn" class="fab-cart" onclick="toggleCart(true)">
     <i class="fa-solid fa-bag-shopping text-2xl"></i>
     <div id="count" class="badge">0</div>
   </div>
 
+  <!-- ZOOM OVERLAY -->
   <div id="zoom" onclick="closeZoom()">
     <img id="zoomImg" src="" class="max-w-full max-h-full object-contain rounded-lg">
   </div>
 
+  <!-- CART DRAWER -->
   <div id="ov" class="overlay" onclick="toggleCart(false)"></div>
   <aside id="drawer" class="drawer">
     <div class="p-6 border-b flex items-center justify-between">
@@ -66,21 +73,33 @@
         <input type="text" id="addr" placeholder="Dirección de envío" class="w-full p-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-black outline-none">
       </div>
       <button id="payBtn" onclick="checkoutBridge()" class="btn w-full py-4 text-sm">Finalizar compra</button>
-      <p class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pago seguro procesado por Bold</p>
+      <p class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">Pago seguro procesado por Bold</p>
     </div>
   </aside>
 
   <script>
-    const products = [{"id": "kool-natalia-1781281548", "name": "Natalia", "price": 2000, "price_old": 185000, "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/natalia_black_boot_1781281548.jpg", "color": "Botín cuero negro", "stockBySize": {"35": 10, "36": 8, "37": 9, "39": 3, "40": 1}}];
+    let products = [];
     let cart = [];
     let selected = {};
     let boldPaymentUrl = null;
+
+    // Cargar Catálogo desde el archivo maestro (Base de Datos)
+    async function init() {
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/calzado-kool/kool-pro/main/catalog.json?v=' + Date.now());
+        products = await res.json();
+        loadState();
+        render();
+      } catch (e) {
+        console.error("Error cargando catálogo maestro", e);
+      }
+    }
 
     function render() {
       const grid = document.getElementById('grid');
       if (!grid) return;
       grid.innerHTML = products.map(p => {
-        const priceOld = p.price_old || 185000;
+        const priceOld = p.price_old || Math.round(p.price * 1.25);
         const sizes = Object.keys(p.stockBySize).map(Number).sort((a,b)=>a-b).map(s => {
           const q = available(p.id, s);
           const isActive = Number(selected[p.id]) === s;
@@ -93,7 +112,7 @@
         return `
           <article class="card relative group" id="product-${p.id}">
             <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}?v=1781281548" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
             </button>
             <div class="p-6 space-y-4 flex-1 flex flex-col">
               <div>
@@ -123,33 +142,18 @@
       updateCart();
     }
 
-    function saveState() {
-      try {
-        localStorage.setItem('kool_v_final', JSON.stringify(cart));
-      } catch(e) {}
-    }
-    function loadState() {
-      try {
-        const c = localStorage.getItem('kool_v_final');
-        if (c) cart = JSON.parse(c);
-      } catch(e) {}
-    }
-
     function available(pid, size) {
       const p = products.find(x => x.id === pid);
       if (!p) return 0;
-      const stock = p.stockBySize[String(size)] || 0;
-      const inCart = cart.filter(i => i.id === pid && i.size === size).length;
-      return stock - inCart;
+      return (p.stockBySize[String(size)] || 0) - cart.filter(i => i.id === pid && i.size === size).length;
     }
 
     function choose(pid, size) { selected[pid] = size; render(); }
     function add(pid) {
       const size = selected[pid];
-      if (!size) return alert('Selecciona una talla primero');
+      if (!size) return alert('Selecciona una talla');
       if (available(pid, size) <= 0) return alert('Sin stock');
       const p = products.find(x => x.id === pid);
-      if (!p) return;
       cart.push({ ...p, size });
       saveState();
       render();
@@ -160,18 +164,16 @@
       const countEl = document.getElementById('count');
       const totalEl = document.getElementById('total');
       const itemsEl = document.getElementById('items');
-      if (!countEl || !totalEl || !itemsEl) return;
-      
       countEl.innerText = cart.length;
       const total = cart.reduce((a, b) => a + (Number(b.price) || 0), 0);
       totalEl.innerText = '$' + total.toLocaleString('es-CO');
       
       if (cart.length === 0) {
-        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center text-sm font-bold tracking-widest uppercase">Carrito vacío</div>';
+        itemsEl.innerHTML = '<div class="text-gray-400 py-10 text-center font-bold">CARRITO VACÍO</div>';
       } else {
         itemsEl.innerHTML = cart.map((i, idx) => `
           <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${i.img}?v=1781281548" class="w-16 h-16 object-contain bg-gray-50 rounded-lg">
+            <img src="${i.img}" class="w-16 h-16 object-contain bg-gray-50 rounded-lg">
             <div class="flex-1">
               <div class="font-black uppercase text-[10px]">${i.name}</div>
               <div class="text-[9px] font-bold text-gray-400">T: ${i.size} | ${i.color}</div>
@@ -183,80 +185,76 @@
       }
     }
 
-    function toggleCart(open) {
-      const d = document.getElementById('drawer');
-      const o = document.getElementById('ov');
-      if (open) { d.classList.add('open'); o.classList.add('on'); }
-      else { d.classList.remove('open'); o.classList.remove('on'); }
+    function saveState() { localStorage.setItem('kool_cart_v2', JSON.stringify(cart)); }
+    function loadState() {
+      const c = localStorage.getItem('kool_cart_v2');
+      if (c) cart = JSON.parse(c);
     }
 
-    function zoom(src) {
-      const z = document.getElementById('zoom');
-      const zi = document.getElementById('zoomImg');
-      zi.src = src;
-      z.style.display = 'flex';
+    function toggleCart(open) {
+      document.getElementById('drawer').classList.toggle('open', open);
+      document.getElementById('ov').classList.toggle('on', open);
     }
+
+    function zoom(src) { document.getElementById('zoomImg').src = src; document.getElementById('zoom').style.display = 'flex'; }
     function closeZoom() { document.getElementById('zoom').style.display = 'none'; }
 
     function shareProduct(pid, name) {
-      const text = `🛍️ Hola! Me interesa este modelo de KOOL PRO: ${name} %0Ahttps://calzado-kool.github.io/kool-pro/#product-${pid}`;
-      window.open(`https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${text}`);
+      const text = `🛍️ Hola! Me interesa: ${name}\nhttps://calzado-kool.github.io/kool-pro/#product-${pid}`;
+      window.open(`https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${encodeURIComponent(text)}`);
     }
 
     async function checkoutBridge() {
+      const GROUP_JID = '120363408397099423@g.us';
       try {
-        if (!cart.length) return alert('El carrito está vacío');
-        const name = document.getElementById('name')?.value.trim();
-        const phone = document.getElementById('phone')?.value.trim();
-        const addr = document.getElementById('addr')?.value.trim();
-        if (!name || !phone || !addr) return alert('Completa los datos');
+        if (!cart.length) return alert('Vacío');
+        const n = document.getElementById('name').value.trim();
+        const p = document.getElementById('phone').value.trim();
+        const a = document.getElementById('addr').value.trim();
+        if (!n || !p || !a) return alert('Faltan datos');
 
         const btn = document.getElementById('payBtn');
         if (btn.innerText.includes('PAGAR')) {
-           if (boldPaymentUrl) window.location.href = boldPaymentUrl;
-           return;
+          if (boldPaymentUrl) window.location.href = boldPaymentUrl;
+          return;
         }
         
         if (btn.innerText.includes('WHATSAPP')) {
-           const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-           const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-           const whatsappText = `🛍️ *NUEVO PEDIDO KOOL PRO*%0A%0A📦 *Productos:* ${itemsInfo}%0A💰 *Total:* ${total.toLocaleString('es-CO')}%0A👤 *Cliente:* ${name}%0A📱 *WhatsApp:* ${phone}%0A📍 *Dirección:* ${addr}`;
-           window.open(`https://api.whatsapp.com/send?phone=120363408397099423@g.us&text=${whatsappText}`, '_blank');
-           btn.innerText = 'PASO 2: IR A PAGAR $' + total.toLocaleString('es-CO');
-           btn.style.background = '#059669'; 
-           return;
+          const photos = cart.map(i => `🖼️ ${i.name}: ${i.img}`).join('\n');
+          const info = cart.map(i => `${i.name}(T:${i.size})`).join(', ');
+          const total = cart.reduce((s, i) => s + (Number(i.price) || 0), 0);
+          const msg = `🛍️ *PEDIDO KOOL PRO*\n\n📦 *Productos:* ${info}\n🖼️ *Fotos:*\n${photos}\n💰 *Total:* $${total.toLocaleString('es-CO')}\n\n👤 *Cliente:* ${n}\n📱 *WhatsApp:* ${p}\n📍 *Dirección:* ${a}`;
+          window.open(`https://api.whatsapp.com/send?phone=${GROUP_JID}&text=${encodeURIComponent(msg)}`, '_blank');
+          btn.innerText = 'PASO 2: IR A PAGAR';
+          btn.style.background = '#059669'; 
+          return;
         }
 
-        btn.disabled = true;
-        btn.innerText = 'PROCESANDO...';
-        const total = Math.round(cart.reduce((sum, i) => sum + (Number(i.price) || 0), 0));
-        const itemsInfo = cart.map(i => i.name + '(T:' + i.size + ')').join(', ');
-        const description = itemsInfo + ' | ' + addr + ' | ' + name + ' (' + phone + ')';
+        btn.disabled = true; btn.innerText = 'PROCESANDO...';
+        const total = cart.reduce((s, i) => s + (Number(i.price) || 0), 0);
+        const info = cart.map(i => `${i.name}(T:${i.size})`).join(', ');
+        const desc = `${info} | ${a} | ${n} (${p})`;
         
-        const response = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
+        const res = await fetch('https://bold-bridge-7qge.vercel.app/api/checkout', {
           method: 'POST',
-          mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description })
+          body: JSON.stringify({ amount: total, label: 'KOOL PRO', description: desc })
         });
 
-        const data = await response.json();
+        const data = await res.json();
         if (data && data.url) {
           boldPaymentUrl = data.url;
-          btn.disabled = false;
-          btn.innerText = 'PASO 1: ENVIAR PEDIDO A WHATSAPP';
+          btn.disabled = false; btn.innerText = 'PASO 1: ENVIAR A WHATSAPP';
           btn.style.background = '#2563eb'; 
-        } else {
-          throw new Error('Error pasarela');
         }
       } catch (e) {
-        alert('Error: ' + e.message);
+        alert('Error pasarela');
         const btn = document.getElementById('payBtn');
         btn.disabled = false; btn.innerText = 'Finalizar compra';
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => { loadState(); render(); });
+    init();
   </script>
 </body>
 </html>
