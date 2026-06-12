@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO MASTER v1781283354</title>
+  <title>KOOL PRO MASTER v1781283693</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -84,6 +84,17 @@
     let cart = [];
     let selected = {};
     let boldPaymentUrl = null;
+
+    async function refreshCatalog() {
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/calzado-kool/kool-pro/main/catalog.json?v=' + Date.now());
+        if (res.ok) {
+          products = await res.json();
+        }
+      } catch (e) {
+        console.warn('catalog refresh failed', e);
+      }
+    }
 
     function render() {
       console.log("Renderizando catálogo...");
@@ -265,7 +276,8 @@
     }
 
     // Inicialización Limpia
-    window.onload = () => {
+    window.onload = async () => {
+      await refreshCatalog();
       loadState();
       render();
     };
