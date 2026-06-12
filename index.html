@@ -110,7 +110,7 @@
         <input id="phone" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="WhatsApp" />
         <input id="addr" class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="Dirección de envío" />
       </div>
-      <button id="payBtn" onclick="checkoutBridge()" class="btn w-full py-4 text-sm">Finalizar compra</button>
+      <button id="payBtn" onclick="checkoutBridge()" style="border: 2px solid red !important; pointer-events: auto !important;" class="btn w-full py-4 text-sm">Finalizar compra</button>
       <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-wider">Pago seguro procesado por Bold</p>
     </div>
   </aside>
@@ -232,7 +232,7 @@
                   <button onclick="shareProduct('${p.id}', '${p.name}')" class="w-11 h-11 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-gray-400">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                   </button>
-                  <button onclick="add('${p.id}')" id="add-${p.id}" class="btn px-6 text-[11px]">Agregar</button>
+                  <button onclick="add('${p.id}')" id="add-${p.id}" style="border: 2px solid red !important; pointer-events: auto !important;" class="btn px-6 text-[11px]">Agregar</button>
                 </div>
               </div>
             </div>
