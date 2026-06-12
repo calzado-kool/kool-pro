@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KOOL PRO v1781280018</title>
+  <title>KOOL PRO v1781280465</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -71,7 +71,7 @@
   </aside>
 
   <script>
-    const products = [{"id": "kool-botin-natalia-negro", "name": "Natalia", "price": 2000, "price_old": 185000, "img": "media/1781279534507.jpg", "color": "Botín cuero negro", "stockBySize": {"35": 10, "36": 8, "37": 9, "39": 3, "40": 1}}];
+    const products = [{"id": "kool-natalia-1781280465", "name": "Natalia", "price": 2000, "price_old": 185000, "img": "media/natalia_final_1781280465.jpg", "color": "Botín cuero negro", "stockBySize": {"35": 10, "36": 8, "37": 9, "39": 3, "40": 1}}];
     let cart = [];
     let selected = {};
     let boldPaymentUrl = null;
@@ -93,7 +93,7 @@
         return `
           <article class="card relative group" id="product-${p.id}">
             <button onclick="zoom('${p.img}')" class="w-full aspect-square overflow-hidden bg-gray-50 relative">
-              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" onerror="this.src='media/1781071726766.jpg'">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" >
             </button>
             <div class="p-6 space-y-4 flex-1 flex flex-col">
               <div>
@@ -174,7 +174,7 @@
       } else {
         itemsEl.innerHTML = cart.map((i, idx) => `
           <div class="flex gap-4 border-b border-gray-100 pb-4">
-            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" onerror="this.src='media/1781071726766.jpg'">
+            <img src="${i.img}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl" >
             <div class="flex-1 space-y-1">
               <div class="font-black uppercase text-[11px] tracking-tight">${i.name}</div>
               <div class="text-[10px] font-bold text-gray-400">TALLA: ${i.size} | COLOR: ${i.color}</div>
