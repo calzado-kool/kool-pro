@@ -1,9 +1,9 @@
 [
   {
-    "id": "kool-running-1781294794",
+    "id": "web-running-1781318263",
     "name": "running",
     "price": 1500,
-    "price_old": 1700,
+    "price_old": 1800,
     "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/running_1781294793.jpg",
     "color": "Negro / Gris",
     "stockBySize": {
@@ -13,13 +13,14 @@
       "41": 7,
       "42": 2
     },
-    "image_version": 1781294794
+    "image_version": 1781318263,
+    "source": "web"
   },
   {
-    "id": "kool-hosting-1781295954",
+    "id": "web-hosting-1781318263",
     "name": "Hosting",
     "price": 199900,
-    "price_old": 225000,
+    "price_old": 239880,
     "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/hosting_negro_1525.jpg",
     "color": "Negro",
     "stockBySize": {
@@ -27,13 +28,14 @@
       "55": 1,
       "43": 2
     },
-    "image_version": 1781296529
+    "image_version": 1781318263,
+    "source": "web"
   },
   {
-    "id": "kool-bota-foot-1781314347",
+    "id": "web-bota-foot-1781318263",
     "name": "Bota foot",
     "price": 3000,
-    "price_old": 120000,
+    "price_old": 3600,
     "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/bota_foot_1781314347.jpg",
     "color": "Rosa negra",
     "stockBySize": {
@@ -41,10 +43,11 @@
       "78": 6,
       "45": 3
     },
-    "image_version": 1781314347
+    "image_version": 1781318263,
+    "source": "web"
   },
   {
-    "id": "ges-producto-1781317233",
+    "id": "ges-producto-1781318263",
     "name": "Producto",
     "price": 135000,
     "price_old": 162000,
@@ -53,10 +56,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-01-1781317233",
+    "id": "ges-producto-01-1781318263",
     "name": "Producto 01",
     "price": 140000,
     "price_old": 168000,
@@ -65,10 +68,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-02-1781317233",
+    "id": "ges-producto-02-1781318263",
     "name": "Producto 02",
     "price": 185000,
     "price_old": 222000,
@@ -77,10 +80,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-03-1781317233",
+    "id": "ges-producto-03-1781318263",
     "name": "Producto 03",
     "price": 145000,
     "price_old": 174000,
@@ -89,10 +92,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-04-1781317233",
+    "id": "ges-producto-04-1781318263",
     "name": "Producto 04",
     "price": 160000,
     "price_old": 192000,
@@ -101,10 +104,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-05-1781317233",
+    "id": "ges-producto-05-1781318263",
     "name": "Producto 05",
     "price": 220000,
     "price_old": 264000,
@@ -113,10 +116,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-06-1781317233",
+    "id": "ges-producto-06-1781318263",
     "name": "Producto 06",
     "price": 125000,
     "price_old": 150000,
@@ -125,10 +128,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-07-1781317233",
+    "id": "ges-producto-07-1781318263",
     "name": "Producto 07",
     "price": 150000,
     "price_old": 180000,
@@ -137,10 +140,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-08-1781317233",
+    "id": "ges-producto-08-1781318263",
     "name": "Producto 08",
     "price": 170000,
     "price_old": 204000,
@@ -149,10 +152,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-producto-09-1781317233",
+    "id": "ges-producto-09-1781318263",
     "name": "Producto 09",
     "price": 180000,
     "price_old": 216000,
@@ -161,10 +164,10 @@
     "stockBySize": {
       "Única": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-chancla-playera-1781317233",
+    "id": "ges-chancla-playera-1781318263",
     "name": "Chancla playera",
     "price": 20000,
     "price_old": 24000,
@@ -173,10 +176,10 @@
     "stockBySize": {
       "40": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   },
   {
-    "id": "ges-bota-urbana-roja-1781317233",
+    "id": "ges-bota-urbana-roja-1781318263",
     "name": "BOTA URBANA ROJA",
     "price": 2000,
     "price_old": 2400,
@@ -185,15 +188,15 @@
     "stockBySize": {
       "34": 1,
       "35": 1,
-      "36": 0,
+      "36": 1,
       "37": 1,
       "38": 1,
       "39": 1
     },
-    "image_version": 1781317576
+    "image_version": 1781318263
   },
   {
-    "id": "ges-tractor-power-1781317233",
+    "id": "ges-tractor-power-1781318263",
     "name": "TRACTOR POWER",
     "price": 160000,
     "price_old": 192000,
@@ -204,6 +207,6 @@
       "35": 1,
       "37": 1
     },
-    "image_version": 1781317233
+    "image_version": 1781318263
   }
 ]
