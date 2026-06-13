@@ -42,5 +42,168 @@
       "45": 3
     },
     "image_version": 1781314347
+  },
+  {
+    "id": "ges-producto-1781317233",
+    "name": "Producto",
+    "price": 135000,
+    "price_old": 162000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-01-1781317233",
+    "name": "Producto 01",
+    "price": 140000,
+    "price_old": 168000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-02-1781317233",
+    "name": "Producto 02",
+    "price": 185000,
+    "price_old": 222000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-03-1781317233",
+    "name": "Producto 03",
+    "price": 145000,
+    "price_old": 174000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-04-1781317233",
+    "name": "Producto 04",
+    "price": 160000,
+    "price_old": 192000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-05-1781317233",
+    "name": "Producto 05",
+    "price": 220000,
+    "price_old": 264000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-06-1781317233",
+    "name": "Producto 06",
+    "price": 125000,
+    "price_old": 150000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-07-1781317233",
+    "name": "Producto 07",
+    "price": 150000,
+    "price_old": 180000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-08-1781317233",
+    "name": "Producto 08",
+    "price": 170000,
+    "price_old": 204000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-producto-09-1781317233",
+    "name": "Producto 09",
+    "price": 180000,
+    "price_old": 216000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "Única": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-chancla-playera-1781317233",
+    "name": "Chancla playera",
+    "price": 20000,
+    "price_old": 24000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Surtido",
+    "stockBySize": {
+      "40": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-bota-urbana-roja-1781317233",
+    "name": "BOTA URBANA ROJA",
+    "price": 2000,
+    "price_old": 2400,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Rojo",
+    "stockBySize": {
+      "34": 1,
+      "35": 1,
+      "36": 1,
+      "37": 1,
+      "38": 1,
+      "39": 1
+    },
+    "image_version": 1781317233
+  },
+  {
+    "id": "ges-tractor-power-1781317233",
+    "name": "TRACTOR POWER",
+    "price": 160000,
+    "price_old": 192000,
+    "img": "https://calzado-kool.github.io/kool-pro/media/1781071726766.jpg",
+    "color": "Amarillo",
+    "stockBySize": {
+      "34": 1,
+      "35": 1,
+      "37": 1
+    },
+    "image_version": 1781317233
   }
 ]
