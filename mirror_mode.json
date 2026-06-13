@@ -1,0 +1,9 @@
+{
+  "mode": "double_mirror",
+  "web_to_gesadmin": true,
+  "gesadmin_to_web": true,
+  "sync_sizes": true,
+  "sync_prices": true,
+  "activate_on_paid": true,
+  "updated_at": 1781318356
+}
