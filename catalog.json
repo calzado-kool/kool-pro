@@ -43,5 +43,19 @@
       "43": 2
     },
     "image_version": 1781296529
+  },
+  {
+    "id": "kool-bota-foot-1781314347",
+    "name": "Bota foot",
+    "price": 3000,
+    "price_old": 120000,
+    "img": "https://raw.githubusercontent.com/calzado-kool/kool-pro/main/media/bota_foot_1781314347.jpg",
+    "color": "Rosa negra",
+    "stockBySize": {
+      "65": 1,
+      "78": 6,
+      "45": 3
+    },
+    "image_version": 1781314347
   }
 ]
